@@ -1,0 +1,15 @@
+*.blg
+*.fls
+*.log
+*.ouy
+*.aux
+*.bbl
+*.gz
+*.xml
+*.toc
+beam/
+docs/
+peer/
+repos/
+meetings/
+proposal/

@@ -1,0 +1,9 @@
+ 
+2) It is hard to understand the novelty aspect of the planned work without any literature context. What has been done to date in this field and how does the proposed project contribute in this regard? You could lift some of the points you make in the News value and relate them to your research question (against the literature background).
+ 
+3) The criterion for evaluation of the clustering quality may not necessarily allow for insightful outcomes. Silhouette does not necessarily reflect the distribution of data that is interpretable, intuitive etc. In some way, this discrepancy between the quantitative and qualitative evaluation of the clustering quality is a challenge. This could be better reflected in the specification (it is touched upon as you actually admit it in the Expected Results part but not really/constructively followed up).
+ 
+4) Is it only within the principal’s interest to use the clustering outcome to enhance data (label)? This could be an indirect way of testing the suitability of the resulting clustering.
+ 
+5) Finally, the research question should be made more concrete and tangible so that the hypothesis can be directly formulated. If the question starts from “How can ….” my major concern is that you cannot really conclusively answer it as it is posed in an open-ended way (there are multiple ways and approaches this can be approached and learning about one of them does not answer your question).
+

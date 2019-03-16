@@ -1,0 +1,102 @@
+\documentclass[master]{kththesis}
+
+\usepackage[hyphens]{url}
+\usepackage{hyperref}  
+
+\usepackage{csquotes} % Recommended by biblatex
+\usepackage[style=numeric,sorting=none,sortcites=true,backend=biber]{biblatex}
+\usepackage{subfiles}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{titlesec}
+\usepackage{commath}
+\usepackage{mathtools}
+\usepackage{array}
+\usepackage{parskip} % Newline for new paragraph
+\usepackage{footnote}
+\usepackage{caption}
+
+\setcounter{secnumdepth}{4}
+
+
+\addbibresource{../refs/SYB Exploratory Clustering.bib} % The file containing our references, in BibTeX format
+
+
+\title{This is the English title}
+\alttitle{Detta är den svenska översättningen av titeln}
+\author{Emil Juzovitski}
+\email{emiljuz@kth.se}
+\supervisor{Johan Gustavsson}
+\examiner{Pawel Herman}
+\hostcompany{Soundtrack Your Brand AB} % Remove this line if the project was not done at a host company
+\programme{Master in Machine Learning}
+\school{School of Electrical Engineering and Computer Science}
+\date{\today}
+
+% Uncomment the next line to include cover generated at https://intra.kth.se/kth-cover?l=en
+% \kthcover{kth-cover.pdf}
+
+
+\begin{document}
+
+% Frontmatter includes the titlepage, abstracts and table-of-contents
+\frontmatter
+
+\titlepage
+
+\begin{abstract}
+  English abstract goes here.
+
+\end{abstract}
+
+
+\begin{otherlanguage}{swedish}
+  \begin{abstract}
+    Träutensilierna i ett tryckeri äro ingalunda en oviktig faktor,
+    för trevnadens, ordningens och ekonomiens upprätthållande, och
+    dock är det icke sällan som sorgliga erfarenheter göras på grund
+    af det oförstånd med hvilket kaster, formbräden och regaler
+    tillverkas och försäljas Kaster som äro dåligt hopkomna och af
+    otillräckligt.
+  \end{abstract}
+\end{otherlanguage}
+
+
+\tableofcontents
+
+
+% Mainmatter is where the actual contents of the thesis goes
+\mainmatter
+
+
+\chapter{Introduction}
+
+We use the \emph{biblatex} package to handle our references.  We therefore use the
+command \texttt{parencite} to get a reference in parenthesis, like this
+\parencite{DENG201684}.  It is also possible to include the author
+as part of the sentence using \texttt{textcite}, like talking about
+the work of \textcite{DENG201684}.
+
+\section{Research Question}
+
+\subfile{./tex/background.tex}
+
+\chapter{Methods}
+
+\chapter{Results}
+
+\chapter{Discussion}
+
+\chapter{Conclusions}
+
+% Print the bibliography (and make it appear in the table of contents)
+\printbibliography[heading=bibintoc]
+
+\appendix
+
+\chapter{Something Extra}
+
+% Tailmatter inserts the back cover page (if enabled)
+\tailmatter
+
+\end{document}
