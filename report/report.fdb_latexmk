@@ -1,11 +1,11 @@
 # Fdb version 3
-["biber report"] 1552757960 "report.bcf" "report.bbl" "report" 1552758355
-  "../refs/SYB Exploratory Clustering.bib" 1552757955 41382 37d748984ff9d1f270283c50ee52f625 ""
-  "report.bcf" 1552758355 94785 0ea39368742217b97a58eb001077cfd1 ""
+["biber report"] 1552763339 "report.bcf" "report.bbl" "report" 1552764137
+  "../refs/SYB Exploratory Clustering.bib" 1552763216 41389 8366833ac39619738c8c1365ad75775e ""
+  "report.bcf" 1552763343 94879 35b4ae76d71c9e37fda1168a28cbd11c ""
   (generated)
-  "report.blg"
   "report.bbl"
-["pdflatex"] 1552758352 "report.tex" "report.pdf" "report" 1552758355
+  "report.blg"
+["pdflatex"] 1552763340 "report.tex" "report.pdf" "report" 1552764137
   "/home/ejuzovitski/.texlive2018/texmf-var/web2c/xetex/xelatex.fmt" 1546003429 2430777 5e9d85ba5b0ffacdf00b89651bb4c899 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1480098689 1528 f853c4d1b4e0550255e02831fdc8496f ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1480098698 1004 54797486969f23fa377b128694d548df ""
@@ -120,19 +120,19 @@
   "/usr/share/texlive/texmf-dist/tex/latex/xkeyval/xkeyval.sty" 1480098843 4962 9c1069474ff71dbc47d5006555e352d3 ""
   "/usr/share/texlive/texmf-dist/web2c/texmf.cnf" 1544722920 33523 3a2c32bd77384f8f4508d61b4be83582 ""
   "kththesis.cls" 1552639072 6591 025d85048f0b15d17710f5d80eacf579 ""
-  "report.aux" 1552758355 16845 1803e6504147b9a70204590214a66e91 ""
-  "report.bbl" 1552757961 63831 84c155df5272164e82989826f4139123 "biber report"
-  "report.out" 1552758355 1521 23d1cda51ff1b5ff05891d81bee609fe ""
-  "report.run.xml" 1552758355 2409 f3aad6e1bacd47d8184147bc4ac8bf1b ""
+  "report.aux" 1552763343 16986 683a1696ca2565087f4e2c58841367a2 ""
+  "report.bbl" 1552763340 67352 11aa491bdc257bc1461020be12fc4ce9 "biber report"
+  "report.out" 1552763343 1521 23d1cda51ff1b5ff05891d81bee609fe ""
+  "report.run.xml" 1552763343 2409 f3aad6e1bacd47d8184147bc4ac8bf1b ""
   "report.tex" 1552758218 2591 10fece978c999fb4612de87c76b16af9 ""
-  "report.toc" 1552758355 3571 34e787ae403ecc112476ca88ef270292 ""
-  "tex/background.tex" 1552757824 35215 fc0a55ed459167724acb120a6024ab30 ""
+  "report.toc" 1552763343 3572 28111b8a88c0a841890a39593956367a ""
+  "tex/background.tex" 1552764130 36080 e9d875e77e867ce9f086779b3818928c ""
   (generated)
-  "report.aux"
-  "report.log"
-  "report.out"
   "tex/background.tex.aux"
   "report.pdf"
+  "report.aux"
+  "report.bcf"
   "report.toc"
   "report.run.xml"
-  "report.bcf"
+  "report.log"
+  "report.out"

@@ -1,13 +1,14 @@
 \documentclass[a4paper,11pt]{article}
 \usepackage{datetime}
 \usepackage{csquotes}
-\usepackage[style=numeric,sortcites=true,sorting=none,backend=biber]{biblatex}
+\usepackage[style=numeric,sortcites=true,sorting=none,backend=biber,url=false,doi=false]{biblatex}
 \usepackage[parfill]{parskip}
 \usepackage{fancyhdr}
 \usepackage{graphicx}
 \usepackage{subfig}
 \usepackage{hyperref}
 \usepackage{rotating}
+\usepackage{xcolor}
 
 \usepackage{amsthm}
 \usepackage{soul}
@@ -38,9 +39,8 @@
 \section{Formalities}
 
 \subsection{Preliminary Thesis Title}
-
-Using clustering analysis for song categorization and
-music genre exploration on mixed data.
+Song categorization and
+music genre exploration on high-dimensional data using soft-subspace clustering.
 
 \subsection{Name and Email}
 
@@ -70,11 +70,13 @@ principal's workplace}
 
 \subsection{Background}
 
-This thesis is on the research topic of clustering analysis on mixed data. Clustering analysis is the term used for unsupervised learning
+This thesis is on the research topic of clustering analysis on high-dimensional data. Clustering analysis is the term used for unsupervised learning
 techniques that tries to group data of multiple dimensions together if
-they are similar.\cite{doi:10.1002/9780470316801.ch1}. Mixed data refers to data being both categorical and numerical \cite{doi:10.1002/9780470316801.ch1,Jia2018,CHEUNG20132228,CHEN2016271}
+they are similar.\cite{Kaufman1990}.
 
-The principal is a music streaming platform
+% Mixed data refers to data being both categorical and numerical \cite{Kaufman1990,Jia2018,Cheung2013,CHEN2016271}
+
+The host company is a music streaming platform
 company specializing in providing music for retail businesses. The
 platform saves the customer time by automating their music selection. The
 retail customer picks characteristics e.g. \textit{energy, genre, sound} that fit their brand. Sets of songs (playlists) are automatically generated for the customer to play based on the chosen characteristics.
@@ -86,11 +88,26 @@ cluster can be assigned a categorical label, that is, the theme. Given
 enough themes, the previously unlabeled dataset becomes labeled. A resulting effect is
 that the now labeled data can be used for supervised learning. In addition to creating a supervised dataset, clustering songs can help playlist composers employed by the company to find candidate songs for tailored playlists reducing the time needed to find songs for a playlist.
 
-For the purpose of this project, a dataset of songs will be used, it includes more than $5\cdot10^7$ data entries. The attributes of each song are metadata and an audio-embedding characterizing the song. Together they make up more than 100 attributes that are \textit{mixed}.
+For the purpose of this project, a dataset of songs will be used, it includes more than $5\cdot10^7$ data entries. The attributes of each song are metadata and an audio-embedding characterizing the song. Together they make up more than 100 attributes i.e. the dataset is of high-dimensionality.
 
+\textcolor{red}{
+High-dimensional datasets introduce problems when clustering. With distance measures such as the Euclidean distance, distances between objects become more similar with higher feature-dimensionality, making it harder to find the most similar cluster to an object. As such, traditional clustering algorithms struggle with finding the optimal cluster partitions. }
+
+\textcolor{red}{
+A solution to the problem of high-dimensionality is to lower the importance of irrelevant values and increase the importance of relevant values by adding a weight to each feature. Due to the amount of features in high-dimensional data it is often hard to determine the importance of each feature manually. Feature-weighting is a technique to automate the generation of weights.
+}
+
+\textcolor{red}{
+A more extensive solution to tackle high-dimensionality is to use subspace-clustering. More specifically soft-subspace clustering. In soft-subspace clustering each cluster is assigned a vector of weights for each feature. The purpose is to allow each cluster its own weight representation, as features correlate differently in different clusters. In other words: clusters have their own subspace. The subspaces reduce the amount of features that affect the distance significantly. In simplified terms this means that the dimensionality of each cluster is reduced by only allowing important features to impact the distance, resulting in better clusters.
+}
+
+\st{
 As stated above, the data is mixed, i.e. the attributes are of different
 data types. While interval-scaled distances (numerical) can be measured well through
-the Euclidean distance measurement, \textit{categorical data} cannot be measured in the same fashion without information loss.  There are suitable distance measurements for \textit{categorical data} but these measurements are inherently unsuitable for interval based data. \textit{Generalized Gower distance(daisy function)} \cite{doi:10.1002/9780470316801.ch1} is one way to generalize distance measurements on mixed data. Still, traditional clustering algorithms only implement one data type distance measure, as a mixed data distance often comes with an increase of complexity on the general algorithm. % A main objective of the thesis is to compare different
+the Euclidean distance measurement, \textit{categorical data} cannot be measured in the same fashion without information loss.  There are suitable distance measurements for \textit{categorical data} but these measurements are inherently unsuitable for interval based data. \textit{Generalized Gower distance(daisy function)} is one way to generalize distance measurements on mixed data. Still, traditional clustering algorithms only implement one data type distance measure, as a mixed data distance often comes with an increase of complexity on the general algorithm.
+}
+
+% A main objective of the thesis is to compare different
 % clustering approaches and evaluate which approaches is most suitable for
 % the given dataset both in terms of clustering quality(using the
 % silhouette coefficient) and scalability(time to cluster different sample
@@ -125,20 +142,20 @@ d(X_i, C_l) = \sum_{j=1}^{m_r}( x_{ij}^{u} - c_{lj}^{u} )^2 +
 
 
 
-\textit{K-prototype} has the same problems that can be assigned to \textit{K-means}, additionally it has problems that the new similarity measure introduces, stemming mostly from the user specified weight input. State-of-the-art algorithms built on \textit{K-prototype} try to solve a few of the problems embedded in \textit{K-prototype} algorithm. Two fundamental problems are the requirement of k as a user input as well as the that the algorithm assumes all attributes to be of equal importance \cite{CHEUNG20132228}\cite{huang2005automated}.
+\textit{K-prototype} has the same problems that can be assigned to \textit{K-means}, additionally it has problems that the new similarity measure introduces, stemming mostly from the user specified weight input. State-of-the-art algorithms built on \textit{K-prototype} try to solve a few of the problems embedded in \textit{K-prototype} algorithm. Two fundamental problems are the requirement of k as a user input as well as the that the algorithm assumes all attributes to be of equal importance \cite{Cheung2013}\cite{huang2005automated}.
 
 % A fundamental problem with k-means is High-dimensional data. It is often the case that a subspace of that data is important
 
-In \cite{CHEUNG20132228} the \textit{OCIL} algorithm is introduced. The problem of requiring a $k$ --- the number of clusters --- as an input is solved through the use of competitive learning. A new unified and more precise similarity measure is also introduced. The argument for the similarity measure is that all numerical values are seen as one single vector requiring one weight, while categorical values require one weight each. (I'll add the similarity measure later in the process, see page 4 in the cited paper)
+In \cite{Cheung2013} the \textit{OCIL} algorithm is introduced. The problem of requiring a $k$ --- the number of clusters --- as an input is solved through the use of competitive learning. A new unified and more precise similarity measure is also introduced. The argument for the similarity measure is that all numerical values are seen as one single vector requiring one weight, while categorical values require one weight each. (I will add the similarity measure later in the process, see page 4 in the cited paper)
 
-The authors of \cite{CHEUNG20132228} iterate on their solution in \cite{Jia2018} taking a soft subspace approach --- assigning weights to all attributes differently depending on the cluster and measuring each attributes' contribution to a cluster \cite{DENG201684}  --- to allow unique cluster weights without the need of weights defined by the user while still allowing a reasonable performance. (I'll expand on this much more later in the process)
+The authors of \cite{Cheung2013} iterate on their solution in \cite{Jia2018} taking a soft subspace approach --- assigning weights to all attributes differently depending on the cluster and measuring each attributes' contribution to a cluster \cite{Deng2016}  --- to allow unique cluster weights without the need of weights defined by the user while still allowing a reasonable performance. (I will expand on this much more later in the process)
 
 
 A density based-approach is taken in \cite{CHEN2016271} for clustering mixed data. Cluster centers are found by taking field intensity distance to account. With the now known centers, data is clustered. The algorithm is then extended for streaming data.
 
 An ensemble method is introduced in \cite{DBLP:journals/corr/abs-cs-0509011} where any two clustering methods for numerical and categorical data respectively are used to to cluster the data-types separately. The clustering results are then merged on the basis that clustering results --- even from numerical --- are always categorical.
 
-As the information on mixed-data is sparse it is not clear cut what clustering methods to use. A person not in the know-how could easily result in converting categorical data to numerical revoking information loss that could easily been avoided using a mixed-data technique \cite{doi:10.1002/9780470316801.ch1}. Mixed-data techniques are not as fast as state-of-the-art numerical-clustering algorithms but make up by being compatible with mixed data. Above algorithms have capabilities to handle real-world situations where inputs are not known, and, different clusters have different attribute dependence. \textcite{Jia2018} in particular solves most if not all problems that occur when a new mixed dataset has to be clustered, while still being relatively fast.
+As the information on mixed-data is sparse it is not clear cut what clustering methods to use. A person not in the know-how could easily result in converting categorical data to numerical revoking information loss that could easily been avoided using a mixed-data technique \cite{Kaufman1990}. Mixed-data techniques are not as fast as state-of-the-art numerical-clustering algorithms but make up by being compatible with mixed data. Above algorithms have capabilities to handle real-world situations where inputs are not known, and, different clusters have different attribute dependence. \textcite{Jia2018} in particular solves most if not all problems that occur when a new mixed dataset has to be clustered, while still being relatively fast.
 
 \subsection{Evaluation}
 In data-mining evaluation often cares about determining whether items are relevant or not \cite{manning2010introduction}. In the case of clustering we want to evaluate whether resulting clusters are relevant or not.
@@ -204,20 +221,25 @@ There are two main interests of the company:
   focused on irrelevant songs.
 \end{itemize}
 
-From a thesis standpoint the objective is to measure the performance improvements by using a state-of-the-art mixed clustering method in comparison with a unit conversion approach on the given dataset. In addition, an objective is that the chosen mixed-clustering algorithm can produce clusters of which playlist composers agree to have a theme.
+% \color{red}{\st{From a thesis standpoint the objective is to measure the performance improvements by using a state-of-the-art mixed clustering method in comparison with a unit conversion approach on the given dataset. In addition, an objective is that the chosen mixed-clustering algorithm can produce clusters of which playlist composers agree to have a theme.}}
 
-\subsection{Research Objective}
+\textcolor{red}{From a thesis standpoint the objective is to create a comparative analysis between specialized clustering algorithms for high dimensional data that use techniques such as feature-weighting to handle high-dimensional data and traditional clustering algorithms for the given dataset.}
+\textcolor{red}{Additionally, the objective is to create \textit{K} clusters \textit{( K > no.genres )} that can be determined to be sub-genres of preexisting genre-labels}
 
 \section{Research Question and Method}
+
 
 % \textbf{Original} \textit{\st{How can state-of-the-art clustering be used to categorize music, given a mixed attribute dataset of songs whose attributes are metadata and an audio embedding?}}
 
 % \textbf{Alt 1. Longer} \textit{What clustering performance increase does the usage of state-of-the-art mixed clustering create in comparison to using a method in which categorical data is converted to numerical data and later clustered with a numerical clustering method on the given mixed dataset of songs with metadata and an audio-embedding?}
 
-\textit{What clustering performance increase does the usage of state-of-the-art mixed clustering create in comparison to a method in which categorical data is converted to numerical data on the given mixed dataset of songs with metadata and an audio-embedding?}
+% \st{\textit{What clustering performance increase does the usage of state-of-the-art mixed clustering create in comparison to a method in which categorical data is converted to numerical data on the given mixed dataset of songs with metadata and an audio-embedding?}}
+
+
+% \textit{Given the high dimensional dataset, Euclidean distances between objects become more similar. What is a suitable clustering technique for the given high-dimensional dataset that allows comp
+\textit{How does the performance of EWKM --- A soft-subspace clustering algorithm --- compare to K-means --- A traditional non-feature weighted clustering algorithm --- on the given high-dimensional dataset?}
 
 % \textit{To which extent does state-of-the-art mixed data clusteringstperform --- clustering performance evaluated by a judge --- a method in which categorical data is converted into numerical data and later clustered on a real-world mixed dataset containing songs with metadata and an audio-embedding?}
-(There is no need to choose two different algorithms, mixed data algorithms (i.e. OCIL) behave like a numerical algorithm on numerical data.)
 
 % \subsection{Specified problem definition}
 
@@ -231,27 +253,68 @@ From a thesis standpoint the objective is to measure the performance improvement
 
 \subsection{Examination Method}
 
+\textcolor{red}{\subsubsection{Clustering algorithms that are candidates for a comparative analysis}}
+\textit{W-K-means}\cite{huang2005automated} A feature-weighting algorithm determining the feature weights based on inter-cluster variance. Numeric.
+
+\textit{AWA}\cite{Chan2004} A soft-subspace algorithm determining the feature weights based on inter-cluster variance. Numeric. Breaks on zero variance of feature inter cluster subspace. FSC is an alternative that solves the problem by adding a constant in the distance function.
+
+\textit{EWKM}\cite{Jing2007} A soft-subspace algorithm determining the feature weights based on inter-cluster variance and negative Shannon entropy. Numeric.
+
+\textit{WOCIL}\cite{Jia2018} A soft-subspace algorithm determining the feature weights based on inter-cluster variance (through Hellinger distance) and negative Shannon entropy. Mixed.
+
+\textit{K-means} Traditional non-featureweighted algorithm.
+
+All of the mentioned algorithms are extensions of K-means. What differs is the distance measure and the additional optimizing step of optimizing the feature weights. This optimization step requires the algorithm to go through the each data point an additional time per iteration. This allows the algorithms to still be linear in computational complexity, while minimizing the dimensionality problem.
+
+Due to the availability of code EWKM will be compared with K-means exclusively on the audio embedding as mixed subspace methods are not available online. If there is time the report will be extended to also compare WOCIL with K-prototypes on the whole feature-set of the data. In such case WOCIL will be implemented by the author.
+
+
 \subsubsection{Dataset}
 
 A dataset of \textit{songs} will be used. It includes more than 50 million
 entries with each song entry holding hundreds of attributes. Attributes
-of a song is its metadata as well as its audio embedding: anstput from
-a machine learning algorithm characterizing the audio of the song. Not
-all attributes are \textit{interval-scaled (continuous-linear, numerical)}. The metadata
+of a song is its metadata as well as an \textcolor{red}{audio embedding --- a vector characterizing the audio of the song}
+
+
+Not all attributes are \textit{interval-scaled (continuous-linear, numerical)}. The metadata
 attributes are e.g. \textit{release year (ordinal), BPM (ordinal),
-explicit (binary), artist, gender (binary)}. The embedding is a vector of
+explicit (binary), artist, gender (binary)}. 
+
+The embedding is a vector of
 audio properties of the song with dimensionality in the hundreds. What
 each attribute means is unknown, the value of the attribute is
 interval-scaled.
+
+\textcolor{red}{
+  The embedding is generated through a neural network of auto-encoders, trained on the Mel-frequency cepstrum coefficients(MFCC)\cite{Paliwal2010}.
+}
+
+\textcolor{red}{
+To understand MFCC we need to first understand how humans perceive sound and how speech is created. Humans are more sensitive to frequency differences at lower frequencies compared to higher frequencies. The Mel-scale takes the differences in sensitivity into account by creating a logarithmic scale. Human speech is generated by the shape of the vocal tract. The shape determines what sound is created.
+A power spectrum describes how much power is in the frequency component of a signal. The envelope of the power spectrum can be used to represent the shape of the vocal tract of the given audio. An MFCC represents the envelope \cite{Paliwal2010}. With the shape of the tract represented, generated phonemes can be determined of the vocals of the audio.
+}
+
+\textcolor{red}{
+More details on how the embedding is generated is out of the scope of this thesis. 
+}
+
+
+\textcolor{red}{
+The \textit{genre} metadata is based on the audio embedding. Making it a great validator if excluded from the dataset.
+}
+
+
 
 Two caveats are that certain songs can be missing one or more attributes, and, certain songs can have multiple values for one attribute e.g. \textit{genre}.
 
 
 \subsection{Computation and Language}
 
-Google Cloud will be the computation source. To allow possible
-distributed implementations, code will be written in Python and, Apache
-Beam or Apache Spark.
+\textcolor{red}{Algorithms will be implemented in C and wrapped through Python-C-API to allow the algorithm to be called in Python. This allows the performance of C while still gaining the functionality of packages such as numpy.
+}
+% Google Cloud will be the computation source. To allow possible
+% distributed implementations, code will be written in Python and, Apache
+% Beam or Apache Spark.
 
 % \subsubsection{Method (old)}
 
@@ -332,14 +395,21 @@ Beam or Apache Spark.
 
 \subsection{Expected scientific results}
 
-Clustering accuracy is relative. While we can measure the inner
+While we can measure the inner
 criterion through e.g. silhouette coefficient, a high silhouette does not
 necessarily translate into clusters with themes that make sense from an
 end-user standpoint. Instead a external evaluation --- the supervised evaluation, can be used by asking the
 end-user about the resulting clusters and using the measurement of
 \textit{purity.}
 
-My hypothesis is that both the inner criterion and external criterion will see an improvement by using a mixed-data clustering algorithm. I think a purity increase over $10\%$ will be achieved.
+% My hypothesis is that both the inner criterion and external criterion will see an improvement by using a mixed-data clustering algorithm. I think a purity increase over $10\%$ will be achieved.
+\textcolor{red}{
+My hypothesis is that there will be a substantial clustering performance increase in terms of the inner criterion --- specified as the average silhouette coefficient --- compared to the k-means algorithm.}
+
+
+\textcolor{red}{
+  Given the ground truth to be the genres and the external criterion as purity, I expect the dominant genre on the top ten clusters based on the silhouette to be 2x as dominant in EWKM compared to K-means.
+}
 
 \section{Evaluation and News Value}
 
@@ -348,6 +418,9 @@ For the internal criterion the \textit{average silhouette coefficient} will be u
 
 In order to use any external criteria, a ground truth estimate is necessary. There are various options in this thesis on how to generate it. There are music composers available, there are $10^3$ of tailored playlists, and, there is also a genre attribute that can be used as the ground truth if it is excluded from the clustering generation.
 
+\textcolor{red}{I will exclude the genre feature from the dataset. The dataset thus becomes labeled data, with the label being the genre. A basic purity test can then be done: finding the amount of songs with the dominant genre label in each cluster and dividing that with the amount of points in those clusters. In other words using the Purity measure. With a large K. a cluster with a dominant genre-label corresponds to a possible sub-genre of the dominant genre.}
+
+\st{
 If the genre is excluded, data can get labeled on the genre. A basic purity test can then be done: finding the amount of songs with the dominant genre label in each cluster and dividing that with the amount of points in those clusters.
 
 If we depend on the composers and want to create a purity measurement, we would have to let the composers decide if there is a theme in a cluster as well as deciding which songs are apart of that theme. To lessen the workload we could sample some clusters, and some songs of those clusters.
@@ -355,6 +428,7 @@ If we depend on the composers and want to create a purity measurement, we would 
 If we use the playlist to create a purity measurement, we would have to let the composers decide if there is a theme in a cluster as well as deciding which songs are apart of that theme. To lessen the workload we could sample some clusters, and some songs of those clusters.
 
 The genre exclusion validation do not require any additional work, and, is less subjective. It also generates more testing data than what composers could provide. The downside of the genre exclusion option is that genres could improve the clustering results if it would be used in the clustering process. On the other hand the exclusion forces \textit{new} themes/genres to be found.
+}
 
 The decision is to use genre exclusion with \textit{purity} for now as it is the most robust way the project can assert the external validity. An option for the project could be to use the composers on a sample of the dataset if it was decided later that it is too favorable not to cluster on the genre.
 
@@ -414,7 +488,7 @@ There are numerous steps in order to go from data tostput:
       This topic is assessed by looking at how clustering is affected by
       data types and distance measurement.
     \item
-      Current reference is \textit{Finding Groups In Data}(Kaufman, 1990)\cite{doi:10.1002/9780470316801.ch1}.
+      Current reference is \textit{Finding Groups In Data}(Kaufman, 1990)\cite{Kaufman1990}.
   \end{itemize}
 \item
   The second step is to find suitable clustering algorithms. A way to

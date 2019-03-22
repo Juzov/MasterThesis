@@ -2,22 +2,25 @@
 
 \begin{document}
 \chapter{Background}
-Chapter 2. intends to introduce the theory that is necessary to understand the research topic and the state-of-the-art approaches taken for mixed data clustering.
+Chapter 2. intends to introduce the theory that is necessary to understand the research topic.
 
 \section{Objective of Clustering}
 Given the inputs of a Dataset $\mathcal{D} = \{X_{ 1 }, X_{ 2 },..., X_{ n } \}$ --- where $X_i = [x_{i1}, x_{i2},...,x_{im} ]$ is a single data point with $m$ attributes --- and $k$ is a positive integer, the objective of partition clustering is to divide objects into $k$ disjoint clusters ${C} = \{C_1, C_2,..., C_k \}$ \cite{Huang97clusteringlarge}.
 
 The above objective is as stated just for partition-based clustering (See \ref{sub:part})
-). For density-based clustering the objective is to separate local dense areas from noise for more details (See \ref{sub:density}) \cite{Ester1996}.
+. For density-based clustering the objective is to separate local dense areas from noise for more details (See \ref{sub:density}) \cite{Ester1996}.
 
 \section{Similarity/Distance Measures}
 \label{ch:sim}
 The relative closeness between two points $X_i, X_j$ is quantified numerically through a similarity measure $s(X_i, X_j)$ \cite{diday1976clustering}. A high value indicates that the points are close, while a low measure indicates that the points are dissimilar. Values of $s(X_i, X_j)$ go between 0 and 1.
+
 The dissimilarity between the same two points can be described through a distance measure $d(X_i, X_j)$ --- $d(X_i, X_j) \geq 0$. Distance measures are often used with quantitative data i.e. numerical data. Similarity measures are frequently used when data is qualitative e.g. categorical and mixed data \cite{Wunsch2005}. Both measures are symmetric i.e. $s(X_i, X_j) = s(X_j, X_i)$.
 
-Distances can be measured in many ways and are often explicitly created for one data type, what measure to use has to be decided based on the data properties. This is reflected on the similarity/distance measure. The sections below introduce some popular approaches for numerical-, categorical-, and, mixed-data.
+Distances can be measured in many ways and are often explicitly created for one data type. Different algorithms use different distance measures. What distance measure an algorithm uses is based on the types of datasets the algorithm is specialized for.
 
 A point $X_i$ can be compared with another point $X_j$ or a cluster representation $C_l$ --- frequently used in partitioning algorithms. A representation can be the mean of all points in the cluster, or a centroid --- the most central point in the cluster \cite{Guha2000, Kaufman1990}. For categorical data, the \textit{mode} can represent the cluster --- The cluster is represented by the most frequent value of each attribute in the cluster \cite{Ng1999}. $C_l$ in these representations can be handled as a point.
+
+The sections below introduce some popular approaches for numerical-, categorical-, and, mixed-data.
 
 \subsection{Numerical Similarity Measures}
 
@@ -35,7 +38,7 @@ The Euclidean distance is a special case of the Minkowski distance where $q=2$. 
   d(X_i,C_l) &= {\sum^{m}_{j=1}\abs{x_{ij} - c_{lj}}^q}^{\frac{1}{q}}
 \end{align}
 
-Using a Euclidean distance it is assumed that the covariance matrix is an identity matrix, that is, in a 2-D you can only cluster points into perfect circles. To avoid this problem Mahalanobis distance can be used, e.g allowing for eliptical shapes in a 2-D plane. It introduces a covariance matrix $S^{-1}$. The algebraic equation is shown in \ref{eq:mahalanobis}. Like the Euclidean counterpart, the square root is often discarded. 
+Using a Euclidean distance it is assumed that the covariance matrix is an identity matrix, that is, in a 2-D space you can only cluster points into perfect circles. To avoid this problem Mahalanobis distance can be used, e.g allowing for elliptical shapes in a 2-D plane. It introduces a covariance matrix $S^{-1}$. The algebraic equation is shown in \ref{eq:mahalanobis}. Like the Euclidean counterpart, the square root is often discarded. 
 
 \begin{align}
   \label{eq:mahalanobis}
@@ -51,15 +54,17 @@ The mentioned distances can be converted to a similarity distance --- with value
 
 
 \subsection{Categorical Similarity Measures}
-Nominal data --- e.g. chemical elements in a periodic table  --- are either identical or different. In Ordinal data --- e.g. shirt sizes --- values can be more or less similar. Additionally, categorical data does not have to be information balanced either e.g. if two songs share the same artist it is more information than if they do not \cite{Kaufman1990}.
+Categorical data is not commonly referred as a datatype. It is instead a group of datatypes consisting of nominal- and ordinal-data. Unique properties separates the types from each other.
 
-Most clustering algorithms that cluster categorical data do not take account the differences between the data types mentioned above. There are distance measures that do (see \textit{daisy function} in \cite{Kaufman1990}) but implementing them in a clustering algorithm would increase the complexity of the algorithms. The rest of the similarity measures below considers all types mentioned above as nominal data. From this point onward, nominal data will be referred as categorical data.
+Nominal data --- e.g. chemical elements in a periodic table  --- are either identical or different. Ordinal data --- e.g. shirt sizes --- can be more or less similar. Additionally, nominal data does not have to be information balanced either --- some values are more important than others --- e.g. if two songs share the same artist it is more information than if they do not \cite{Kaufman1990}.
+
+Most clustering algorithms that cluster categorical data do not take account the differences between the data types mentioned above. There are distance measures that do (see \textit{daisy function} in \cite{Kaufman1990}) but implementing them in a clustering algorithm would increase the complexity of the algorithms. The rest of the similarity measures below considers ordinal data nominal. From this point onward, both nominal and ordinal will be referred as categorical data, and treated as nominal data.
 
 In its purest form a categorical similarity is simply yes or no, as shown in \ref{eq:cat1}, i.e. Are two attribute values the same? \cite{Guha2000, Kaufman1990}
 
-To define the similarity between a point and a cluster center/representative, the number of mismatches can be used as shown in \ref{eq:catcent} \cite{Huang97clusteringlarge}.
+To define the similarity between a point and a cluster representation, the number of mismatches can be used as shown in \ref{eq:catcent} \cite{Ng1999,Huang97clusteringlarge}. Where a cluster representation is defined by the most frequent attribute values of the points in the cluster. This method is used in \textit{K-modes} and the cluster representation is referred as a \textit{mode}
 
-Another way is to compare the values of $X_i$ and the values of all data points $\forall X_k \in C_l$ for each attribute as shown in \ref{eq:cat2}, \ref{eq:cat3} \cite{Guha2000, Cheung2013}.
+Another way is to compare the values of $X_i$ and the values of all data points $\forall X_k \in C_l$ for each attribute as shown in \ref{eq:cat2}, \ref{eq:cat3} \cite{Guha2000, Cheung2013}. In this method a cluster representation is not necessary. To allow fast computations of distances between points and clusters the frequency of each value of each cluster is stored in a frequency matrix. $w_j$ is an attribute weight defining how important each attribute is. The weight is created by calculating the entropy of the attribute. How to calculate the entropy is mentioned in section \ref{ch:weighed}.
 
 
 \begin{align}
@@ -78,7 +83,7 @@ s(x_{ij},x_{kj}) &= 1 - \delta{(x_{ij},x_{kj})} \\
 \label{eq:cat2}
 s(x_{ij},C_{lj}) &= \frac{\sum_{X_k \in C_{l}}{s(x_{ij},x_{kj})}}{\sum_{X_k \in C_{l} }{[ x_{kj} \neq null ]}} \\
 \label{eq:cat3}
-s(X_{i},C_{l}) &= \sum_{j = 1}^{m}{s(x_{ij},C_{lj})}
+s(X_{i},C_{l}) &= \sum_{j = 1}^{m}{w_j s(x_{ij},C_{lj})}
 \end{align}
 
 \subsection{Mixed Similarity Measures} \label{sssec:mixed-sim}
@@ -98,7 +103,7 @@ d(X_i, C_l) = \sum_{j=1}^{m_r}( x_{ij}^{r} - c_{lj}^{r} )^2 +
 
 \begin{align}
 \label{eq:mixJia}
-s(X_{i},C_{l}) &= \frac{1}{m_f}s(X_{i}^r,C_{l}^r) + \frac{m_c}{m_f}\sum_{j = 1}^{m_c}{{w_j}s(X_{ij}^c,C_{lj}^c)}
+s(X_{i},C_{l}) &= \frac{1}{m_f}s(X_{i}^r,C_{l}^r) + \frac{m_c}{m_f}\sum_{j = 1}^{m_c}{{w_j}s(x_{ij}^c,c_{lj}^c)}
 \end{align}
 Where:\newline
 $m_c \text{ is the number of categorical attributes}$ \newline
@@ -225,7 +230,7 @@ Sampling is used in ClARA, CLARANS \cite{Ng2002} to find medoids for the whole d
 
 In addition to choosing $k$, picking good initial points is also a problem that should be considered. Good initial clusters allow for a faster convergence while bad can result in convergence on a suboptimal result\cite{Arthur2006, Jia2018}, forcing multiple clusterings to obtain a result of confidence. While random uniform sampling is a way to initialize $K$ centers there are more robust solutions, that can exclude picking e.g. outliers allowing the result to be less random. 
 
-\textit{K-means++} proposes replacing uniformly at random sampling with the following steps:
+\textit{K-means++}\cite{Arthur2006} proposes replacing uniformly at random sampling with the following steps:
 
 \begin{enumerate}
   \item Pick one center $C_l$ uniformly at randomly
@@ -301,9 +306,9 @@ ${m_r}$ is the number of different values of attribute $j$, and $a_{tj}$ is the 
 
 The above methods are arguably over-simplified. Attributes can correlate less or more, and be of different importance in each cluster . Take medical deceases as clusters for example. The chance of some deceases vary if a patient has recently traveled to a tropical climate. For other deceases that info (attribute) does not matter.
 
-To allow clusters to have their own attribute weighting, subspace clustering is used \cite{DENG201684, Jing2007, Jia2018, Kriegler2012}. Subspace clustering lets clusters have their individual subspaces, hence the name. Subspace clustering can be divided into hard-subspace clustering and soft-subspace clustering.
+To allow clusters to have their own attribute weighting, subspace clustering is used \cite{Deng2016, Jing2007, Jia2018, Kriegler2012}. Subspace clustering lets clusters have their individual subspaces, hence the name. Subspace clustering can be divided into hard-subspace clustering and soft-subspace clustering.
 
-Hard-subspace clustering tries to find the exact subspaces \cite{Kriegler2012, Jia2018, Jing2007,DENG201684}. Soft-subspace clustering clusters the data points globally but with weight vectors having been assigned to each cluster. Each vector represents the attribute weights for that cluster. Hard-subspace clustering is a much more time consuming task than its soft-subspace clustering counterpart.
+Hard-subspace clustering tries to find the exact subspaces \cite{Kriegler2012, Jia2018, Jing2007,Deng2016}. Soft-subspace clustering clusters the data points globally but with weight vectors having been assigned to each cluster. Each vector represents the attribute weights for that cluster. Hard-subspace clustering is a much more time consuming task than its soft-subspace clustering counterpart.
 
 Automated-Weighting Algorithm (\textit{AWA}) \cite{Chan2004} is a soft-subspace approach similar to \textit{w-k-means}, the difference is that for the cost function of AWA $w_j^\beta$ is replaced with $w_{ lj }^\beta$ --- a weight for an attribute in a cluster $C_l$. The algorithm does not work when the variance of an attribute in a cluster is zero as the learning rules denominator becomes zero. \textit{ FWKM } \cite{Jing2005} solves the problem by adding a small constant to the distance function, forcing the variance to not be zero.
 
@@ -350,7 +355,7 @@ A summary of the mentioned algorithms is shown in Table. \ref{tab:comp}
 . It states the type of the algorithm, complexity, data type, and if it is a weighed algorithm.
 
 \captionof{table}{
-  Properties of algorithms discussed in this chapter \cite{Wunsch2005,DENG201684}
+  Properties of algorithms discussed in this chapter \cite{Wunsch2005,Deng2016}
 \label{tab:comp}
 }
 \hspace*{-2cm}

@@ -7,9 +7,9 @@
 *.gz
 *.xml
 *.toc
+*.json
 beam/
 docs/
 peer/
-repos/
 meetings/
 proposal/

@@ -1,11 +1,11 @@
 # Fdb version 3
-["biber structure"] 1551614725 "structure.bcf" "structure.bbl" "structure" 1551616683
-  "../refs/SYB Exploratory Clustering.bib" 1551543024 25516 dc184692f1673de0e2233fc51210b0ce ""
-  "structure.bcf" 1551616681 91500 bd935f9e025596f191cd1dc24a76af6f ""
+["biber structure"] 1553129949 "structure.bcf" "structure.bbl" "structure" 1553129950
+  "../refs/SYB Exploratory Clustering.bib" 1553129949 43731 6e9f1c02175a117d484fb78767b8ad23 ""
+  "structure.bcf" 1553129950 91451 2580575fb3e8e51b18852647860f618d ""
   (generated)
   "structure.blg"
   "structure.bbl"
-["pdflatex"] 1551616680 "structure.tex" "structure.pdf" "structure" 1551616683
+["pdflatex"] 1553129879 "structure.tex" "structure.pdf" "structure" 1553129950
   "/home/ejuzovitski/.texlive2018/texmf-var/web2c/xetex/xelatex.fmt" 1546003429 2430777 5e9d85ba5b0ffacdf00b89651bb4c899 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1480098689 1528 f853c4d1b4e0550255e02831fdc8496f ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/ectt1000.tfm" 1480098696 1536 06717a2b50de47d4087ac0e6cd759455 ""
@@ -73,6 +73,7 @@
   "/usr/share/texlive/texmf-dist/tex/latex/fmtcount/fcnumparser.sty" 1514504691 12338 3f721c3c576d5ed676913eb44445cd68 ""
   "/usr/share/texlive/texmf-dist/tex/latex/fmtcount/fcprefix.sty" 1514504691 12047 8f869eb09b84f8680cbfd88467cd3e7d ""
   "/usr/share/texlive/texmf-dist/tex/latex/fmtcount/fmtcount.sty" 1514504691 30770 0ac75d31ce75ec4ef54f1efe1c0ba7ba ""
+  "/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/color.cfg" 1480098830 1213 620bba36b25224fa9b7e1ccb4ecb76fd ""
   "/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg" 1480098830 1224 978390e9c2234eab29404bc21b268d1e ""
   "/usr/share/texlive/texmf-dist/tex/latex/graphics-def/xetex.def" 1498427493 12707 672c620846df0fecf0a7a99fed83566d ""
   "/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty" 1523134385 15272 5a97061616e0c8b2aa79c6615ff769f4 ""
@@ -98,18 +99,19 @@
   "/usr/share/texlive/texmf-dist/tex/latex/tools/array.sty" 1525471425 13555 1c149904152e53130811b31763000c97 ""
   "/usr/share/texlive/texmf-dist/tex/latex/tools/calc.sty" 1523050425 10212 357072c1d20578a30d6387d8a22e72ab ""
   "/usr/share/texlive/texmf-dist/tex/latex/url/url.sty" 1480098842 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty" 1480098843 55589 34128738f682d033422ca125f82e5d62 ""
   "/usr/share/texlive/texmf-dist/tex/latex/xkeyval/xkeyval.sty" 1480098843 4962 9c1069474ff71dbc47d5006555e352d3 ""
   "/usr/share/texlive/texmf-dist/web2c/texmf.cnf" 1544722920 33523 3a2c32bd77384f8f4508d61b4be83582 ""
   "gantt/Grantt.png" 1549732396 744515 ef589fbd5ef05bb326115846b7905c8e ""
-  "structure.aux" 1551616681 9590 df9f3f4e96a1c1daf786aa26798cbcc2 ""
-  "structure.bbl" 1551614726 36474 156f75eebb546d82d45a679648b94e63 "biber structure"
-  "structure.out" 1551616681 2312 294affdbed9be1fe7f58e06975931afc ""
-  "structure.run.xml" 1551616681 2399 07ecfcdc951ae3c791e201d9625a7658 ""
-  "structure.tex" 1551616676 28533 62eda03f45da7ac62460674ed7c9f49a ""
+  "structure.aux" 1553129881 9789 332959f6544bc779c461869976c63657 ""
+  "structure.bbl" 1553129950 46680 a426d9ba6ef847ff4bca8c73f3b77f23 "biber structure"
+  "structure.out" 1553129881 2393 eb7c9f720c875a382bcd26b5ee60a2e9 ""
+  "structure.run.xml" 1553129881 2399 07ecfcdc951ae3c791e201d9625a7658 ""
+  "structure.tex" 1553129910 34540 370afafcb4a84428dbaf0b563832fc1d ""
   (generated)
-  "structure.out"
-  "structure.log"
-  "structure.pdf"
-  "structure.run.xml"
   "structure.bcf"
+  "structure.log"
   "structure.aux"
+  "structure.out"
+  "structure.run.xml"
+  "structure.pdf"
