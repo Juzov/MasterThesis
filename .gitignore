@@ -2,12 +2,14 @@
 *.fls
 *.log
 *.ouy
+*.pyc
 *.aux
 *.bbl
 *.gz
 *.xml
 *.toc
 *.json
+*.o
 beam/
 docs/
 peer/

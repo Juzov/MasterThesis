@@ -12,3 +12,4 @@ softsubspace_module = Extension(
 setup(name="softsubspace",
       description="Soft Subspace Module",
       ext_modules=[softsubspace_module])
+

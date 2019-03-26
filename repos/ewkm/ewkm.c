@@ -68,6 +68,87 @@ double unif_rand(){
 	return (double)rand() / (double)RAND_MAX;
 }
 
+void initPrototypesPlusPlus(
+		double *x,	// Numeric matrix as vector by col (nr*nc)
+		int *nr, 	// Number of rows (points)
+		int *nc, 	// Number of columns (attributes/variables)
+		int *k,	// Number of clusters
+		// Output ---------------------------------------------
+		double *o_prototype) // Numeric prototype matrix (k*nc)
+{
+
+	int i, j, l; // i, 0< j <nc ? 0 < l < k
+	int flag = 0;
+	int index;
+
+	int *random_obj_num; 	// Array for randomly selected objects (k)
+
+	// Memory for array of randomly selected objects size k
+
+	random_obj_num = (int *) malloc(sizeof(int) * (*k));
+	if (!random_obj_num) {
+		fprintf(stderr, "Can't allocate memory for random_obj_num matrix\n");
+		exit(-1);
+	}
+
+	// Memory for array of randomly selected objects size k
+	for (l = 0; l < *k; l++)
+		random_obj_num[l] = -1;
+
+	// Randomly select k objects.
+	index = (int) (*nr-1) * unif_rand();
+	random_obj_num[0] = index;
+
+	for (j = 0; j < (*nc); j++)
+		o_prototype[j * (*k) + l] = x[j * (*nr) + index];
+	// for 0:k
+	for (l = 1; l < *k; l++) {
+		flag = 1;
+
+		while (flag) {
+		  //    index = (int) (rand() % (*nr));
+		  //    R function
+		  //    value range [0,1]
+		  //    * number of 
+		  //    random point index
+		  //    *nr-1
+		  //    i.e. nr-1 = 9 unif_rand 0.5 9*0.5 = 4.5 = 4?
+			index = (int) (*nr-1) * unif_rand();
+			flag = 0;
+			// for 0:l
+			// check that previous randomly selected  are not the same as the randomly chosen one
+			// if it is find a new random point
+			for (i = 0; i < l; i++)
+				if (random_obj_num[i] == index)
+					flag = 1;
+		}
+
+		// random obj l = index
+		random_obj_num[l] = index;
+		// go through all points?
+		// take all attibutes from for index
+		// put them in the lth row of o_prototype
+		for (j = 0; j < (*nc); j++)
+			// go through
+			// jth attribute times number of points + picked point
+			// 3 * 10 + 5
+			// 5
+			// 15
+			// 25
+			// 35
+			// it has to be a column major "2-d array"
+			// the lth random sample / row of o_prototype
+			o_prototype[j * (*k) + l] = x[j * (*nr) + index];
+	}
+
+	free(random_obj_num);
+
+
+
+}
+
+
+
 void initPrototypes( // Inputs ---------------------------------------------
 		double *x,	// Numeric matrix as vector by col (nr*nc)
 		int *nr, 	// Number of rows (points)
