@@ -77,74 +77,67 @@ void initPrototypesPlusPlus(
 		double *o_prototype) // Numeric prototype matrix (k*nc)
 {
 
-	int i, j, l; // i, 0< j <nc ? 0 < l < k
-	int flag = 0;
+	int i, j, l;
 	int index;
 
-	int *random_obj_num; 	// Array for randomly selected objects (k)
+	double *min_cluster_dis;
 
-	// Memory for array of randomly selected objects size k
+	// Minimum distance for point i to any already chosen cluster center
+	// a distance of zero represents a cluster center
+	min_cluster_dis = (double *) malloc(sizeof(double) * (*nr));
 
-	random_obj_num = (int *) malloc(sizeof(int) * (*k));
-	if (!random_obj_num) {
-		fprintf(stderr, "Can't allocate memory for random_obj_num matrix\n");
+	if (!min_cluster_dis) {
+		fprintf(stderr, "Can't allocate memory for min_cluster_dis matrix\n");
 		exit(-1);
 	}
 
-	// Memory for array of randomly selected objects size k
-	for (l = 0; l < *k; l++)
-		random_obj_num[l] = -1;
-
-	// Randomly select k objects.
-	index = (int) (*nr-1) * unif_rand();
-	random_obj_num[0] = index;
-
-	for (j = 0; j < (*nc); j++)
-		o_prototype[j * (*k) + l] = x[j * (*nr) + index];
-	// for 0:k
-	for (l = 1; l < *k; l++) {
-		flag = 1;
-
-		while (flag) {
-		  //    index = (int) (rand() % (*nr));
-		  //    R function
-		  //    value range [0,1]
-		  //    * number of 
-		  //    random point index
-		  //    *nr-1
-		  //    i.e. nr-1 = 9 unif_rand 0.5 9*0.5 = 4.5 = 4?
-			index = (int) (*nr-1) * unif_rand();
-			flag = 0;
-			// for 0:l
-			// check that previous randomly selected  are not the same as the randomly chosen one
-			// if it is find a new random point
-			for (i = 0; i < l; i++)
-				if (random_obj_num[i] == index)
-					flag = 1;
-		}
-
-		// random obj l = index
-		random_obj_num[l] = index;
-		// go through all points?
-		// take all attibutes from for index
-		// put them in the lth row of o_prototype
-		for (j = 0; j < (*nc); j++)
-			// go through
-			// jth attribute times number of points + picked point
-			// 3 * 10 + 5
-			// 5
-			// 15
-			// 25
-			// 35
-			// it has to be a column major "2-d array"
-			// the lth random sample / row of o_prototype
-			o_prototype[j * (*k) + l] = x[j * (*nr) + index];
+	index = (int) (((*nr)-1) * unif_rand());
+	for (j = 0; j < (*nc); j++){
+		o_prototype[j * (*k) + 0] = x[j * (*nr) + index];
 	}
 
-	free(random_obj_num);
+	double o_dist, sum;
 
+	// check min dist to 0
+	for (l = 1; l < *k; l++) {
+		sum = 0.0;
+		for (i = 0; i < *nr; i++) {
+			o_dist = 0.0;
 
+			for (j = 0; j < *nc; j++) {
+				o_dist += pow(x[j * (*nr) + i] - o_prototype[j * (*k) + (l-1)], 2);
+			}
 
+			if( l == 1 ){
+				min_cluster_dis[i] = o_dist;
+				/* printf("min %f, %d\n", min_cluster_dis[i], i); */
+			}
+			else if (min_cluster_dis[i] > o_dist) {
+				min_cluster_dis[i] = o_dist;
+			}
+			sum += min_cluster_dis[i];
+		}
+
+		//random value
+		sum *= (double) unif_rand();
+		/* printf("sum %f, %d\n", sum, l); */
+		/* printf("%f\n",sum); */
+
+		// since the min dist to the already chosen cluster centers is zero
+		// there is no chance for the points to be chosen
+		for (i = 0; i < *nr; i++) {
+			sum -= min_cluster_dis[i];
+			if(sum <= 0){
+				index = i;
+				break;
+			}
+		}
+		for (j = 0; j < (*nc); j++){
+			o_prototype[j * (*k) + l] = x[j * (*nr) + index];
+		}
+	}
+
+	free(min_cluster_dis);
 }
 
 
@@ -189,14 +182,15 @@ void initPrototypes( // Inputs ---------------------------------------------
 		  //    random point index
 		  //    *nr-1
 		  //    i.e. nr-1 = 9 unif_rand 0.5 9*0.5 = 4.5 = 4?
-			index = (int) (*nr-1) * unif_rand();
+			index = (int) (((*nr)-1) * unif_rand());
 			flag = 0;
 			// for 0:l
 			// check that previous randomly selected  are not the same as the randomly chosen one
 			// if it is find a new random point
-			for (i = 0; i < l; i++)
+			for (i = 0; i < l; i++){
 				if (random_obj_num[i] == index)
 					flag = 1;
+			}
 		}
 
 		// random obj l = index
@@ -204,17 +198,9 @@ void initPrototypes( // Inputs ---------------------------------------------
 		// go through all points?
 		// take all attibutes from for index
 		// put them in the lth row of o_prototype
-		for (j = 0; j < (*nc); j++)
-			// go through
-			// jth attribute times number of points + picked point
-			// 3 * 10 + 5
-			// 5
-			// 15
-			// 25
-			// 35
-			// it has to be a column major "2-d array"
-			// the lth random sample / row of o_prototype
+		for (j = 0; j < (*nc); j++){
 			o_prototype[j * (*k) + l] = x[j * (*nr) + index];
+		}
 	}
 
 	free(random_obj_num);
@@ -236,15 +222,18 @@ float calcCost(double *x, 	// Numeric matrix as vector by col (nr*nc)
 
 	int i, j, l, index;
 
-	for (i = 0; i < *nr; i++)
+	for (i = 0; i < *nr; i++){
 		for (j = 0; j < *nc; j++) {
 			index = j * (*k) + partition[i];
 			dispersion += subspace_weights[index]
 					* pow(x[j * (*nr) + i] - o_prototype[index], 2);
 		}
+	}
 
-	for (l = 0; l < (*k) * (*nc); l++)
+	for (l = 0; l < (*k) * (*nc); l++){
 		entropy += subspace_weights[l] * log(subspace_weights[l]);
+	}
+	printf("Disp vs Entropy vs Lambda * Entropy: %f - %f - %f \n", dispersion, entropy, *lambda * entropy);
 
 	dispersion += *lambda * entropy;
 
@@ -314,8 +303,9 @@ int updPrototypes(  // Inputs ---------------------------------------------
 	for (i = 0; i < *nr; i++) {
 		//size variable
 		no_clusters[partition[i]]++;
-		for (j = 0; j < *nc; j++)
+		for (j = 0; j < *nc; j++) {
 			o_prototype[j * (*k) + partition[i]] += x[j * (*nr) + i];
+		}
 	}
 
 	//divide it by the size
@@ -327,8 +317,9 @@ int updPrototypes(  // Inputs ---------------------------------------------
 			flag = 0;
 			break;
 		}
-		for (j = 0; j < *nc; j++)
+		for (j = 0; j < *nc; j++){
 			o_prototype[j * (*k) + l] /= (double) no_clusters[l];
+		}
 	}
 	free(no_clusters);
 	return flag;
@@ -390,7 +381,7 @@ void updWeights( // Inputs -----------------------------------------------------
 		//first normalize
 		for (j = 0; j < *nc; j++) {
 			index = j * (*k) + l;
-			subspace_weights[index] /= *sum; //??
+			subspace_weights[index] /= *sum;
 			if (subspace_weights[index] < minWeight) {
 				subspace_weights[index] = minWeight;
 			}
@@ -448,7 +439,7 @@ void ewkm( // Inputs ----------------------------------------------------------
 	//TODO enable it for R
 	// Initialise a rand sequence.
 	/* srand(unif_rand() * RAND_MAX); */
-	srand(123456);
+	srand(unif_rand() * RAND_MAX);
 
 	// Initialize the prototypes. The user can pass in a list of k
 	// indicies as the row indicies for the initial protoypes. A
@@ -456,6 +447,8 @@ void ewkm( // Inputs ----------------------------------------------------------
 
 	if (*init == 0)
 	  initPrototypes(x, nr, nc, k, centers);
+	else
+	  initPrototypesPlusPlus(x, nr, nc, k, centers);
 
 	// Initialize the feature weights of a cluster.
 
@@ -468,9 +461,13 @@ void ewkm( // Inputs ----------------------------------------------------------
 	*totiters = 0;
 
 	while (++iteration <= *maxiter) {
+		printf("iteration: %d,%d\n", *totiters, iteration);
 		dispersion = dispersion1;
+		/* printf("Old disp: %f,%d\n",dispersion, iteration); */
 
+		/* printf("partition: %d,%d\n",cluster[0], iteration); */
 		updPartition(x, nr, nc, k, centers, weights, cluster);
+		/* printf("partition: %d,%d\n",cluster[0], iteration); */
 
 		// Check if any prototypes are empty, and if so we have to
 		// initiate a new search if we have restarts left
@@ -496,12 +493,16 @@ void ewkm( // Inputs ----------------------------------------------------------
 		}
 
 		// Update weights of attibutes of each cluster
+		/* printf("Old weight: %f,%d\n",weights[0], iteration); */
 
+		printf("weights[0]: %f", weights[0]);
 		updWeights(x, nr, nc, k, lambda, cluster, centers, weights);
 
+		/* printf("New weight: %f,%d\n",weights[0], iteration); */
 		// Compute objective function value
 
 		dispersion1 = calcCost(x, nr, nc, k, lambda, cluster, centers, weights);
+		printf("New disp: %f,%d\n",dispersion1, iteration);
 
 		// Check for convergence
 
@@ -519,6 +520,8 @@ void ewkm( // Inputs ----------------------------------------------------------
 	if (iteration == *maxiter + 1)
 		*totiters = *totiters - 1;
 
+	printf("k lamb: %d, %f\n", *k, *lambda);
+	printf("Final disp: %f,%d\n",dispersion1, iteration);
 	//TODO enable it for R
 	// Write out the R random number data.
 	/* PutRNGstate(); */

@@ -121,6 +121,7 @@ softsubspace_ewkm(PyObject * self, PyObject *args)
     /* do not return anything explicitly */
 
     Py_INCREF(Py_None);
+    printf("iterations: %d totiters: %d", iterations, totiters);
     return Py_None;
     /* return NULL; */
 }

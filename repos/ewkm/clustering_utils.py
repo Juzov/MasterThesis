@@ -5,6 +5,14 @@ import pandas as pd
 import pandas_profiling as pp
 import random
 
+# def set_cluster_centers(data):
+#     """Set each center to be a specific song of a genre
+#     """
+#     unique_genres = data[data.genres].unique()
+#     for genre in unique_genres:
+#         print(data[data["genres"] == genre].iloc[0])
+
+#     return data
 
 def remove_irrelevant_columns(data):
     my_filter = (list(data.filter(regex='iso|include|_at|_by')))
@@ -57,10 +65,11 @@ def merge_column(data, column):
     return merged_data
 
 
-def generate_cluster_specific_json(data, k, lamb):
-    print("printing results")
+def generate_cluster_specific_json(data, k, lamb, path):
     str_lamb = str(lamb).replace('.', '-')
-    path = "clusters/" + 'K_' + str(k) + '_L_' + str_lamb
+
+    path = path + "/" + 'K_' + str(k) + '_L_' + str_lamb
+
     os.mkdir(path)
     for i in range(0, k):
         data[data.clusters == i].to_json(
@@ -82,7 +91,6 @@ def parse_filter_json(
         print("Cannot find clustering_datset.json")
 
     data = remove_irrelevant_columns(data)
-    returnable_data = data
 
     data.to_json(
         'data/mixed.json',
