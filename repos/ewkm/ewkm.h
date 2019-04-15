@@ -47,7 +47,7 @@ void updWeights( // Inputs -----------------------------------------------------
 		// Output -------------------------------------------------------
 		double *subspace_weights); // Weights for variable/cluster (k*nc)
 
-void ewkm( // Inputs ----------------------------------------------------------
+float ewkm( // Inputs ----------------------------------------------------------
 		double *x, 		// Numeric matrix as vector by col (nr*nc);
 		int *nr, 		// Number of rows (points);
 		int *nc, 		// Number of columns (attributes/variables);

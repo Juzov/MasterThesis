@@ -4,7 +4,8 @@
 \usepackage{hyperref}  
 
 \usepackage{csquotes} % Recommended by biblatex
-\usepackage[style=numeric,sorting=none,sortcites=true,backend=biber]{biblatex}
+\usepackage[style=numeric,sortcites=true,sorting=none,backend=biber,url=false,doi=false]{biblatex}
+
 \usepackage{subfiles}
 \usepackage{amsmath}
 \usepackage{amsthm}
@@ -81,7 +82,9 @@ the work of \textcite{DENG201684}.
 
 \subfile{./tex/background.tex}
 
-\chapter{Methods}
+\chapter{Method}
+
+\subfile{./tex/method.tex}
 
 \chapter{Results}
 

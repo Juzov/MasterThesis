@@ -1,19 +1,19 @@
 #!/usr/bin/python3.7
-import sys, os
+import sys
+import os
 
 import click
 import numpy as np
 import pandas as pd
 from EWKM import EWKM
 
+from sklearn.metrics import calinski_harabaz_score, silhouette_score
 import clustering_utils as cs
-
+from clustering_utils import mean_normalize, normalize_data
 
 # argv
 
 @click.command()
-@click.option('-e', "--only-embedding/--all", default=True, help="Only use audio embedding ignore other numerical data")
-@click.option('-p', "--re-parse", is_flag=True, default=False, help="Reparse clustering_data.json")
 @click.option('-k', default=50, help="Amount of clusters")
 @click.option('-l', "--lamb", default=1.0, help="Lambda, 0<l<inf, likeliness to represent clusters with more attributes")
 @click.option('-i', "--max-iter", default=100, help="Maximum number of iterations")
@@ -21,42 +21,105 @@ import clustering_utils as cs
 @click.option('-r', "--max-restart", default=0, help="Allow restarts value determines amount of max. restarts")
 @click.option('-m', "--mult-lamb", default="", help="Send in multiple lamb values")
 @click.option('-n', "--name", default="", help="name of test")
-def main(only_embedding, re_parse, k, lamb, max_iter, convergance_delta, max_restart, mult_lamb, name):
+@click.option("--k-means/--ewkm", default=False, help="run on kmeans")
+def main(k, lamb, max_iter, convergance_delta, max_restart, mult_lamb, name, k_means):
     path = "clusters/ion/" + name
     os.mkdir(path)
-    # arr = np.fromstring(mult_lamb, dtype=float, sep=' ')
+    arr = np.fromstring(mult_lamb, dtype=float, sep=' ')
 
-
-    data = pd.read_csv('data/ionosphere.csv', header=None)
+    data = pd.read_csv('data/ionosphere.csv', sep=',', header=None)
+    # print(f'numeric: {data}')
     numerical_data = data.copy()
-    numerical_data = data.drop([34],1)
+    numerical_data = data.drop([1, 34], axis=1)
+    inds = pd.isnull(numerical_data).any(1).nonzero()[0]
+    print(inds)
+    numerical_data = numerical_data.apply(pd.to_numeric)
+    # numerical_data = numerical_data.apply(normalize_data, axis=0)
+    numerical_data = numerical_data.apply(mean_normalize, axis=0)
 
-    # numerical_data = numerical_data.apply(cs.normalize_data, axis=0)
-    if mult_lamb != "":
-        arr = np.fromstring(mult_lamb, dtype=float, sep=' ')
-        for i in range(0,arr.size):
-            ewkm = EWKM(numerical_data)
-            clusters, centers, weights, iterations, tot_iter = ewkm.predict(k=k,
-                                                                            lamb=arr[i],
-                                                                            max_iter=max_iter,
-                                                                            delta=convergance_delta,
-                                                                            max_restart=max_restart)
-            merged_data = cs.merge_column(data, clusters)
-            # maybe let it also add some statistics
-            cs.generate_cluster_specific_json(merged_data, k, arr[i], path)
-            print(weights)
+    # print(f'numeric: {numerical_data}')
 
+    best_lamb = -1
+    min_disp = 1000000000000000
+
+    if k_means:
+        clusters = cs.k_clustering(numerical_data, k, convergance_delta)
+        merged_data = cs.merge_column(data, clusters)
+
+        cs.generate_cluster_specific_json(merged_data, k, lamb, path)
+        print("------")
+        print(calinski_harabaz_score(numerical_data, clusters))
+        print(silhouette_score(numerical_data, clusters))
+        return None
+
+    if arr.size is not 0:
+        for i in range(0, arr.size):
+            print(f'{arr[i]} {k} {max_iter}')
+            dispersion, iterations, restarts, tot_iter, distances = run_for_lambda(
+                mixed_data=data,
+                numerical_data=numerical_data,
+                k=k,
+                lamb=arr[i],
+                max_iter=max_iter,
+                delta=convergance_delta,
+                max_restart=max_restart,
+                path=path,
+                k_plusplus=False
+            )
+
+            print(f'dispersion: {dispersion}, restarts: {restarts}, iterations: {iterations}, tot_iter: {tot_iter}')
+            if dispersion < min_disp and iterations > 0:
+                min_disp = dispersion
+                best_lamb = arr[i]
+
+        print(f'best dispersion: {min_disp}, lambda: {best_lamb}')
 
     else:
-        ewkm = EWKM(numerical_data)
-        clusters, centers, weights, iterations, tot_iter = ewkm.predict(k=k,
-                                                                        lamb=lamb,
-                                                                        max_iter=max_iter,
-                                                                        delta=convergance_delta,
-                                                                        max_restart=max_restart)
-        merged_data = cs.merge_column(data, clusters)
-        # maybe let it also add some statistics
-        cs.generate_cluster_specific_json(merged_data, k, lamb, path)
+        dispersion, iterations, restarts, tot_iter, distances = run_for_lambda(
+            mixed_data=data,
+            numerical_data=numerical_data,
+            k=k,
+            lamb=lamb,
+            max_iter=max_iter,
+            delta=convergance_delta,
+            max_restart=max_restart,
+            path=path,
+            k_plusplus=False
+        )
 
+        print(f'distances: {distances}')
+        print(f'dispersion: {dispersion}')
+
+
+def run_for_lambda(
+        mixed_data,
+        numerical_data,
+        k,
+        lamb,
+        max_iter,
+        delta,
+        max_restart,
+        path,
+        k_plusplus
+):
+    ewkm = EWKM(numerical_data)
+    dispersion, clusters, centers, weights, iterations, restarts, tot_iter, distances = ewkm.predict(
+        k=k,
+        lamb=lamb,
+        max_iter=max_iter,
+        delta=delta,
+        max_restart=max_restart,
+        init=int(k_plusplus)
+    )
+
+    print(numerical_data)
+    print(calinski_harabaz_score(numerical_data, clusters))
+    print(silhouette_score(numerical_data, clusters))
+
+    merged_data = cs.merge_columns(mixed_data, clusters, distances)
+    # maybe let it also add some statistics
+    cs.generate_cluster_specific_json(merged_data, k, lamb, path)
+
+    return dispersion, iterations, restarts, tot_iter, distances
 
 main()

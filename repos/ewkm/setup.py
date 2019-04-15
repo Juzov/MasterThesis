@@ -4,7 +4,7 @@ import numpy as np
 #define the extension module
 softsubspace_module = Extension(
     'softsubspace',
-    sources=["softsubspacemodule.c", "ewkm.c"],
+    sources=["softsubspacemodule.c", "ewkm.c", "utils.c"],
     include_dirs=[np.get_include()]
 )
 

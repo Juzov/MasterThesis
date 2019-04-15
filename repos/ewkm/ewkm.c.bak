@@ -144,54 +144,73 @@ void initPrototypesPlusPlus(
 
 void initPrototypes( // Inputs ---------------------------------------------
 		double *x,	// Numeric matrix as vector by col (nr*nc)
-		int *nr, 	// Number of rows
-		int *nc, 	// Number of columns
+		int *nr, 	// Number of rows (points)
+		int *nc, 	// Number of columns (attributes/variables)
 		int *k,	// Number of clusters
 		// Output ---------------------------------------------
 		double *o_prototype) // Numeric prototype matrix (k*nc)
 {
-	int i, j, l;
+	int i, j, l; // i, 0< j <nc ? 0 < l < k
 	int flag = 0;
 	int index;
 
 	int *random_obj_num; 	// Array for randomly selected objects (k)
 
-	// Memory for array of randomly selected objects
+	// Memory for array of randomly selected objects size k
 
 	random_obj_num = (int *) malloc(sizeof(int) * (*k));
 	if (!random_obj_num) {
-		perror("Can't allocate memory for random_obj_num matrix\n");
+		fprintf(stderr, "Can't allocate memory for random_obj_num matrix\n");
+		exit(-1);
 	}
 
+	// Memory for array of randomly selected objects size k
 	for (l = 0; l < *k; l++)
 		random_obj_num[l] = -1;
 
 	// Randomly select k objects.
 
+	// for 0:k
 	for (l = 0; l < *k; l++) {
 		flag = 1;
 
 		while (flag) {
 		  //    index = (int) (rand() % (*nr));
-			index = (int) (*nr-1) * unif_rand();
+		  //    R function
+		  //    value range [0,1]
+		  //    * number of 
+		  //    random point index
+		  //    *nr-1
+		  //    i.e. nr-1 = 9 unif_rand 0.5 9*0.5 = 4.5 = 4?
+			index = (int) (((*nr)-1) * unif_rand());
 			flag = 0;
-			for (i = 0; i < l; i++)
+			// for 0:l
+			// check that previous randomly selected  are not the same as the randomly chosen one
+			// if it is find a new random point
+			for (i = 0; i < l; i++){
 				if (random_obj_num[i] == index)
 					flag = 1;
+			}
 		}
 
+		// random obj l = index
 		random_obj_num[l] = index;
-		for (j = 0; j < (*nc); j++)
+		// go through all points?
+		// take all attibutes from for index
+		// put them in the lth row of o_prototype
+		for (j = 0; j < (*nc); j++){
 			o_prototype[j * (*k) + l] = x[j * (*nr) + index];
+		}
 	}
 
 	free(random_obj_num);
 }
 
 // ----- Calculate the cluster dispersion (objective function) -----
+
 float calcCost(double *x, 	// Numeric matrix as vector by col (nr*nc)
-		int *nr, 	// Number of rows
-		int *nc, 	// Number of columns
+		int *nr, 	// Number of rows (points)
+		int *nc, 	// Number of columns (attributes/variables)
 		int *k, 		// Number of clusters
 		double *lambda,	// Learning rate
 		int *partition, 	// Partition matrix (nr)
@@ -211,84 +230,22 @@ float calcCost(double *x, 	// Numeric matrix as vector by col (nr*nc)
 		}
 	}
 
-	for (l = 0; l < (*k)* (*nc); l++){
+	for (l = 0; l < (*k) * (*nc); l++){
 		entropy += subspace_weights[l] * log(subspace_weights[l]);
 	}
-	printf("Disp vs Lambda * Entropy (#): %11.10f - %11.10f \n", dispersion, (*lambda) * entropy);
+	printf("Disp vs Entropy vs Lambda * Entropy: %f - %f - %f \n", dispersion, entropy, *lambda * entropy);
 
 	dispersion += *lambda * entropy;
-	printf("^^^^^^^^^^^^^^^^^\n");
-	printf("  cost funct %f \n", dispersion);
-	printf("^^^^^^^^^^^^^^^^^\n");
+
 	return dispersion;
 }
-
-/* float calcCost(double *x, 	// Numeric matrix as vector by col (nr*nc) */
-/* 		int *nr, 	// Number of rows */
-/* 		int *nc, 	// Number of columns */
-/* 		int *k, 		// Number of clusters */
-/* 		double *lambda,	// Learning rate */
-/* 		int *partition, 	// Partition matrix (nr) */
-/* 		double *o_prototype, // Numeric prototype matrix (k*nc) */
-/* 		double *subspace_weights) // Weights for variable/cluster (k*nc) */
-/* { */
-/* 	float dispersion = 0.0,  // Dispersion of current cluster */
-/* 			curDispersion; */
-
-/* 	int i, j, l, index; */
-/* 	float *entropies, */
-/* 		  *dispersions; */
-
-/* 	entropies = (float *) malloc(sizeof(float) * (*k)); */
-/* 	dispersions = (float *) malloc(sizeof(float) * (*k)); */
-
-/* 	for (l = 0; l < *k; l++) { */
-/* 		entropies[l] = 0.0; */
-/* 		dispersions[l] = 0.0; */
-/* 	} */
-
-
-/* 	for (i = 0; i < *nr; i++){ */
-/* 		curDispersion = 0.0; */
-/* 		for (j = 0; j < *nc; j++) { */
-/* 			index = j * (*k) + partition[i]; */
-
-/* 			dispersions[partition[i]] += subspace_weights[index] */
-/* 					* pow(x[j * (*nr) + i] - o_prototype[index], 2); */
-/* 		} */
-/* 		/1* curDispersion += entropies[partition[i]]; *1/ */
-/* 		/1* if(curDispersion < 0){ *1/ */
-/* 		/1* 	curDispersion = 0; *1/ */
-/* 		/1* } *1/ */
-/* 		/1* dispersion += curDispersion; *1/ */
-/* 	} */
-
-/* 	for (l = 0; l < *k; l++) { */
-/* 		for (j = 0; j < *nc; j++) { */
-/* 			index = j * (*k) + l; */
-/* 			entropies[l] += subspace_weights[index] * log(subspace_weights[index]); */
-/* 		} */
-/* 		curDispersion = dispersions[l] + *lambda * entropies[l] / *nc; */
-/* 		if(l % (int)(*k * 0.1) == 0) */
-/* 			printf("Disp vs Lambda * Entropy (#): %11.10f - %11.10f - %d \n", dispersions[l], *lambda * entropies[l], l); */
-/* 		dispersion += curDispersion; */
-/* 	} */
-/* 	/1* dispersion += *lambda * entropy; *1/ */
-/* 	printf("^^^^^^^^^^^^^^^^^\n"); */
-/* 	printf("  cost funct %f \n", dispersion); */
-/* 	printf("^^^^^^^^^^^^^^^^^\n"); */
-
-/* 	free(dispersions); */
-/* 	free(entropies); */
-/* 	return dispersion; */
-/* } */
 
 // ----- Partition objects into clusters -----
 
 void updPartition(  // Inputs
 		double *x, 	// Numeric matrix as vector by col (nr*nc)
-		int *nr, 	// Number of rows
-		int *nc, 	// Number of columns
+		int *nr, 	// Number of rows (points)
+		int *nc, 	// Number of columns (attributes/variables)
 		int *k, 	// Number of clusters
 		double *o_prototype, // Numeric prototype matrix (k*nc)
 		double *subspace_weights, // Weights for variable/cluster (k*nc)
@@ -325,8 +282,8 @@ void updPartition(  // Inputs
 
 int updPrototypes(  // Inputs ---------------------------------------------
 		double *x, 	// Numeric matrix as vector by col (nr*nc)
-		int *nr, 		// Number of rows
-		int *nc, 		// Number of columns
+		int *nr, 		// Number of rows (points)
+		int *nc, 		// Number of columns (attributes/variables)
 		int *k, 		// Number of clusters
 		int *partition, 	// Partition matrix (nr)
 		// Output ---------------------------------------------
@@ -337,24 +294,32 @@ int updPrototypes(  // Inputs ---------------------------------------------
 
 	no_clusters = (int *) calloc(*k, sizeof(int));
 
+	//	clean
 	for (l = 0; l < (*k) * (*nc); l++) {
 		o_prototype[l] = 0;
 	}
 
+	//add all values of the cluster
 	for (i = 0; i < *nr; i++) {
+		//size variable
 		no_clusters[partition[i]]++;
-		for (j = 0; j < *nc; j++)
+		for (j = 0; j < *nc; j++) {
 			o_prototype[j * (*k) + partition[i]] += x[j * (*nr) + i];
+		}
 	}
 
+	//divide it by the size
 	int flag = 1;
 	for (l = 0; l < *k; l++) {
+		//if one cluster has zero points restart
+		//but I don't care though
 		if (no_clusters[l] == 0) {
 			flag = 0;
 			break;
 		}
-		for (j = 0; j < *nc; j++)
+		for (j = 0; j < *nc; j++){
 			o_prototype[j * (*k) + l] /= (double) no_clusters[l];
+		}
 	}
 	free(no_clusters);
 	return flag;
@@ -364,8 +329,8 @@ int updPrototypes(  // Inputs ---------------------------------------------
 
 void updWeights( // Inputs -------------------------------------------------------
 		double *x, 	// Numeric matrix as vector by col (nr*nc)
-		int *nr, 	// Number of rows
-		int *nc, 	// Number of columns
+		int *nr, 	// Number of rows (points)
+		int *nc, 	// Number of columns (attributes/variables)
 		int *k, 	// Number of clusters
 		double *lambda,	// Learning rate
 		int *partition,	// Partition matrix (nr)
@@ -379,6 +344,7 @@ void updWeights( // Inputs -----------------------------------------------------
 		subspace_weights[l] = 0;
 	}
 
+	//	total distance of attribute j in subspace index
 	for (i = 0; i < *nr; i++) {
 		for (j = 0; j < *nc; j++) {
 			index = j * (*k) + partition[i];
@@ -398,6 +364,7 @@ void updWeights( // Inputs -----------------------------------------------------
 		*sum = 0;
 		*sum2 = 0;
 		//find maximum
+		//	Normalization purposes ?
 		for (j = 0; j < *nc; j++) {
 			index = j * (*k) + l;
 			subspace_weights[index] = -subspace_weights[index] / (*lambda);
@@ -414,10 +381,11 @@ void updWeights( // Inputs -----------------------------------------------------
 		//first normalize
 		for (j = 0; j < *nc; j++) {
 			index = j * (*k) + l;
-			subspace_weights[index] /= *sum; //?
+			subspace_weights[index] /= *sum;
 			if (subspace_weights[index] < minWeight) {
 				subspace_weights[index] = minWeight;
 			}
+			//???
 			*sum2 += subspace_weights[index];
 		}
 		//final normalize
@@ -432,84 +400,15 @@ void updWeights( // Inputs -----------------------------------------------------
 	free(sum2);
 }
 
-void updWeightsPaper( // Inputs -------------------------------------------------------
-		double *x, 	// Numeric matrix as vector by col (nr*nc)
-		int *nr, 	// Number of rows
-		int *nc, 	// Number of columns
-		int *k, 	// Number of clusters
-		double *lambda,	// Learning rate
-		int *partition,	// Partition matrix (nr)
-		double *o_prototype, // Numeric prototype matrix (k*nc)
-		// Output -------------------------------------------------------
-		double *subspace_weights) // Weights for variable/cluster (k*nc)
-{
-	int i, j, l, index;
-
-	for (l = 0; l < (*k) * (*nc); l++) {
-		subspace_weights[l] = 0;
-	}
-
-	for (i = 0; i < *nr; i++) {
-		for (j = 0; j < *nc; j++) {
-			/* find the distance for index */
-			index = j * (*k) + partition[i];
-			subspace_weights[index] += pow(
-					(x[j * (*nr) + i] - o_prototype[index]), 2);
-		}
-	}
-
-	double *max, *sum, *sum2, *sum3;
-	max = (double*) malloc(sizeof(double));
-	sum = (double*) malloc(sizeof(double));
-	sum2 = (double*) malloc(sizeof(double));
-	sum3 = (double*) malloc(sizeof(double));
-	double minWeight = 0.0001 / (*nc);
-
-	for (l = 0; l < *k; l++) {
-		*max = -1.79769e+308;
-		*sum = 0;
-		*sum2 = 0;
-		//find maximum
-		for (j = 0; j < *nc; j++) {
-			index = j * (*k) + l;
-			subspace_weights[index] = exp(-subspace_weights[index] / (*lambda));
-			*sum += subspace_weights[index];
-		}
-		//first normalize
-		for (j = 0; j < *nc; j++) {
-			index = j * (*k) + l;
-			subspace_weights[index] /= *sum; //?
-			if (subspace_weights[index] < minWeight) {
-				subspace_weights[index] = minWeight;
-			}
-			*sum2 += subspace_weights[index];
-		}
-		if(l ==0)
-			printf("%f\n", *sum2);
-		//final normalize
-		for (j = 0; j < *nc; j++) {
-			index = j * (*k) + l;
-			subspace_weights[index] /= *sum2;
-			*sum3 += subspace_weights[index];
-		}
-		if(l ==0)
-			printf("%f\n", *sum3);
-	}
-
-	free(max);
-	free(sum);
-	free(sum2);
-	free(sum3);
-}
 // ***** Primary Interface *****
 
 // This is oriented toward interfacing with R, though a
 // separate main.c can be used for stand alone testing.
 
-float ewkm( // Inputs ----------------------------------------------------------
+void ewkm( // Inputs ----------------------------------------------------------
 		double *x, 		// Numeric matrix as vector by col (nr*nc)
-		int *nr, 		// Number of rows
-		int *nc, 		// Number of columns
+		int *nr, 		// Number of rows (points)
+		int *nc, 		// Number of columns (attributes/variables)
 		int *k, 		// Number of clusters
 		double *lambda, 	// Learning rate
 		int *maxiter, 	// Maximum number of iterations
@@ -518,19 +417,18 @@ float ewkm( // Inputs ----------------------------------------------------------
 		int *init,            // Initial k prototypes.
 		// Outputs ---------------------------------------------------------
 		int *iterations,	// Number of iterations
-		int *cluster, 	// Cluster assignment for each obs (nr)
-		double *centers, 	// Cluster centers (k*nc)
-		double *weights, 	// Variable weights (k*nc)
-		int *restarts,	// Number of restarts
-		int *totiters)	// Number of iterations including restarts
+		int *cluster, 	// Cluster assignment for each obs (nr) ()
+		double *centers, 	// Cluster centers (k*nc) (each cluster has a vector of feature dim)
+		double *weights, 	// Variable weights (k*nc) (clusters x variables)
+		int *restarts,	// Number of restarts (meh why) --- irrelevant
+		int *totiters)	// Number of iterations including restarts --- irrelevant
 {
 	int l, full;
 
 	int iteration; // Count of iterations.
 
-	int initType = *init;
-
-	float dispersion = FLT_MAX, dispersion1 = FLT_MAX; // Objective function value.
+	// Objective function value. cost function
+	float dispersion = FLT_MAX, dispersion1 = FLT_MAX;
 
 	//TODO enable it for R
 	// Read in (or create) .Random.seed, the R random number data, and
@@ -540,17 +438,18 @@ float ewkm( // Inputs ----------------------------------------------------------
 
 	//TODO enable it for R
 	// Initialise a rand sequence.
+	/* srand(unif_rand() * RAND_MAX); */
 	srand(unif_rand() * RAND_MAX);
 
 	// Initialize the prototypes. The user can pass in a list of k
 	// indicies as the row indicies for the initial protoypes. A
 	// single 0 indicates to use random initialisation.
 
-	printf("start weights %f\n",weights[0]);
-	if (initType == 0)
-	  	initPrototypes(x, nr, nc, k, centers);
+	if (*init == 0)
+	  initPrototypes(x, nr, nc, k, centers);
 	else
-		initPrototypesPlusPlus(x, nr, nc, k, centers);
+	  initPrototypesPlusPlus(x, nr, nc, k, centers);
+
 	// Initialize the feature weights of a cluster.
 
 	for (l = 0; l < (*k) * (*nc); l++)
@@ -560,22 +459,22 @@ float ewkm( // Inputs ----------------------------------------------------------
 
 	iteration = 0;
 	*totiters = 0;
-	*restarts = 0;
-	printf("re-set weights %f\n",weights[0]);
 
-	printf("----- k lamb: %d, %f ------ \n", *k, *lambda);
 	while (++iteration <= *maxiter) {
-		printf("> iteration: %d, restart: %d, tot iterations: %d \n", iteration, *restarts, *totiters + iteration);
-
+		printf("iteration: %d,%d\n", *totiters, iteration);
 		dispersion = dispersion1;
+		/* printf("Old disp: %f,%d\n",dispersion, iteration); */
 
+		/* printf("partition: %d,%d\n",cluster[0], iteration); */
 		updPartition(x, nr, nc, k, centers, weights, cluster);
+		/* printf("partition: %d,%d\n",cluster[0], iteration); */
 
 		// Check if any prototypes are empty, and if so we have to
 		// initiate a new search if we have restarts left
 
 		full = updPrototypes(x, nr, nc, k, cluster, centers);
 
+		//restart essenatially
 		if (!full && *maxrestart != 0) {
 			*restarts += 1;
 			*maxrestart -= 1;
@@ -585,10 +484,7 @@ float ewkm( // Inputs ----------------------------------------------------------
 
 			// Initialize the prototypes
 
-			if (initType == 0)
-				initPrototypes(x, nr, nc, k, centers);
-			else
-				initPrototypesPlusPlus(x, nr, nc, k, centers);
+			initPrototypes(x, nr, nc, k, centers);
 
 			// Initialize the feature weights of a cluster.
 
@@ -597,13 +493,16 @@ float ewkm( // Inputs ----------------------------------------------------------
 		}
 
 		// Update weights of attibutes of each cluster
+		/* printf("Old weight: %f,%d\n",weights[0], iteration); */
 
+		printf("weights[0]: %f", weights[0]);
 		updWeights(x, nr, nc, k, lambda, cluster, centers, weights);
 
+		/* printf("New weight: %f,%d\n",weights[0], iteration); */
 		// Compute objective function value
 
 		dispersion1 = calcCost(x, nr, nc, k, lambda, cluster, centers, weights);
-
+		printf("New disp: %f,%d\n",dispersion1, iteration);
 
 		// Check for convergence
 
@@ -621,13 +520,10 @@ float ewkm( // Inputs ----------------------------------------------------------
 	if (iteration == *maxiter + 1)
 		*totiters = *totiters - 1;
 
+	printf("k lamb: %d, %f\n", *k, *lambda);
+	printf("Final disp: %f,%d\n",dispersion1, iteration);
 	//TODO enable it for R
 	// Write out the R random number data.
 	/* PutRNGstate(); */
-	printf("Final disp: %f,%d\n",dispersion, iteration);
-	printf("-----------:");
-	printf("final weights %f\n",weights[0]);
-
-	return dispersion;
 
 }

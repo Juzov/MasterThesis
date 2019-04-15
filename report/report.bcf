@@ -2059,19 +2059,21 @@
     <bcf:citekey order="61">Jing2007</bcf:citekey>
     <bcf:citekey order="62">Li2008</bcf:citekey>
     <bcf:citekey order="63">Jia2018</bcf:citekey>
-    <bcf:citekey order="64">Wunsch2005</bcf:citekey>
-    <bcf:citekey order="64">Deng2016</bcf:citekey>
-    <bcf:citekey order="65">Wunsch2005</bcf:citekey>
-    <bcf:citekey order="65">Deng2016</bcf:citekey>
-    <bcf:citekey order="66">manning2010introduction</bcf:citekey>
-    <bcf:citekey order="67">Halkidi2002</bcf:citekey>
-    <bcf:citekey order="68">Halkidi2002</bcf:citekey>
-    <bcf:citekey order="69">ROUSSEEUW198753</bcf:citekey>
-    <bcf:citekey order="70">ROUSSEEUW198753</bcf:citekey>
-    <bcf:citekey order="71">Halkidi2002</bcf:citekey>
+    <bcf:citekey order="64">manning2010introduction</bcf:citekey>
+    <bcf:citekey order="65">Halkidi2002</bcf:citekey>
+    <bcf:citekey order="66">Halkidi2002</bcf:citekey>
+    <bcf:citekey order="67">ROUSSEEUW198753</bcf:citekey>
+    <bcf:citekey order="68">ROUSSEEUW198753</bcf:citekey>
+    <bcf:citekey order="69">Halkidi2002</bcf:citekey>
+    <bcf:citekey order="70">manning2010introduction</bcf:citekey>
+    <bcf:citekey order="71">manning2010introduction</bcf:citekey>
     <bcf:citekey order="72">manning2010introduction</bcf:citekey>
-    <bcf:citekey order="73">manning2010introduction</bcf:citekey>
-    <bcf:citekey order="74">manning2010introduction</bcf:citekey>
+    <bcf:citekey order="73">Wunsch2005</bcf:citekey>
+    <bcf:citekey order="73">Deng2016</bcf:citekey>
+    <bcf:citekey order="74">Wunsch2005</bcf:citekey>
+    <bcf:citekey order="74">Deng2016</bcf:citekey>
+    <bcf:citekey order="75">Paliwal2010</bcf:citekey>
+    <bcf:citekey order="76">Paliwal2010</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">

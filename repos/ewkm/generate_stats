@@ -10,13 +10,27 @@ def read_datasets(points, directory, file_location="/home/ejuzovitski/Documents/
                   "master_thesis/repos/ewkm/clusters/"):
     arr = np.fromstring(points, dtype=int, sep=' ')
     for i in arr:
+
         returnable_data = pd.read_json(
             path_or_buf=file_location+directory+"/"+str(i)+".json", lines=True)
-        print("--------------")
-        print(f'cluster {i}')
-        print(returnable_data['genres'].value_counts())
-        print(returnable_data['energies'].value_counts())
-        print(returnable_data['bpm'].median())
+
+        [r] = returnable_data['songs']
+
+        print(r)
+        try:
+            returnable_data = pd.read_json(
+                path_or_buf=file_location+directory+"/"+str(i)+".json", lines=True)
+            r = r.to_dict()
+            r = pd.DataFrame(r)
+            # rows,_ = returnable_data.shape
+            print("--------------")
+            print(returnable_data['genres'].value_counts(normalize=True))
+            print(returnable_data['energies'].value_counts(normalize=True))
+            print(returnable_data['bpm'].median())
+
+        except:
+            print(f'cluster {i} has no members')
+            continue
 
 
 read_datasets()

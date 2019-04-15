@@ -1,0 +1,41 @@
+#!/usr/bin/python3.7
+import os
+
+import random
+import pandas as pd
+import numpy as np
+import click
+
+from sklearn.metrics import calinski_harabaz_score, silhouette_score
+from pyclustering.cluster import cluster_visualizer_multidim, cluster_visualizer
+from pyclustering.cluster.kmeans import kmeans, kmeans_observer, kmeans_visualizer
+
+import clustering_utils as cs
+
+@click.command()
+@click.option('-e', "--only-embedding/--all", default=True, help="Only use audio embedding ignore other numerical data")
+@click.option('-p', "--re-parse", is_flag=True, default=False, help="Reparse clustering_data.json")
+@click.option('-k', default=50, help="Amount of clusters")
+@click.option('-d', "--convergance-delta", default=0.05, help="convergance delta")
+@click.option('-n', "--name", default="", help="name of test")
+@click.option('-u', "--k-plusplus/--random-uniform", default=False, help="Only use audio embedding ignore other numerical data")
+def main(only_embedding, re_parse, k, convergance_delta, name, k_plusplus):
+    path = "clusters/kmeans/" + name
+    os.mkdir(path)
+
+    if re_parse is False:
+        mixed_data, numerical_data = cs.read_datasets()
+    else:
+        mixed_data = cs.parse_filter_json()
+        # normalized
+        numerical_data = cs.get_numerical_data(mixed_data, only_embedding)
+
+    clusters = cs.k_clustering(numerical_data, k, convergance_delta)
+
+    print(k)
+    print(calinski_harabaz_score(numerical_data, clusters))
+    print(silhouette_score(numerical_data, clusters))
+    merged_data = cs.merge_column(mixed_data, clusters)
+    cs.generate_cluster_specific_json(merged_data, k, 0, path)
+
+main()

@@ -1,11 +1,11 @@
 # Fdb version 3
-["biber report"] 1552763339 "report.bcf" "report.bbl" "report" 1552764137
-  "../refs/SYB Exploratory Clustering.bib" 1552763216 41389 8366833ac39619738c8c1365ad75775e ""
-  "report.bcf" 1552763343 94879 35b4ae76d71c9e37fda1168a28cbd11c ""
+["biber report"] 1554839602 "report.bcf" "report.bbl" "report" 1554904587
+  "../refs/SYB Exploratory Clustering.bib" 1554295876 43696 7bf407a0c4f817c543fbc4a881ea6fbb ""
+  "report.bcf" 1554842379 94987 a3f53b3d889b902bdbd9175c4944e38a ""
   (generated)
   "report.bbl"
   "report.blg"
-["pdflatex"] 1552763340 "report.tex" "report.pdf" "report" 1552764137
+["pdflatex"] 1554842376 "report.tex" "report.pdf" "report" 1554904587
   "/home/ejuzovitski/.texlive2018/texmf-var/web2c/xetex/xelatex.fmt" 1546003429 2430777 5e9d85ba5b0ffacdf00b89651bb4c899 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1480098689 1528 f853c4d1b4e0550255e02831fdc8496f ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1480098698 1004 54797486969f23fa377b128694d548df ""
@@ -120,19 +120,20 @@
   "/usr/share/texlive/texmf-dist/tex/latex/xkeyval/xkeyval.sty" 1480098843 4962 9c1069474ff71dbc47d5006555e352d3 ""
   "/usr/share/texlive/texmf-dist/web2c/texmf.cnf" 1544722920 33523 3a2c32bd77384f8f4508d61b4be83582 ""
   "kththesis.cls" 1552639072 6591 025d85048f0b15d17710f5d80eacf579 ""
-  "report.aux" 1552763343 16986 683a1696ca2565087f4e2c58841367a2 ""
-  "report.bbl" 1552763340 67352 11aa491bdc257bc1461020be12fc4ce9 "biber report"
-  "report.out" 1552763343 1521 23d1cda51ff1b5ff05891d81bee609fe ""
-  "report.run.xml" 1552763343 2409 f3aad6e1bacd47d8184147bc4ac8bf1b ""
-  "report.tex" 1552758218 2591 10fece978c999fb4612de87c76b16af9 ""
-  "report.toc" 1552763343 3572 28111b8a88c0a841890a39593956367a ""
-  "tex/background.tex" 1552764130 36080 e9d875e77e867ce9f086779b3818928c ""
+  "report.aux" 1554842379 18884 ec6c171cf3b326ba4dea4c4226ad3f0b ""
+  "report.bbl" 1554839604 71734 74f6d1144fc4414788470bb1d418e2cf "biber report"
+  "report.out" 1554842379 2034 a1851717265d50a50a3567180d8c475a ""
+  "report.run.xml" 1554842379 2409 f3aad6e1bacd47d8184147bc4ac8bf1b ""
+  "report.tex" 1554836976 2639 967423378064ea003634ec9c538be903 ""
+  "report.toc" 1554842379 4744 611b206c0e3323c60000f27ec159ef10 ""
+  "tex/background.tex" 1554398031 38969 99611e616833f1abddd37659b0dd8732 ""
+  "tex/method.tex" 1554883993 4308 0a55013cd94ca40be51957a62f3b6226 ""
   (generated)
   "tex/background.tex.aux"
   "report.pdf"
-  "report.aux"
   "report.bcf"
+  "report.log"
+  "report.aux"
+  "report.out"
   "report.toc"
   "report.run.xml"
-  "report.log"
-  "report.out"

@@ -350,9 +350,77 @@ To determine $W$ --- which in this case is a matrix, due to the method being a s
 
 % Different Datatypes hold different information and converting data types from one type to another results in information loss as briefly mentioned in \ref{ch:weighed}. The reality is that all data type conversion methods will lead to information loss. A clustering analysis method involving type conversion will always lead to less than optimal results.
 
-\section{Summary of Clustering Algorithms}
-A summary of the mentioned algorithms is shown in Table. \ref{tab:comp}
-. It states the type of the algorithm, complexity, data type, and if it is a weighed algorithm.
+\section{Evaluation}
+There are two main ways of which clustering are evaluated: Internal- and external-criterion.\cite{manning2010introduction}
+In some research the categories are extended with the relative-criterion.\cite{Halkidi2002}
+
+\subsection{Inner Criteria} \label{sec:Internal}
+Internal criterion is an unsupervised validation approach and can be described as evaluating the results without respect to external information \cite{Halkidi2002}. An internal criterion tries to verify the objective of the clustering algorithm on the dataset. For example: Making sure that points assigned to the same cluster are in general more similar than points outside of the cluster.
+
+\subsubsection{Average Silhouette Coefficient}
+
+The average silhouette coefficient upon all datapoints shown in \ref{eq:avg_s}, is one way to evaluate the internal criteria \cite{ROUSSEEUW198753}. A single silhouette coefficient shown in \ref{eq:sil}, looks at a data points intra-cluster similarity --- similarity to points within the same cluster, and, inter-cluster similarity --- similarity with point outside of the cluster. $\overline{s}_{co}$ goes between -1 and 1 where a high value (close to 1) indicates a natural clustered dataset.
+
+When $s_{co}(X_i)$ is a high value (close to 1) a point is well clustered i.e. the intra-cluster similarity is high relative to the inter-cluster similarity \cite{ROUSSEEUW198753}
+. The same reasoning is extended to $\overline{s}_{co}(\mathcal{D})$ where a high value is a well clustered dataset.
+
+\begin{align}
+  d_{avg}(X_i,C_l) &= \frac{\sum_{X_k \in C_l}d(X_i,X_k)}{Count(X_k \in C_l)} \\
+  a(X_i) &= d_{avg}(X_i,C_a) \textit{ , where } (X_i \in C_a) \\
+  b(X_i) &= min_{C \neq C_a}(d_{avg}(X_i,C)) \\
+ \label{eq:sil}
+  s_{co}(X_i) &= \frac{b(X_i) - a(X_i)}{max(a(X_i), b(X_i)} \\
+\label{eq:avg_s}
+  \overline{s}_{co}(\mathcal{D}) &= \frac{\sum^{N}_{i=1} s_{co}(X_i)}{N}
+\end{align}
+
+\subsubsection{Calinski-Harabasz Index}
+Calinski-Harabasz is for measuring the validity
+
+
+\subsection{External Criteria}
+External criterion is an supervised validation approach and can be described by the following sentence: Validation of the results by imposing a pre-defined structure on the dataset i.e. data not used for generating the clustering results \cite{Halkidi2002}. As clustering analysis is an unsupervised learning method, it is often hard to assess the criteria --- There is often no test data available for a new dataset. Still, to quantify how well the clustering approach works on a new dataset defining a ground truth is essential. One way is to use judges, experts in the field \cite{manning2010introduction}. Given a ground truth an external measurement can be deployed.
+
+\subsubsection{Measurements}
+Purity is a measurement for the external criterion. It measures the ratio of the most dominant class in a cluster. The data-points are labeled with a class beforehand on the ground truth \cite{manning2010introduction}. Equation \ref{eq:purity} defines the measurement. The equation does not penalize small clusters as such small clusters produces a high score.
+
+\begin{equation}
+  \label{eq:purity}
+  P(W, C) = \frac{1}{N}\sum_{k}max_{j}\abs{w_k \cap c_j}
+\end{equation}
+Where:\newline
+$W = \{w_1,w_2,...,w_k\}$ is the set of clusters, and,
+$C = \{c_1,c_2,...,c_k\}$ is the set of clusters.
+
+Another measurement is the \textit{$F$-measure} shown in \ref{eq:f-measure}\cite{manning2010introduction}. Where P is the precision defined in \ref{eq:precision} and R (recall) is defined in \ref{eq:recall}. The measurement is a way to take account both Precision and Recall. The balanced \textit{$F$-measure} is called the \textit{$F_1$-measure} and is defined in \ref{eq:f1-measure}. It weighs the impact of precision and recall the same.
+\begin{align}
+  \label{eq:precision}
+  P &= \frac{TP}{TP+FP} \\
+  \label{eq:recall}
+  R &= \frac{TP}{TP+FN} \\
+  \label{eq:f-measure}
+  F_\beta &= \frac{(\beta^2 + 1) \cdot P \cdot R)}{\beta^2 \cdot P + R} \\
+  \label{eq:f1-measure}
+  F_{\beta = 1} &= \frac{2 \cdot P \cdot R}{P + R}
+\end{align}
+Where:\newline
+$TP$ are true positives, $FP$ false positives, $FN$ false negatives, and, $\beta$ is a weight between $P$ and $R$, a $\beta > 1$ emphasizes the $R$.
+
+\section{Chapter Summary}
+The fundamentals of clustering have been introduced in this chapter, distance measures are described as well as how they correlate to different datatypes. Hierarchical-, Partition- and, Density-clustering are all described. Figure \ref{tab:comp} summarizes the properties of all the mentioned algorithms in this chapter. The pre-study goes into detail on how the popular \textit{K-means} algorithm functions as it is pivotal for understanding weighted clustering.
+
+The findings of the prestudy suggests that feature-weighted clustering can be used to attack the challenging problem of clustering high-dimensional data. Algorithms such as \textit{Weighted K-means}, \textit{AWA}, and, \textit{Entropy Weighted K-means} have all been introduced.  The mentioned algorithms manage high-dimensional data clustering in different ways. The last two, are examples of soft subspace clustering --- an extension of \textit{feature weighting}, which allows each cluster an individual subspace. The soft-subspace methods have been shown to deal with high-dimensional data better than traditional algorithms while still allowing the performance similar to traditional partitioning algorithms.
+
+As for evaluation, it is necessary to use both have an internal and external criteria. While an internal criteria can give a score of inter- and intra-cluster performance through methods such as the silhouette coefficient it cannot replace a ground truth, and should instead be used as a tool for parameter tuning. The supervised method of using an external criteria should instead be used. Data can be tested against a ground truth label or multiple judges through measurements like, the mentioned $F_1$-Score.
+
+The clustering method for this thesis will be to use EWKM algorithm on the given dataset. The first reason for choosing the algorithm is that it is a soft-subspace clustering algorithm. Secondly, it takes into account th information gain in the cost function. To evaluate the performance, the algorithm will be compared by the traditional \textit{K-means} algorithm. The evaluation will compare the average silhouette coefficient for a chosen \textit{K-parameter} on the two algorithms results. The results will also be evaluated by an external criteria of $F_1$ Score basing the ground truth on the genre feature which is a given label for all songs in the dataset.
+
+A caveat with choosing the method is its use of a numerical distance measure. As such, only numerical features of the dataset can be used.
+
+% The prestudy has
+% The following 
+% A summary of the mentioned algorithms is shown in Table. \ref{tab:comp}
+% . It states the type of the algorithm, complexity, data type, and if it is a weighed algorithm.
 
 \captionof{table}{
   Properties of algorithms discussed in this chapter \cite{Wunsch2005,Deng2016}
@@ -398,55 +466,5 @@ A summary of the mentioned algorithms is shown in Table. \ref{tab:comp}
 }
 
 \newpage
-\section{Evaluation}
-There are two main ways of which clustering are evaluated: Internal- and external-criterion.\cite{manning2010introduction}
-In some research the categories are extended with the relative-criterion.\cite{Halkidi2002}
-
-\subsection{Inner Criteria} \label{sec:Internal}
-Internal criterion is an unsupervised validation approach and can be described as evaluating the results without respect to external information \cite{Halkidi2002}.
-
-The average silhouette coefficient upon all datapoints shown in \ref{eq:avg_s}, is one way to evaluate the internal criteria \cite{ROUSSEEUW198753}. A single silhouette coefficant shown in \ref{eq:sil}, looks at a data points intra-cluster similarity --- similarity to points within the same cluster, and, inter-cluster similarity --- similarity with point outside of the cluster. $\overline{s}_{co}$ goes between -1 and 1 where a high value (close to 1) indicates a natural clustered dataset.
-
-When $s_{co}(X_i)$ is a high value (close to 1) a point is well clustered i.e. the intra-cluster similarity is high relative to the inter-cluster similarity \cite{ROUSSEEUW198753}
-. The same reasoning is extended to $\overline{s}_{co}(\mathcal{D})$ where a high value is a well clustered dataset.
-
-\begin{align}
-  d_{avg}(X_i,C_l) &= \frac{\sum_{X_k \in C_l}d(X_i,X_k)}{Count(X_k \in C_l)} \\
-  a(X_i) &= d_{avg}(X_i,C_a) \textit{ , where } (X_i \in C_a) \\
-  b(X_i) &= min_{C \neq C_a}(d_{avg}(X_i,C)) \\
- \label{eq:sil}
-  s_{co}(X_i) &= \frac{b(X_i) - a(X_i)}{max(a(X_i), b(X_i)} \\
-\label{eq:avg_s}
-  \overline{s}_{co}(\mathcal{D}) &= \frac{\sum^{N}_{i=1} s_{co}(X_i)}{N}
-\end{align}
-
-
-\subsection{External Criteria}
-External criterion is an supervised validation approach and can be described by the following sentence: Validation of the results by imposing a pre-defined structure on the dataset i.e. data not used for generating the clustering results \cite{Halkidi2002}. As clustering analysis is an unsupervised learning method, it is often hard to assess the criteria --- There is often no test data available for a new dataset. Still, to quantify how well the clustering approach works on a new dataset defining a ground truth is essential. One way is to use judges, experts in the field \cite{manning2010introduction}. Given a ground truth an external measurement can be deployed.
-
-\subsubsection{Measurements}
-Purity is a measurement for the external criterion. It measures the ratio of the most dominant class in a cluster. The data-points are labeled with a class beforehand on the ground truth \cite{manning2010introduction}. Equation \ref{eq:purity} defines the measurement. The equation does not penalize small clusters as such small clusters produces a high score.
-
-\begin{equation}
-  \label{eq:purity}
-  P(W, C) = \frac{1}{N}\sum_{k}max_{j}\abs{w_k \cap c_j}
-\end{equation}
-Where:\newline
-$W = \{w_1,w_2,...,w_k\}$ is the set of clusters, and,
-$C = \{c_1,c_2,...,c_k\}$ is the set of clusters.
-
-Another measurement is the \textit{$F$-measure} shown in \ref{eq:f-measure}\cite{manning2010introduction}. Where P is the precision defined in \ref{eq:precision} and R (recall) is defined in \ref{eq:recall}. The measurement is a way to take account both Precision and Recall. The balanced \textit{$F$-measure} is called the \textit{$F_1$-measure} and is defined in \ref{eq:f1-measure}. It weighs the impact of precision and recall the same.
-\begin{align}
-  \label{eq:precision}
-  P &= \frac{TP}{TP+FP} \\
-  \label{eq:recall}
-  R &= \frac{TP}{TP+FN} \\
-  \label{eq:f-measure}
-  F_\beta &= \frac{(\beta^2 + 1) \cdot P \cdot R)}{\beta^2 \cdot P + R} \\
-  \label{eq:f1-measure}
-  F_{\beta = 1} &= \frac{2 \cdot P \cdot R}{P + R}
-\end{align}
-Where:\newline
-$TP$ are true positives, $FP$ false positives, $FN$ false negatives, and, $\beta$ is a weight between $P$ and $R$, a $\beta > 1$ emphasizes the $R$.
 \end{document}
 
