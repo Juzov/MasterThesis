@@ -1,0 +1,53 @@
+#!/usr/bin/python3.7
+import os
+
+import random
+import pandas as pd
+import numpy as np
+import click
+
+from sklearn.metrics import calinski_harabaz_score, silhouette_score
+from pyclustering.cluster import cluster_visualizer_multidim, cluster_visualizer
+from pyclustering.cluster.kmeans import kmeans, kmeans_observer, kmeans_visualizer
+
+import clustering_utils as cs
+from Kmeans import Kmeans
+
+@click.command()
+@click.option('-e', "--only-embedding/--all", default=True, help="Only use audio embedding ignore other numerical data")
+@click.option('-p', "--re-parse", is_flag=True, default=False, help="Reparse clustering_data.json")
+@click.option('-k', default=50, help="Amount of clusters")
+@click.option('-d', "--convergance-delta", default=0.05, help="convergance delta")
+@click.option('-n', "--name", default="", help="name of test")
+@click.option('-u', "--k-plusplus/--random-uniform", default=False, help="Only use audio embedding ignore other numerical data")
+@click.option('-i', "--max-iter", default=100, help="Maximum number of iterations")
+def main(only_embedding, re_parse, k, convergance_delta, name, k_plusplus, max_iter):
+    path = "clusters/kmeans/" + name
+    os.mkdir(path)
+
+    if re_parse is False:
+        mixed_data, numerical_data = cs.read_datasets()
+    else:
+        mixed_data = cs.parse_filter_json()
+        # normalized
+        numerical_data = cs.get_numerical_data(mixed_data, only_embedding)
+
+    kmeansObj = Kmeans(numerical_data)
+    dispersion, clusters, centers, \
+    weights, iterations, restarts, tot_iter, distances = kmeansObj.predict(
+        k=k,
+        lamb=0,
+        max_iter=max_iter,
+        delta=convergance_delta,
+        max_restart=0,
+        init=int(k_plusplus)
+    )
+
+
+    sil = cs.k_means_silhouette(numerical_data.values, clusters, k, sample_size=1000)
+    merged_data = cs.merge_columns(mixed_data, clusters, sil)
+    cs.generate_cluster_specific_json(merged_data, k, 0, None, path)
+    pur = cs.get_purity(merged_data)
+    cs.generate_run_specific_json(np.array([0.0, 0.0]), [0.0, 0.0], [sil, sil], [pur, pur], path)
+
+main()

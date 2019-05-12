@@ -1,0 +1,107 @@
+\documentclass[../report.tex]{subfiles}
+
+\begin{document}
+\chapter{Results}
+
+\section{Comparision Between SSC Algorithms}
+EWKM, LEKM, and, FSC were compared on their best hypterparameters according to the \begin{color}{red}cost function\end{color} on different values of \textit{k} (50, 100, 500). Figure \ref{ewkm-weights} shows the weight grid of EWKM on different values of \textit{k}. Figure \ref{lekm-weights} shows the weight grid of EWKM on different values of \textit{k}. Figure \ref{lekm-weights} shows the weight grid of EWKM on different values of \textit{k}.
+
+Table ... shows the different purity of the different algorithms on different \textit{k}
+
+\subsection{EWKM}
+EWKM was first ran on between values of $\gamma = [0.5-3]$, the recommended range as described in \cite{Jing2007, wskm2014hz}. The negative entropy ended up being larger than the cost function resulting in immediate convergence.
+
+On the next iteration of tests, $\gamma$ was lowered until immediate convergence did not occur, the best $\gamma$ parameter and purity is shown in . The resulting Purity is lower than other algorithms for all $k$. All tested $\gamma$'s resulted in a weight distribution, in which all clusters only had one significant dimension.
+
+Table ... shows diff
+
+\subsection{LEKM}
+LEKM was ran on $\gamma$'s ranging from 0.5 to 3. The LEKM did not have the same problem as EWKM on the given range. The best performing gamma is shown in ... . The scores were comparable to FSC. All $\gamma$'s resulted in normal distribution of feature weights. Higher values of $\gamma$ resulted in a smaller standard deviation, leading to a more uniform distribution.
+
+
+Table ... shows diff
+
+\subsection{FSC}
+$\beta$ was recommended to be set to 2.1 and $\epsilon$ to 0.0001 \cite{Gan2006}. In our tests, we tested $\beta$'s between 1.5 and 30 with $\epsilon$ set to 0.0001. Based on purity $\lim_{\beta}{\inf}$ led to the best score. The score of FSC was better than EWKM and similar to LEKM. $\beta = 1.5$ led to a single dominant feature, similar to EWKM. For 
+
+Table ... shows diff
+
+\begin{figure}
+     \centering
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=\textwidth, height=40mm, keepaspectratio]{../../repos/lekm/clusters/z/K_500_L_0-5/plots/heatmap.png}
+         \caption{$k=500 \text{, } \gamma=2$}
+         \label{fig:y equals x}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=\textwidth, height=40mm, keepaspectratio]{../../repos/lekm/clusters/z-100/K_100_L_2-0/plots/heatmap.png}
+
+         \caption{$k=100 \gamma=2$}
+         \label{fig:three sin x}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=\textwidth, height=40mm, keepaspectratio]{../../repos/lekm/clusters/z-50/K_50_L_0-5/plots/heatmap.png}
+         \caption{$k=50 \gamma=0.5$}
+         \label{fig:five over x}
+     \end{subfigure}
+        \caption{Three simple graphs}
+        \label{fig:three graphs}
+\end{figure}
+
+\begin{figure}
+     \centering
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=\textwidth, height=40mm, keepaspectratio]{../../repos/lekm/clusters/z/K_500_L_2-0/plots/weights-v2.png}
+         \caption{$k=500 \text{, } \gamma=2$}
+         \label{fig:y equals x}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=\textwidth, height=40mm, keepaspectratio]{../../repos/lekm/clusters/z-100/K_100_L_2-0/plots/weights-v2.png}
+
+         \caption{$k=100 \gamma=2$}
+         \label{fig:three sin x}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=\textwidth, height=40mm, keepaspectratio]{../../repos/lekm/clusters/z-50/K_50_L_0-5/plots/weights-v2.png}
+         \caption{$k=50 \gamma=0.5$}
+         \label{fig:five over x}
+     \end{subfigure}
+        \caption{Three simple graphs}
+        \label{fig:three graphs}
+\end{figure}
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{lr@{\hspace{0.2in}}rrrrrrrr}
+  \hline\noalign{\smallskip}
+  && \multicolumn{2}{c}{\tbtitle{EWKM}} && \multicolumn{2}{c}{\tbtitle{LEKM}} && \multicolumn{2}{c}{\tbtitle{FSC}} \\
+  \noalign{\smallskip} \cline{3-4} \cline{6-7} \cline{9-10}
+        \multicolumn{1}{c}{\textit{k}} && \tbtitle{$\gamma$} & \tbtitle{Purity} && \tbtitle{$\gamma$} & \tbtitle{Purity} && \tbtitle{$\beta$} & \tbtitle{Purity}\\
+        \hline
+        \multicolumn{1}{r|}{50 } && 0.005 & 28.2\% && 0.0 & 0.0 && 2.1* & 0.0\\
+        \multicolumn{1}{r|}{100} && 0.005 & 28.9\% && 2.1 & 40.6\% && 2.1* & 0.0\\
+        \multicolumn{1}{r|}{500} && 0.001 & 28.6\% && 2.2 & 45.2\% && 2.1* & 43.8\\
+\end{tabular}
+\end{center}
+\caption{Best hyperparameter ($\gamma$, $\beta$) given \textit{k}}
+\end{table}
+
+
+\section{K-means}
+
+\section{External Evaluation}
+8 contestents were
+
+
+\end{document}
+

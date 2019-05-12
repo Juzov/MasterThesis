@@ -19,7 +19,8 @@ import clustering_utils as cs
 @click.option('-d', "--convergance-delta", default=0.05, help="convergance delta")
 @click.option('-n', "--name", default="", help="name of test")
 @click.option('-u', "--k-plusplus/--random-uniform", default=False, help="Only use audio embedding ignore other numerical data")
-def main(only_embedding, re_parse, k, convergance_delta, name, k_plusplus):
+@click.option('-i', "--max-iter", default=100, help="Maximum number of iterations")
+def main(only_embedding, re_parse, k, convergance_delta, name, k_plusplus, max_iter):
     path = "clusters/kmeans/" + name
     os.mkdir(path)
 
@@ -30,12 +31,11 @@ def main(only_embedding, re_parse, k, convergance_delta, name, k_plusplus):
         # normalized
         numerical_data = cs.get_numerical_data(mixed_data, only_embedding)
 
-    clusters = cs.k_clustering(numerical_data, k, convergance_delta)
-
-    print(k)
-    print(calinski_harabaz_score(numerical_data, clusters))
-    print(silhouette_score(numerical_data, clusters))
-    merged_data = cs.merge_column(mixed_data, clusters)
-    cs.generate_cluster_specific_json(merged_data, k, 0, path)
+    clusters = cs.k_clustering(numerical_data, k, convergance_delta, max_iter)
+    sil = cs.k_means_silhouette(numerical_data.values, clusters, k, sample_size=1000)
+    merged_data = cs.merge_columns(mixed_data, clusters, sil)
+    cs.generate_cluster_specific_json(merged_data, k, 0, None, path)
+    pur = cs.get_purity(merged_data)
+    cs.generate_run_specific_json(np.array([0.0, 0.0]), [0.0, 0.0], [sil, sil], [pur, pur], path)
 
 main()

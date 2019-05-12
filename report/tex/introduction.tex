@@ -1,0 +1,46 @@
+\documentclass[../report.tex]{subfiles}
+
+\begin{document}
+\chapter{Introduction}
+
+\section{Background}
+Clustering analysis is an unsupervised method for categorizing a set of data objects. Informally, data objects are grouped by their similarity, with the most similar objects being categorized into the same group, a \textit{cluster}.
+
+There are various methods on how to cluster data. The properties of the to be clustered dataset, is what decides the suitability of a method.
+The data-types, the size, and, the feature-dimensionality of a dataset are big factors when choosing a method. Picking the right method can be the difference between inadequate clustering performance and stellar performance.
+
+In this thesis we explore the problem of clustering a new real-world high-dimensional dataset consisting of songs, where each song is described through a vector of features. In its raw form the dataset consists of both numerical and categorical data. The dataset is also large, it consists of $5 \cdot 10^7$ songs. The dataset was given by a stakeholder, aiming to find new categorizations of their set of music.
+
+\section{Problem and Research Question}
+Clustering high-dimensional data suffers from the curse of dimensionality \cite{Jain1999, Parsons2004, Deng2010}. Any two points with the same cluster membership are bound to have features in which there are large distances between the points \cite{Domeniconi2007}. As such, it is hard to assess which points are actually similar as the distance is dominated by dissimilar features which are often irrelevant features.
+
+Traditional methods such as \textit{K-means} do not include any additional steps to cluster high-dimensional data and leaves things desired in terms of performance. The usage of feature reduction techniques can lower the dimensionality but leads to loss of information \cite{Gan2006}.  Newer algorithms made for the specific purpose of categorizing high-dimensional data have been mentioned to perform better.
+
+In this thesis we compare how the traditional \textit{K-means} algorithm compares to a \textit{soft-subspace} clustering algorithm, \textit{EWKM} chosen specifically for its ability to handle high-dimensional data. The two algorithms are compared on the new real-world dataset of songs.
+
+\textit{How does the performance of EWKM compare to K-means on the given high-dimensional dataset?}
+
+\section{Purpose}
+% The purpose is to explore how soft-subspace clustering
+% The purpose of the thesis is to show what difference picking the right algorithm for high-dimensional data and explore
+
+The purpose is twofold: Show how soft-subspace clustering methods fair in terms of performance --- Convergence Rate and Clustering Accuracy --- compared to \textit{K-means}, and determine whether novel song themes can be found through the usage of the clustering methods.
+
+% Two.
+% The purpose is to explore how the field of cluster analysis has improved with regards to managing high-dimensional data and highlight the existence of soft-subspace clustering algorithms.
+
+% The purpose of the thesis is to decide whether it is possible to find categorizations of the songs through an algorithm that is widely accepted by professional playlist composers.
+
+\section{Goal}
+To adhere to the purpose a traditional clustering algorithm \textit{K-means} is evaluated against a more sophisticated, soft-subspace algorithm \textit{EWKM}.
+Convergence speeds are compared, The accuracy and novelty of the generated clusters are evaluated by judges --- playlist composers.
+
+\section{Ethics and Sustainability}
+Ethical concerns are commonplace in automatic categorization. In the context of the song dataset, songs from a specific cluster could be used to generate a playlist for a popular streaming platform. That cluster might have it pivotal that an artist's country of origin is a specific country. Artists outside of that country that otherwise fit the cluster, are disregarded due to a seemingly, artificial wall. As such, artists from less established markets can become invincible for that playlist resulting in loss of revenue. Ethically, it is questionable whether county of origin, should have merit or not. From a cluster quality standpoint excluding some songs, for a better precision is a worthy trade-off.
+
+\section{Delimitations}
+This thesis will focus on the problem of high-dimensionality. Other properties such as mixed data are mentioned however, the algorithms chosen were evaluated on a numerical feature subspace of the dataset. Tackling mixed data through soft-subspace clustering is seen as future work.
+
+
+\end{document}
+

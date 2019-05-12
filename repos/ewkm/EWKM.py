@@ -33,11 +33,11 @@ class EWKM:
 
     def __init__(self, data):
         # get numpy 2d array from dataframe
-        # read it as a 1d array which is column major
-        # remove negative dispersion problems by scaling it by a 100
         X = data.values
         # self._X = X.ravel(order='F') * 100
         self._orig_X = X
+        # ravel it, column-wise
+        # The c-code is structured to not have any 2d-arrays instead an column-wise array
         self._X = X.ravel(order='F')
         self._nr, self._nc = X.shape
 
@@ -93,6 +93,7 @@ class EWKM:
             self._centers,
             self._weights
         )
+        print(self._weights)
 
         unraveled_weights = np.reshape(
             a=self._weights,
@@ -116,7 +117,7 @@ class EWKM:
         calculated in c function point_distances
         """
         if sample_size > self._nr:
-            sample_size = (self._nr)
+            sample_size = int((self._nr) * 0.1)
             print(f're-set sample size to {sample_size}')
 
         idx = np.random.choice(
@@ -142,6 +143,7 @@ class EWKM:
             newshape=(sample_size, sample_size),
             order='F'
         )
+
         print(self._point_distances)
 
         return silhouette_score(

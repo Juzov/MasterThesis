@@ -2,6 +2,7 @@
 
 \usepackage[hyphens]{url}
 \usepackage{hyperref}  
+\graphicspath{{img/}}
 
 \usepackage{csquotes} % Recommended by biblatex
 \usepackage[style=numeric,sortcites=true,sorting=none,backend=biber,url=false,doi=false]{biblatex}
@@ -16,6 +17,9 @@
 \usepackage{parskip} % Newline for new paragraph
 \usepackage{footnote}
 \usepackage{caption}
+% \usepackage{subfigure}
+\usepackage{multirow}
+\usepackage{subcaption}
 
 \setcounter{secnumdepth}{4}
 
@@ -23,7 +27,7 @@
 \addbibresource{../refs/SYB Exploratory Clustering.bib} % The file containing our references, in BibTeX format
 
 
-\title{This is the English title}
+\title{An Evaluation of K-means and EWKM on a High-dimensional dataset}
 \alttitle{Detta är den svenska översättningen av titeln}
 \author{Emil Juzovitski}
 \email{emiljuz@kth.se}
@@ -69,24 +73,10 @@
 % Mainmatter is where the actual contents of the thesis goes
 \mainmatter
 
-
-\chapter{Introduction}
-
-We use the \emph{biblatex} package to handle our references.  We therefore use the
-command \texttt{parencite} to get a reference in parenthesis, like this
-\parencite{DENG201684}.  It is also possible to include the author
-as part of the sentence using \texttt{textcite}, like talking about
-the work of \textcite{DENG201684}.
-
-\section{Research Question}
-
+\subfile{./tex/introduction.tex}
 \subfile{./tex/background.tex}
-
-\chapter{Method}
-
 \subfile{./tex/method.tex}
-
-\chapter{Results}
+\subfile{./tex/results.tex}
 
 \chapter{Discussion}
 

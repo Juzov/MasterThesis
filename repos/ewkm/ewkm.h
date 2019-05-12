@@ -8,7 +8,7 @@ void initPrototypes( // Inputs ---------------------------------------------
 		// Output ---------------------------------------------
 		double *o_prototype); // Numeric prototype matrix (k*nc)
 
-float calcCost(double *x, 	// Numeric matrix as vector by col (nr*nc);
+double calcCost(double *x, 	// Numeric matrix as vector by col (nr*nc);
 		int *nr, 	// Number of rows (points);
 		int *nc, 	// Number of columns (attributes/variables);
 		int *k, 		// Number of clusters
@@ -47,7 +47,7 @@ void updWeights( // Inputs -----------------------------------------------------
 		// Output -------------------------------------------------------
 		double *subspace_weights); // Weights for variable/cluster (k*nc)
 
-float ewkm( // Inputs ----------------------------------------------------------
+double ewkm( // Inputs ----------------------------------------------------------
 		double *x, 		// Numeric matrix as vector by col (nr*nc);
 		int *nr, 		// Number of rows (points);
 		int *nc, 		// Number of columns (attributes/variables);

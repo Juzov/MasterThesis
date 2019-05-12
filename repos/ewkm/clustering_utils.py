@@ -2,41 +2,73 @@ import sys
 import os
 import json
 
-from collections import defaultdict, OrderedDict
+from collections import defaultdict, OrderedDict, Counter
+from itertools import chain
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from pyclustering.cluster.kmeans import kmeans
+from pyclustering.cluster.kmeans import kmeans, kmeans_observer
+from sklearn.metrics import silhouette_score
+from sklearn.preprocessing import minmax_scale
 # import pandas_profiling as pp
 
 # for kmeans only
-def k_clustering(data, k, convergance_delta):
+
+
+def k_clustering(data, k, convergance_delta, max_iter):
     """Run Kmeans from pyclustering
     prepare initial_centers
     flatten the cluster array
     """
     # # create K-Means algorithm instance.
     initial_centers = data.sample(n=k, random_state=1)
-    # observer = kmeans_observer()
+    observer = kmeans_observer()
     kmeans_instance = kmeans(
         data=data,
         initial_centers=initial_centers,
-        tolerance=convergance_delta
+        tolerance=convergance_delta,
+        itermax=max_iter,
+        observer=observer
     )
+    # print(kmeans_instance.__itermax)
     # # start processing.
     kmeans_instance.process()
     # # obtain clusters
-    clusters = kmeans_instance.get_clusters()
+    clusters = observer.get_clusters(max_iter)
 
-    cluster_arr = cluster_arr = np.zeros(len(data.index), dtype=int)
+    centers = observer.get_centers(max_iter)
 
+    cluster_arr = np.zeros(data.shape[0], dtype=int)
+
+    # unravel 2d-array to 1-d array
     for i, cluster in enumerate(clusters):
         for j in cluster:
             # i cluster number
             # set datapoint of arr to cluster number
             cluster_arr[j] = i
-
     return cluster_arr
+
+
+def k_means_silhouette(data, clusters, k, sample_size=1000):
+    if sample_size > data.shape[0]:
+        sample_size = data.shape[0]
+        print(f're-set sample size to {sample_size}')
+
+    idx = np.random.choice(
+        data.shape[0],
+        sample_size,
+        replace=False
+    )
+
+    sample_X = data[idx]
+    sample_cluster = clusters[idx]
+
+    return silhouette_score(
+        X=sample_X,
+        labels=sample_cluster,
+        metric='euclidean',
+    )
 
 
 def remove_irrelevant_columns(data):
@@ -70,8 +102,9 @@ def get_numerical_data(data, only_embedding):
         numerical_filter = ['bpm', 'duration_ms', 'origin_year'] + emb_columns
 
     numerical_data = numerical_data.filter(numerical_filter)
+    # numerical_data =  pd.DataFrame(minmax_scale(numerical_data), columns=list(numerical_data))
     # numerical_data = numerical_data.agg(min_max_scaling, axis=0)
-    numerical_data = numerical_data.agg(z_score, axis=0)
+    numerical_data = numerical_data.apply(z_score, axis=0)
 
     numerical_data.to_json(
         'data/numerical.json',
@@ -89,6 +122,7 @@ def min_max_scaling(series):
     series = series.astype(float)
     series_std = (series - series.min()) / (series.max() - series.min())
     return series_std
+
 
 def z_score(series):
     """z-score standardization per column
@@ -110,6 +144,28 @@ def merge_columns(data, column, distances):
     merged_data['distance'] = distances
     merged_data = merged_data.sort_values(by='distance')
     return merged_data
+
+def major_count(series):
+    """ get the n_major values
+    """
+    l = series.tolist()
+    if(len(l) == 0):
+        return 0
+    if(len(l) == 1):
+        return 1
+    return {x[0]: x[1] for x in Counter(chain.from_iterable(l)).most_common(5)}
+
+def genre_major_count(series):
+    """ Get the count of the most commonly occuring genre
+    OR the most common artist
+    """
+
+    l = series.tolist()
+    if(len(l) == 0):
+        return 0
+    if(len(l) == 1):
+        return 1
+    return Counter(chain.from_iterable(l)).most_common(1)[0][1]
 
 
 def genre_ratio(series):
@@ -133,7 +189,7 @@ def genre_ratio(series):
     return d
 
 
-def generate_run_specific_plot(lambdas, costs, scores, iterations, restarts, path):
+def generate_run_specific_plot(lambdas, costs, scores, purities, iterations, restarts, path):
     '''Generate matplotlib plots
     lambdas/costs
     lambdas/scores
@@ -142,6 +198,7 @@ def generate_run_specific_plot(lambdas, costs, scores, iterations, restarts, pat
     os.mkdir(plot_path)
 
     plt.plot(lambdas, scores, marker='D', linestyle='-')
+    plt.xscale('log')
     plt.ylabel(
         r'Average Silhouette ($\overline{s}_{co}(\mathcal{D})$) (1000 Point Sample)')
     plt.xlabel(r'Gamma ($\gamma$)')
@@ -149,9 +206,17 @@ def generate_run_specific_plot(lambdas, costs, scores, iterations, restarts, pat
     plt.clf()
 
     plt.plot(lambdas, costs, color='r', marker='D', linestyle='-')
+    plt.xscale('log')
     plt.ylabel(r'Cost Function ($P(U,C,W)$)')
     plt.xlabel(r'Gamma ($\gamma$)')
     plt.savefig(plot_path + "/gamma-costs.png")
+    plt.clf()
+
+    plt.plot(lambdas, purities, color='aqua', marker='D', linestyle='-')
+    plt.xscale('log')
+    plt.ylabel(r'Average Purity (genres)')
+    plt.xlabel(r'Gamma ($\gamma$)')
+    plt.savefig(plot_path + "/gamma-purities.png")
     plt.clf()
 
     plt.plot(lambdas, restarts, color='g', marker='D', linestyle='-')
@@ -160,35 +225,55 @@ def generate_run_specific_plot(lambdas, costs, scores, iterations, restarts, pat
     plt.savefig(plot_path + "/gamma-restarts.png")
     plt.clf()
 
-def generate_run_specific_json(lambdas, costs, scores, path):
+
+    plt.plot(lambdas, iterations, color='orange', marker='D', linestyle='-')
+    plt.ylabel(r'Total amount of iterations until convergance')
+    plt.xlabel(r'Gamma ($\gamma$)')
+    plt.savefig(plot_path + "/gamma-iterations.png")
+    plt.clf()
+
+    # plt.plot(lambdas, iterations, color='magenta', marker='D', linestyle='-')
+    # plt.ylabel(r'Total amount of iterations until convergance')
+    # plt.xlabel(r'Gamma ($\gamma$)')
+    # plt.savefig(plot_path + "/gamma-iterations.png")
+    # plt.clf()
+
+
+def generate_run_specific_json(lambdas, costs, scores, purities, iterations, restarts, path):
     """Generate a json file on parameter scores
     Cost-Function
     Silhouette-score
     """
     json_list = [
         {'gamma': lambdas[i],
-         'scores': {'cost': costs[i], 'silhouette': scores[i]}
-        }
+         'scores':  {'cost': costs[i],
+                     'silhouette': scores[i],
+                     'purity': purities[i],
+                     'iterations': iterations[i],
+                     'restarts': restarts[i]
+                     }
+         }
         for i in range(0, lambdas.size)
     ]
 
     with open(f'{path}/run.json', 'w') as fp:
         json.dump(json_list, fp)
 
-def generate_cluster_specific_json(data, k, lamb, weights, path):
-    """Generate a nested summary json
-    And a json for each cluster containing the songs
-    sorted by the average distance to cluster center
-    """
 
+def nested_dataframe(data, weights):
+    """Generate a nested dataframe
+    Grouped by cluster
+    With a bunch of stats
+    """
     # group by cluster
     # No need to keep the embeddings or cluster tag per song
-    to_keep_filter = list(data.filter(regex="^(?!(embeddings|cluster|version|fully_tagged))"))
+    to_keep_filter = list(data.filter(
+        regex="^(?!(embeddings|cluster|version|fully_tagged))"))
     grouped = data.groupby(['cluster'], as_index=False)
     grouped_mean = grouped.mean()
     grouped_size = grouped.size()
     grouped_size = grouped_size.rename("count")
-    genres_count = grouped['genres'].agg(genre_ratio)
+    genres_count = grouped.agg({'genres': genre_ratio, 'artists': major_count})
 
     # create a nested dataframe
     j = (grouped.apply(lambda x: x[to_keep_filter].to_dict('r'))
@@ -200,45 +285,64 @@ def generate_cluster_specific_json(data, k, lamb, weights, path):
          .rename(columns={0: 'songs'})
          )
 
-    rows, columns = weights.shape
+    if type(weights) is np.ndarray:
+        try:
 
-    # Only show the highest weights
-    w_list = weights.tolist()
-    w = [
-        dict(
-            sorted(
-                zip(range(0, columns), t),
-                key=lambda x: x[1],
-                reverse=True
-            )[:10]
-        )
-        for t in w_list
-    ]
+            rows, columns = weights.shape
 
-    try:
-        j["hi_w"] = w
-        j = j.query('count > 1').sort_values(by='distance')
+            # Only show the highest weights
+            w_list = weights.tolist()
+            w = [
+                dict(
+                    sorted(
+                        zip(range(0, columns), t),
+                        key=lambda x: x[1],
+                        reverse=True
+                    )[:10]
+                )
+                for t in w_list
+            ]
+            # somehow have to handle that empty clusters are already removed in j
+            weight_frame = pd.DataFrame({'cluster': list(range(0, len(w))), 'hi_w': w})
+            j = j.merge(weight_frame, left_on='cluster', right_on='cluster', how='inner')
+        except:
+            print(f'possible empty cluster problem')
+            print(f'Dataframe shape {j.shape}')
+            pass
 
-        # reorder the columns
-        cols = ["cluster", "distance", "count"] + list(j.filter(regex="^(?!(cluster|distance|count|songs))")) + ["songs"]
-        j = j[cols]
+    return j
 
-        # summary json
-        j_summary = j.drop(columns=['songs'])
 
-        j_summary.to_json(
-            path + '/summary.json',
-            orient='records'
-            # lines=True
-        )
-    except:
-        return
+def generate_cluster_specific_json(data, k, lamb, weights=None, path=None):
+    """Generate a nested summary json
+    And a json for each cluster containing the songs
+    sorted by the average distance to cluster center
+    """
+    j = data
+
+    j = nested_dataframe(j, weights)
+    j = j.query('count > 1').sort_values(by='distance')
+
+
+    # reorder the columns
+    cols = ["cluster", "distance", "count"] + \
+        list(j.filter(regex="^(?!(cluster|distance|count|songs))")) + ["songs"]
+    j = j[cols]
+
+    # summary json
+    j_summary = j.drop(columns=['songs'])
+
+    j_summary.to_json(
+        path + '/summary.json',
+        orient='records'
+        # lines=True
+    )
 
     # json for each specific cluster
     for i in range(0, k):
         try:
             j[j['cluster'] == i].to_json(
-                "{0}/{1}.json".format(path,i),
+                "{0}/{1}.json".format(path, i),
                 orient='records',
                 lines=True
             )
@@ -247,34 +351,27 @@ def generate_cluster_specific_json(data, k, lamb, weights, path):
             continue
 
 
+    j.head(10).to_json(
+                "{0}/{1}.json".format(path, "top10"),
+                orient='records'
+                # lines=True
+            )
+
 def generate_parameter_specific_plots(weights, k, lamb, path):
     """Generate matplotlib plots
     Value of Weights/No. Dimensions
-    Variance/No. Dimensions
     """
     path_plots = path + "/plots"
 
     os.mkdir(path + "/plots")
-    # generate variance plot
-    # var = np.var(weights, axis=1)
-    # var_max = int(np.amax(var)) + 1
-    # print(var)
-    # print("toasda")
-    # print(var_max)
-    # bins = np.linspace(0, var_max, 1)
-    # plt.hist(var.reshape, bins=bins,
-    #          color='white', edgecolor='black', linewidth=0.5)
-    # plt.ylabel(r'Number of points')
-    # plt.xlabel(r'Variance $\sigma^2$')
-    # plt.savefig(path + "/variance.png")
-    # plt.clf()
 
     # generate weights plot
     rows, columns = weights.shape
     # low_bin = columns / 160
     bins = np.linspace(0, 1, 100)
     # bins = np.insert(bins, 1, low_bin)
-    plt.title(r'Weight Distribution at $\gamma = {0}, k = {1}$'.format(lamb, k))
+    plt.title(
+        r'Weight Distribution at $\gamma = {0}, k = {1}$'.format(lamb, k))
     plt.yscale('log')
     plt.hist(np.hstack(weights), bins=bins,
              color='white', edgecolor='black', linewidth=0.5)
@@ -282,6 +379,38 @@ def generate_parameter_specific_plots(weights, k, lamb, path):
     plt.xlabel(r'Value of Weight')
     plt.savefig(path_plots + "/weights.png")
     plt.clf()
+
+    bins = np.linspace(0, 0.01, 1000)
+    # bins = np.insert(bins, 1, low_bin)
+    plt.title(
+        r'Weight Distribution at $\gamma = {0}, k = {1}$'.format(lamb, k))
+    plt.yscale('log')
+    plt.hist(np.hstack(weights), bins=bins,
+             color='white', edgecolor='black', linewidth=0.5)
+    plt.ylabel(r'Number Of Dimensions')
+    plt.xlabel(r'Value of Weight')
+    plt.savefig(path_plots + "/weights-v2.png")
+    plt.clf()
+
+    plt.title(
+        r'Weight Distribution at $\gamma = {0}, k = {1}$'.format(lamb, k))
+
+    im = plt.imshow(weights, aspect='auto')
+    plt.colorbar(im)
+    plt.ylabel(r'Cluster')
+    plt.xlabel(r'Feature')
+    plt.savefig(path_plots + "/heatmap.png")
+    plt.clf()
+
+def get_purity(data):
+    rows = data.shape[0]
+    grouped = data.groupby(['cluster'], as_index=False)
+
+    genres_count = grouped['genres'].agg(genre_major_count)
+
+    # print(genres_count['genres'].sum())
+
+    return genres_count['genres'].sum() / float(rows)
 
 
 def parse_filter_json(

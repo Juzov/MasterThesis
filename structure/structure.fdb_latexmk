@@ -1,11 +1,11 @@
 # Fdb version 3
-["biber structure"] 1553129949 "structure.bcf" "structure.bbl" "structure" 1553129950
-  "../refs/SYB Exploratory Clustering.bib" 1553129949 43731 6e9f1c02175a117d484fb78767b8ad23 ""
-  "structure.bcf" 1553129950 91451 2580575fb3e8e51b18852647860f618d ""
+["biber structure"] 1556535863 "structure.bcf" "structure.bbl" "structure" 1556535864
+  "../refs/SYB Exploratory Clustering.bib" 1556535863 47449 cacfe3ebe586b0d3bb7cf55e6e46eb79 ""
+  "structure.bcf" 1556535864 91451 2580575fb3e8e51b18852647860f618d ""
   (generated)
   "structure.blg"
   "structure.bbl"
-["pdflatex"] 1553129879 "structure.tex" "structure.pdf" "structure" 1553129950
+["pdflatex"] 1553129879 "structure.tex" "structure.pdf" "structure" 1556535864
   "/home/ejuzovitski/.texlive2018/texmf-var/web2c/xetex/xelatex.fmt" 1546003429 2430777 5e9d85ba5b0ffacdf00b89651bb4c899 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1480098689 1528 f853c4d1b4e0550255e02831fdc8496f ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/ectt1000.tfm" 1480098696 1536 06717a2b50de47d4087ac0e6cd759455 ""
@@ -104,14 +104,14 @@
   "/usr/share/texlive/texmf-dist/web2c/texmf.cnf" 1544722920 33523 3a2c32bd77384f8f4508d61b4be83582 ""
   "gantt/Grantt.png" 1549732396 744515 ef589fbd5ef05bb326115846b7905c8e ""
   "structure.aux" 1553129881 9789 332959f6544bc779c461869976c63657 ""
-  "structure.bbl" 1553129950 46680 a426d9ba6ef847ff4bca8c73f3b77f23 "biber structure"
+  "structure.bbl" 1556535864 46680 a426d9ba6ef847ff4bca8c73f3b77f23 "biber structure"
   "structure.out" 1553129881 2393 eb7c9f720c875a382bcd26b5ee60a2e9 ""
   "structure.run.xml" 1553129881 2399 07ecfcdc951ae3c791e201d9625a7658 ""
-  "structure.tex" 1553129910 34540 370afafcb4a84428dbaf0b563832fc1d ""
+  "structure.tex" 1553131077 34540 370afafcb4a84428dbaf0b563832fc1d ""
   (generated)
   "structure.bcf"
+  "structure.run.xml"
+  "structure.out"
   "structure.log"
   "structure.aux"
-  "structure.out"
-  "structure.run.xml"
   "structure.pdf"

@@ -10,7 +10,9 @@
 *.toc
 *.json
 *.o
+*.so
 beam/
+build/
 docs/
 peer/
 meetings/

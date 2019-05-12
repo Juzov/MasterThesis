@@ -1,0 +1,153 @@
+#!/usr/bin/python3.7
+import sys
+import os
+
+import click
+import numpy as np
+import pandas as pd
+from LEKM import LEKM
+
+import clustering_utils as cs
+
+
+# argv
+
+@click.command()
+@click.option('-e', "--only-embedding/--all", default=True, help="Only use audio embedding ignore other numerical data")
+@click.option('-p', "--re-parse", is_flag=True, default=False, help="Reparse clustering_data.json")
+@click.option('-k', default=50, help="Amount of clusters")
+@click.option('-l', "--lamb", default=1.0, help="Lambda, 0<l<inf, likeliness to represent clusters with more attributes")
+@click.option('-i', "--max-iter", default=100, help="Maximum number of iterations")
+@click.option('-d', "--convergance-delta", default=0.05, help="convergance delta")
+@click.option('-r', "--max-restart", default=0, help="Allow restarts value determines amount of max. restarts")
+@click.option('-m', "--mult-lamb", default="", help="Send in multiple lamb values")
+@click.option("--mult-k", default="", help="Send in multiple k values")
+@click.option('-n', "--name", default="", help="name of test")
+@click.option('-u', "--k-plusplus/--random-uniform", default=False, help="Only use audio embedding ignore other numerical data")
+def main(only_embedding, re_parse, k, lamb, max_iter, convergance_delta, max_restart, mult_lamb, mult_k, name, k_plusplus):
+    lambdas = np.fromstring(mult_lamb, dtype=float, sep=' ')
+    path = "clusters/{0}".format(name)
+
+    if re_parse is False:
+        mixed_data, numerical_data = cs.read_datasets()
+    else:
+        mixed_data = cs.parse_filter_json()
+        # normalized
+        numerical_data = cs.get_numerical_data(mixed_data, only_embedding)
+
+    if lambdas.size is not 0:
+        best_lamb = -1
+        min_disp = float("inf")
+
+        os.mkdir(path)
+        costs = []
+        scores = []
+        restart_list = []
+        purities = []
+        iteration_list = []
+
+        for i in range(0, lambdas.size):
+            dispersion, clusters, iterations, \
+                restarts, tot_iter, silhouette_score, purity = run_for_lambda(
+                    mixed_data=mixed_data,
+                    numerical_data=numerical_data,
+                    k=k,
+                    lamb=lambdas[i],
+                    max_iter=max_iter,
+                    delta=convergance_delta,
+                    max_restart=max_restart,
+                    path=path,
+                    k_plusplus=k_plusplus,
+                )
+
+            print(f'dispersion: {dispersion}, restarts: {restarts}, iterations: {iterations}, tot_iter: {tot_iter}')
+            # print(f'cal: {calinski_harabaz_score(numerical_data, clusters)}')
+            # print(f'sil: {silhouette_score(numerical_data, clusters)}')
+            costs.append(dispersion)
+            scores.append(silhouette_score)
+            restart_list.append(restarts)
+            purities.append(purity)
+            iteration_list.append(iterations)
+
+            if dispersion < min_disp and iterations > 0:
+                min_disp = dispersion
+                best_lamb = lambdas[i]
+
+        print(f'best dispersion: {min_disp}, lambda: {best_lamb}')
+        cs.generate_run_specific_json(
+            lambdas,
+            costs,
+            scores,
+            purities,
+            iteration_list,
+            restart_list,
+            path
+        )
+        cs.generate_run_specific_plot(
+            lambdas,
+            costs,
+            scores,
+            purities,
+            iteration_list,
+            restart_list,
+            path
+        )
+
+    else:
+        dispersion, clusters, iterations, \
+            restarts, tot_iter, silhouette_score, purity = run_for_lambda(
+                mixed_data=mixed_data,
+                numerical_data=numerical_data,
+                k=k,
+                lamb=lamb,
+                max_iter=max_iter,
+                delta=convergance_delta,
+                max_restart=max_restart,
+                path=path,
+                k_plusplus=k_plusplus
+            )
+
+        print(f'dispersion: {dispersion}')
+
+
+def run_for_lambda(
+        mixed_data,
+        numerical_data,
+        k,
+        lamb,
+        max_iter,
+        delta,
+        max_restart,
+        path,
+        k_plusplus
+):
+    lekm = LEKM(numerical_data)
+    dispersion, clusters, centers, \
+        weights, iterations, restarts, tot_iter, distances = lekm.predict(
+            k=k,
+            lamb=lamb,
+            max_iter=max_iter,
+            delta=delta,
+            max_restart=max_restart,
+            init=int(k_plusplus)
+        )
+
+    silhouette_score = lekm.silhouette()
+    print('sil: {0}'.format(silhouette_score))
+
+    merged_data = cs.merge_columns(mixed_data, clusters, distances)
+
+    str_lamb = str(lamb).replace('.', '-')
+    parameter_path = "{0}/K_{1}_L_{2}".format(path, k, str_lamb)
+    os.mkdir(parameter_path)
+    # maybe let it also add some statistics
+    cs.generate_cluster_specific_json(
+        merged_data, k, lamb, weights, parameter_path)
+    cs.generate_parameter_specific_plots(weights, k, lamb, parameter_path)
+    purity = cs.get_purity(merged_data)
+
+    return dispersion, clusters, iterations, \
+        restarts, tot_iter, silhouette_score, purity
+
+
+main()

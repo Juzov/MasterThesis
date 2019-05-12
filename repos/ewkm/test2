@@ -43,10 +43,12 @@ def main(only_embedding, re_parse, k, lamb, max_iter, convergance_delta, max_res
         costs = []
         scores = []
         restart_list = []
+        purities = []
+        iterations_list = []
 
         for i in range(0, lambdas.size):
             dispersion, clusters, iterations, \
-                restarts, tot_iter, silhouette_score = run_for_lambda(
+                restarts, tot_iter, silhouette_score, purity = run_for_lambda(
                     mixed_data=mixed_data,
                     numerical_data=numerical_data,
                     k=k,
@@ -64,25 +66,37 @@ def main(only_embedding, re_parse, k, lamb, max_iter, convergance_delta, max_res
             costs.append(dispersion)
             scores.append(silhouette_score)
             restart_list.append(restarts)
+            purities.append(purity)
+            iterations_list.append(iterations)
 
             if dispersion < min_disp and iterations > 0:
                 min_disp = dispersion
                 best_lamb = lambdas[i]
 
         print(f'best dispersion: {min_disp}, lambda: {best_lamb}')
-        cs.generate_run_specific_json(lambdas, costs, scores, path)
+        cs.generate_run_specific_json(
+            lambdas,
+            costs,
+            scores,
+            purities,
+            iteration_list,
+            restart_list,
+            path
+        )
+
         cs.generate_run_specific_plot(
             lambdas,
             costs,
             scores,
-            iterations,
+            purities,
+            iterations_list,
             restart_list,
             path
         )
 
     else:
         dispersion, clusters, iterations, \
-            restarts, tot_iter, silhouette_score = run_for_lambda(
+            restarts, tot_iter, silhouette_score, purity = run_for_lambda(
                 mixed_data=mixed_data,
                 numerical_data=numerical_data,
                 k=k,
@@ -131,9 +145,10 @@ def run_for_lambda(
     cs.generate_cluster_specific_json(
         merged_data, k, lamb, weights, parameter_path)
     cs.generate_parameter_specific_plots(weights, k, lamb, parameter_path)
+    purity = cs.get_purity(merged_data)
 
     return dispersion, clusters, iterations, \
-        restarts, tot_iter, silhouette_score
+        restarts, tot_iter, silhouette_score, purity
 
 
 main()

@@ -1,0 +1,191 @@
+
+<!-- <!DOCTYPE html> -->
+<!-- <html lang="en"> -->
+<!--   <head> -->
+<!--     <meta charset="utf-8"> -->
+<!--   </head> -->
+<!--   Hello -->
+<!-- </html> -->
+
+{# Load the tag library #}
+{% load bootstrap4 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+<div class="container-fluid">
+      <div class="row mt-5">
+          <div class="col">
+
+          </div>
+          <div class="col-8 rounded bg-secondary p-5 shadow-sm">
+            {% if cluster_index < 10 %}
+            <div class="row">
+                  <div class="col">
+                        <h2 class="text-white">Cluster {{cluster}}</h2>
+                  </div>
+                  <div class="col">
+                  </div>
+                  <div class="col">
+                  </div>
+            </div>
+            <div class="row pt-4">
+                  <div class="col">
+                        <div class="card bg-secondary shadow-sm">
+                              <div class="card-header bg-secondary text-white">
+                                  Songs
+                              </div>
+                        <ul class="list-group list-group-flush">
+                              {% for song in sample %}
+                                    <li class="list-group-item">
+                                          <div class="row">
+                                          {{song.title}} - 
+                                          {% for artist in song.artists %}
+                                                {% if forloop.last %}
+                                                      {{artist}}
+                                                {% else %}
+                                                      {{artist}},
+                                                {% endif %}
+                                          {% endfor %}
+                                          </div>
+                                          <div class="row">
+                                                <audio controls>
+                                                      <source src="{{song.link}}" type="audio/mpeg">
+                                                Your browser does not support the audio element.
+                                                </audio>
+                                          </div>
+                                    </li>
+                              {% endfor %}
+                        </ul>
+                      </div>
+                  </div>
+                  <div class="col-xs-1">
+                  </div>
+                  <div class="col">
+                        <div class="card bg-secondary shadow-sm">
+                              <div class="card-header bg-secondary text-white">
+                                  Genres
+                              </div>
+                              <ul class="list-group list-group-flush">
+                              {% for k,v in genres.items %}
+                                    {% if v >= 5 %}
+                                    <li class="list-group-item">{{k}} - {{v|floatformat:"1"}}%</li>
+                                    {% endif %}
+                              {% endfor %}
+
+                        </ul>
+                      </div>
+                  </div>
+
+                  <div class="col-xs-1">
+                  </div>
+                  <div class="col">
+                        <div class="card bg-secondary shadow-sm">
+                              <div class="card-header text-white bg-secondary">
+                                  Statistics
+                              </div>
+                              <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">Average BPM - {{bpm|floatformat:"1"}}</li>
+                                    {% for k,v in artists.items %}
+                                          {% if v >= 2 %}
+                                          <li class="list-group-item"> Common Artist - {{k}} (songs: {{v}})</li>
+                                          {% endif %}
+                                    {% endfor %}
+                                    <li class="list-group-item">Number of songs in cluster - {{count}} </li>
+                                    <li class="list-group-item">Average Distance to Center - {{distance}} </li>
+                              </ul>
+                        </div>
+		  <div class="card bg-secondary shadow-sm mt-4">
+			<div class="card-header text-white bg-secondary">
+			    Evaluation
+			</div>
+			<div class="card-body bg-white">
+			    <form action="" method="get" class="form mt-2" id="getForm">
+				  {% csrf_token %}
+				    <div class="form-row mt-4">
+					  <div class="col-1">
+					  </div>
+					  <div class="col-2">
+					       <label for="label1Id">Cohesion (Similarity)</label>
+					  </div>
+					  <div class="col-1">
+					  </div>
+					  <div class="col">
+					 <input type="range" class="mt-1" id="label1Id" name="cohesion" value="0" min="1" max="10"
+											     oninput="lab1el1ValueId.value = label1Id.value" class="lg">
+					 <output  id="lab1el1ValueId" class="pl-2">0</output>
+					  </div>
+					  <div class="col-1">
+					  </div>
+					 <!-- <input type="hidden" id="cluster_index_id" name="cluster_index" value="{{cluster_index|add:"1"}}"> -->
+				   </div>
+				    <div class="form-row mt-4">
+					  <div class="col-1">
+					  </div>
+					  <div class="col-2">
+					       <label for="label2Id">Novelty (Newness)</label>
+					  </div>
+					  <div class="col-1">
+					  </div>
+					  <div class="col">
+					 <input type="range" class="mt-1" id="label2Id" name="novelty" value="0" min="1" max="10"
+											     oninput="lab1el2ValueId.value = label2Id.value" class="lg">
+					 <output  id="lab1el2ValueId" class="pl-2">0</output>
+					  </div>
+					  <div class="col-1">
+					  </div>
+					 <!-- <input type="hidden" id="cluster_index_id" name="cluster_index" value="{{cluster_index|add:"1"}}"> -->
+				   </div>
+				    <div class="form-row mt-4 pt-4">
+					  <div class="col-1">
+					  </div>
+					  <div class="col">
+						      <label for="descID">Cluster Description</label>
+						      <input type="text" class="form-control" id="descID" name="desc" placeholder="Enter A Description">
+						      <small id="optionalDesc" class="form-text text-mute">*Optional</small>
+					  </div>
+					  <div class="col-1">
+					  </div>
+				    </div>
+				    <div class="form-row mt-4 pt-4">
+					  <div class="col">
+					  </div>
+					  <div class="col-4">
+						<button type="submit" class="btn btn-light text-secondary border-secondary shadow-sm" form="getForm" name="cluster_index" id="cluster_index_id" value="{{cluster_index|add:"1"}}">Next Cluster &#62;
+					 </button>
+					  </div>
+					  <div class="col">
+					  </div>
+				    </div>
+                        </form>
+			</div>
+		  </div>
+                  </div>
+            </div>
+            {% else %}
+            <div class="row m-5">
+                  <div class="col">
+                  </div>
+                  <div class="col">
+                        <h2 class="text-white text-center">Thank you!</h2>
+                  </div>
+                  <div class="col">
+                        <!-- <div class="btn-group" role="group" aria-label="Basic example"> -->
+                        <!--       {% if v > 0 %} -->
+                        <!--             <button type="button" class="btn btn-secondary md"> &#60; Previous Cluster</button> -->
+                        <!--       {% endif %} -->
+                        <!--       <button type="button" class="btn btn-secondary md">Done</button> -->
+                        <!--       <button type="button" class="btn btn-secondary md"> Next Cluster &#x3e; </button> -->
+                        <!-- </div> -->
+                  </div>
+            </div>
+            {% endif %}
+          </div>
+          <div class="col">
+          </div>
+      </div>
+</div>
