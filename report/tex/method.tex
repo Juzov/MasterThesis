@@ -1,74 +1,43 @@
 \documentclass[../report.tex]{subfiles}
-\begin{document} \chapter{Method} The method chapter subjects the reader to the framework used to qualitatively compare the algorithms with regards to the given dataset.
+\begin{document} \chapter{Method} The method chapter subjects the reader to the framework used to qualitatively compare the different algorithms on the given dataset.
 
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=0.4\textwidth]{Design}
+  \end{center}
+  \caption{Method Design}\label{fig:method}
+\end{figure}
 \section{Method Design Overview}
-In order to generate results and compare the two different algorithms, a method design was planned and executed. The overall design is shown in \ref{fig:method} it includes the step of Preprocessing, Implementation, Result Generation and External Evaluation.
+In order to generate results and compare the three different algorithms, a method design was planned and executed. The overall design is shown in \cref{fig:method} it includes the step of \textit{Preprocessing}, \textit{Implementation}, \textit{Result Generation} and \textit{External Evaluation}.
 
-
-\begin{center}
-  \includegraphics[width=0.31\textwidth]{Design}
-  \captionof{figure}{\label{fig:method} Method Design}
-\end{center}
-
-% \begin{itemize}
-%   \item Pre-Processing data
-%   \begin{itemize}
-%     \item Deciding on dataset size, and, feature-selection.
-%   \end{itemize}
-%   \item Picking an implementation of the algorithms and implementing needed functions.
-%   \begin{itemize}
-%     \item EWKM algorithm
-%     \item K-means algorithm
-%     \item Generating a distance matrix
-%   \end{itemize}
-%   \item Hyper-parameter tuning
-%   \begin{itemize}
-%     \item Deciding on $\gamma$
-%     \item Deciding on $k$
-%   \end{itemize}
-%   \item Ranking Clusters
-%   \begin{itemize}
-%     \item Deciding on $\gamma$
-%     \item Deciding on $k$
-%   \end{itemize}
-%   \item Evaluation Framework
-%   \begin{itemize}
-%     \item Silhouette
-%     \item Purity
-%     \item Expert Judging
-%   \end{itemize}
-
-% \end{itemize}
-
-\section{Preprocessing}
-\subsection{Dataset Properties}
+\section{Dataset Properties}
 % Clustering analysis will be made on a real-world-, high-dimensional- and, mixed-dataset.
-The given dataset is a real-world-, high-dimensional- and, mixed-dataset. It is a set of \textit{songs} extracted from an company-internal music database. Each song is a vector of features --- each feature describes the song in a unique way. The vector consists of two different types of features; General metadata and metadata generated from an audio embedding.
+The given dataset is a real-world, high-dimensional and, mixed dataset. It is a set of \textit{song objects} extracted from an internal music database. Each song is a vector of features --- where different features describe the song through different song properties. The vector consists of two types of features, general metadata and audio-based features.
 
-The general metadata, includes attributes that predominantly identify the song without resulting to audio analysis. Features of the type were e.g. \textit{Album}, \textit{Artist}, \textit{Title} and \textit{Year of Origin}. The type also includes \textit{BPM} and \textit{Energy-feel}. These features include both numerical and categorical features --- features stored as strings can be converted to categorical data.
+The general metadata includes attributes that predominantly identify the song without resulting to audio analysis. Features of the type includes \textit{Album} (string), \textit{Artist} (string), \textit{Title} (string) and \textit{Year of Origin} (ordinal). The type also includes \textit{BPM} (numerical, zero to around 200) and \textit{Energy-feel} (ordinal, one to ten). These features include both numerical and categorical features --- features stored as strings can be converted to categorical data.
 
-The second feature type is a 160-dimensional vector embedding --- with numerical values ranging through \begin{color}{red}{ -1 and 1 }\end{color} --- that characterizes the song through audio analysis. The embedding is generated through a neural network of auto-encoders, trained on the Mel-frequency cepstrum coefficients(MFCC)\cite{Paliwal2010}. The feature type is anonymous to humans, i.e. what exactly dimension 5 represents is unknown.
+The core features are the Audio-based features. They represent the song with features based on audio properties of a song. There are 160 of these features, together they can be seen as 160-dimensional vector where each dimension represents a feature.
 
-There is also feature named \textit{Genre} which holds a list of human-tagged genres that a song fits to. In total 33 genre tags exist in the dataset.
-A minority of the songs do not hold a single genre.
+The source of the features are a trained supervised neural network. The input of the network are audio embeddings of songs --- devised from an audio spectrogram --- that have a predetermined genre. The genre is utilized as a label to train the network for the task of classifying the genre of an audio embedding. In total there are $33$ different genres a song can be labeled as.
+
+Audio features of our dataset are a representative sample of neuron weights in the trained supervised neural network. The genre label is also a feature that exist in a smaller subset of our given dataset.
+
+% \begin{color}{red}{
+% \subsection{MFCC}
+% To understand MFCC we need to first understand how humans perceive sound and how speech is created. Humans are more sensitive to frequency differences at lower frequencies compared to higher frequencies. The Mel-scale takes the differences in sensitivity into account by creating a logarithmic scale. Human speech is generated by the shape of the vocal tract. The shape determines what sound is created.
+% A power spectrum describes how much power is in the frequency component of a signal. The envelope of the power spectrum can be used to represent the shape of the vocal tract of the given audio. An MFCC represents the envelope \cite{Paliwal2010}. With the shape of the tract represented, generated phonemes can be determined of the vocals of the audio.
+% }\end{color}
 
 
-\begin{color}{red}{
-\subsection{MFCC}
-To understand MFCC we need to first understand how humans perceive sound and how speech is created. Humans are more sensitive to frequency differences at lower frequencies compared to higher frequencies. The Mel-scale takes the differences in sensitivity into account by creating a logarithmic scale. Human speech is generated by the shape of the vocal tract. The shape determines what sound is created.
-A power spectrum describes how much power is in the frequency component of a signal. The envelope of the power spectrum can be used to represent the shape of the vocal tract of the given audio. An MFCC represents the envelope \cite{Paliwal2010}. With the shape of the tract represented, generated phonemes can be determined of the vocals of the audio.
-}\end{color}
+\section{Pre-processing}
+The amount of dataset objects and features were reduced in the preprocessing stage for various reasons.
 
+For the ease of testing --- lowering computation time, and validating --- being able to use the \textit{genre} feature as a validation label, the original dataset was sampled and reduced to a size of $5*10^4$.
 
-\subsection{Feature-Selection and Normalization}
-With a focus on tackling the problem of high-dimensionality, the choice was to use the numerical methods of \textit{EWKM}, \textit{FSC}, and, \textit{K-means}.
-That left a restriction to only select numerical features as input. A hypothesis was that audio-embeddings can exclusively describe the songs in the dataset sufficiently. The dataset was therefore preprocessed to only include the subspace of embedding-features.
+With a focus on tackling the problem of high-dimensionality, the choice was to use the numerical methods \textit{EWKM}, \textit{LEKM}, \textit{FSC}, and, \textit{K-means}. That left a restriction to only select numerical features as input. Given that the audio vector was used to categorize songs in the neural network, the hypothesis was that clustering analysis could also be done exclusively on that feature-space. The dataset was therefore preprocessed to only include the subspace of audio-features.
 
-The \textit{genre} feature was additionally kept as an approximate ground truth label for further use in the external criteria.
-
-As a next step in preprocessing, all features were normalized to the same variance, a way to make sure that all embeddings have the same impact on the algorithm.
-For normalization Z-score was used ( See \ref{eq:z-score} ).
-
+As a next step in preprocessing, all features were normalized to the same variance, a way to make sure that all features have the same impact on the algorithm.
+For normalization Z-score was used, see \cref{eq:z-score}.
 
 \begin{equation}
   \label{eq:z-score}
@@ -76,15 +45,12 @@ For normalization Z-score was used ( See \ref{eq:z-score} ).
 \end{equation}
 
 \section{Implementation}
-\subsection{EWKM Implementation}
-The chosen EWKM algorithm is available in \textit{R and CSRAN} through the \textit{wskm} package \cite{wskm2014hz}. The source code is available for the public on github. The algorithm is implemented in $C$ and wrapped for $R$.
+\subsection{EWKM}
+An implementation of the EWKM algorithm is available in \textit{R and CSRAN} through the \textit{wskm} package \cite{wskm2014hz}. The code is written in $C$ and wrapped for $R$. All of the source code is obtainable from Github\footnote{https://github.com/SimonYansenZhao/wskm/}.
 
-The implementation differs slightly in how $w_{lj}$ is calculated from the algorithm shown in \ref{eq:ewkm}. It includes additional normalization steps. Eq \ref{eq:newlambda} shows how $w_{lj}$ is updated in the given implementation. 
+There are modifications made in the implementation that differ from the original research paper \cite{Jing2007}. Additional normalization steps have been added when calculating $w_{lj}$. \Cref{eq:newlambda} shows how $w_{lj}$ is updated in the given implementation. Occurrences of empty clusters during partitioning are managed by re-sampling cluster centers i.e. restarting the algorithm; in the original algorithm empty clusters were not treated. Finally, a convergence delta can be set by the user which decides the percentage of change needed between two iterations for convergence.
 
-Another deviation from the original algorithm is how empty clusters are treated. In this implementation cluster center's are re-sampled if the originally picked centers result in empty clusters i.e. the algorithm is re-ran if empty clusters are occurring. Additionally a convergence value can be set by the user.
-% restarts?
-
-Per request of the stakeholder along with the author's familiarity with Python and Pandas DataFrame, the code was re-wrapped for Python using numpy-C-API \cite{numpy-c} --- allowing for the dataset to be sent in to the algorithm as a numpy array. The C-code was tweaked to not be dependent on R's \textit{unif\_rand() function}. The altered C-code along with the Python wrapping can be found in the attachments.... 
+Per request of the stakeholder along with the author's familiarity with Python and Pandas DataFrame, the code was re-wrapped for Python using numpy-C-API \cite{numpy-c} --- allowing for the dataset to be sent in to the algorithm as a numpy array. The C-code was tweaked to not be dependent on R's \textit{unif\_rand() function}.
 
 \begin{align}
   \lambda_{lj} &= \exp\bigg({\Big(\frac{-D_{lj}}{\gamma}\Big) - \max_{\forall{t} \in C_l}\Big({\frac{-D_{lt}}{\gamma}}\Big)}\bigg) \\
@@ -93,70 +59,104 @@ Per request of the stakeholder along with the author's familiarity with Python a
   w_{lj} &= \frac{\lambda_{lj}}{\sum^{m}_{t=1}{\lambda_{ lt }}}
 \end{align}
 
-\subsection{FSC Implementation}
-The FSC implementation was created by the thesis author and is based on the C-code of \textit{EWKM}. The methods of calculating cost, updating weights and updating cluster memberships were modified to correspond to the FSC algorithm as shown in \ref{eq:cost-fsc}, and \ref{eq:fsc}. $\gamma$ is replaced by $\beta$, and the small value of $\epsilon$ was set to $0.001$ as proposed in \cite{Gan2006}.
+\subsection{FSC}
+The FSC implementation was created by the thesis author and is based on the C-code of \textit{EWKM}. The methods of calculating cost, updating weights and updating cluster memberships were modified to correspond to the FSC algorithm as shown in \cref{eq:cost-fsc}, and \cref{eq:fsc}. $\gamma$ is replaced by $\beta$, and the small value of $\epsilon$ was set to $0.001$ as proposed in \cite{Gan2006}.
 
-\subsection{K-means Implementation}
-\textit{EWKM} is equivalent to \textit{K-means} when $\lim_{\gamma \to 0}$, although simply setting $\gamma = 0$ forces division by zero. As such it was simpler to use another package for \textit{K-means}. \textit{K-means} being a popular clustering algorithm, is widely available for Python. The PyClustering implementation of \textit{K-means} was used for this report \cite{Novikov2019}. The implementation was created in \textit{C++} and wrapped for Python.
+\subsection{LEKM}
+LEKM like \textit{FSC} was created by the author, it too was based on the source code of EWKM \cite{wskm2014hz}. The same steps are necessary for this algorithm as EWKM, both are based on negative entropy, the difference was how the costs, weights etc. were updated. How they were updated corresponds to the equations of LEKM shown in \crefrange{eq:lekm}{eq:lekm2}. A slight modification is that the right-hand side i.e. the negative entropy is dropped from when updating partitions.
 
-\section{Result Generation: Parameter Tuning}
+The modification is based on a discussion with one of the authors of the original \textit{LEKM} paper. The gist of the discussion was that the entropy should not be used for updating clusters, and could result in negative distances.
 
+\subsection{K-means}
+\textit{EWKM} is equivalent to \textit{K-means} when $\lim_{\gamma \to 0}$, although simply setting $\gamma = 0$ forces division by zero. As such it was simpler to use another package for \textit{K-means}. As a popular clustering algorithm, \textit{K-means} is widely available for Python. The PyClustering implementation of \textit{K-means} was used for this report \cite{Novikov2019}. The implementation was created in \textit{C++} and wrapped for Python.
+
+All algorithm specific parameters are ran with all $k$ candidates. The best performing combination of parameters are deemed the best candidates for the algorithm.
+\section{Parameter Selection}
+% The sections below describe how the parameters of the different algorithms were chosen.
+
+Results generated by an algorithm, on the sample dataset, for different parameter candidates, were compared in order to select the best parameters. The selection of best parameter is based on an external validation, a \textit{purity} score.
+
+% The candidates are based when possible on values recommended in the corresponding research paper.
+
+\subsection{Convergence Rate}
+For generating results, convergence was set to occur if the cost delta between previous iteration and current was less than $0.5\%$.
 
 \subsection{Purity}
+An external validation index was created using the \textit{genre} feature as a ground truth in combination with the measurement of \textit{purity}. To create the purity score, the most dominant genre of each cluster was aggregated and divided by the total amount of songs in the dataset.
 
-As stated above the \textit{genre} feature was kept. With it an external criteria could be created, the measurement of purity was combined with the feature to create a external criteria. The most dominant genre of each cluster was aggregated and divided by the total amount of songs in the dataset.
+\subsection{Amount of Clusters}
+The problem of deciding the amount of clusters i.e. $k$ is global as all the clustering algorithms chosen are partition based. This section describes how $k$ was chosen for all of the given algorithms.
 
-It is important to highlight the problem of only relying on this criteria to evaluate the results. A good song cluster does not have to be genre homogenic. A good cluster could hypothetically be Christmas music and hold multiple genres, this would then be discarded by the evaluation as a bad cluster. The evaluation was tehrefore not used, for the final evaluation. It was however, deemed as a suitable score for the processes of parameter tuning.
+For the choice of $k$, it was decided to not use a competitive learning strategy. The strategy would add another layer of complexity on the algorithms and a possible point of error. $k$ was instead based on the \textit{purity} results of the whole sample.
 
-\subsection{Average Silhouette}
+% The amount of clusters i.e. $k$, could have been decided on a smaller sample of the dataset, or through the use of a competitive learning strategy as discussed in the background. Due to the already relative small sample of the whole dataset and an algorithm that is linear in time, $k$ was based on the results of the whole sample dataset with respect to the best $\gamma$ in regards to the cost function.
 
-The internal criterion of average silhouette can be used for parameter tuning. Soft-subspace clustering requires the creation an asymmetric distance matrix, as the distance from \textit{Object A} to \textit{Object B} is dependent on the subspace weights of the cluster in which \textit{Object B} resides in.
+Candidate values of $k$ were restricted to $50$, $100$, and, $500$ in order to reduce the time needed to generate results. The values were chosen to give an approximation on how large \textit{k} should be. The minimum of $50$ clusters was based on that the number of genres in the dataset was $33$, and generated clusters should at least be as specific as a genre label. $500$ was decided as the maximum amount for $k$ to keep the average cluster size to be above $100$.
 
-1000 objects were sampled from the result to generate the asymmetric distance matrix. From there, the \textit{sklearn} package was used for average silhouette calculation.
+% For the later external evaluation stage with composers, $k$ was picked based on the overall best purity score of the algorithms.
 
-\subsection{Tuning K - Amount of Clusters}
+% Relying on this criteria to evaluate the results had some downsides. A good song cluster does not have to be genre homogenic. A good cluster could hypothetically have been Christmas music and hold multiple genres. According to purity, this would be a bad cluster.
 
-$k$ could have been decided on a smaller sample of the dataset, or through the use of a competitive learning strategy as discussed in the background. Due to the already relative small sample of the whole dataset and an algorithm that is linear in time it was decided to decide $k$ based on the results of the whole sample dataset with respect to the best $\gamma$ in regards to the cost function.
+% The decision was still made to use purity for parameter tuning. While it does have its' downsides, the belief is that a higher purity score should in general indicate higher average cluster quality.
 
-$k$ was checked for the values of 50, 100, 500, 1000 and compared through the \begin{color}{red}{average silhouette} \end{color}. It was not important for this project to get the exact best $k$ rather what approximately range $k$ should be picked. The minimum of $50$ clusters was based on that the number of genres in the dataset was 33, and generated clusters should at least be as specific as a genre label. On the other side of the scale, 1000 was decided as the maximum amount of clusters as more would result in an average less than 50 songs per cluster. Additionally, if you were to scale the dataset to $50*10^7$ songs, more cluster would translate into more expensive computations.
-
+% To not disregard the problems with purity another external evaluation was made with the best performing SSC algorithm and K-means through the usage of judges. The evaluation is described in the next subchapter.
 
 \subsection{EWKM}
-$\gamma$ is a hyper-parameter of EWKM. In short, $\gamma$ determines the likeliness to cluster on more or less features. For any given dataset the ideal $\gamma$ can vary. An ideal $\gamma$ is found when there is no other $\gamma$ value that can result in a lower cost.
+EWKM introduces the $\gamma$ parameter. The recommended range of $\gamma \approx (0.5, 3)$ mentioned \cite{Jing2007, wskm2014hz} was extended with smaller values $(0.0005,$ $0.001,$ $0.005,$ $0.01,$ $0.05,$ $0.1)$ as candidate values. The smaller values were added to avoid possible problems with the objective function being negative due to a large negative entropy.
 
-The EWKM algorithm does not try to maximize the inter-cluster distance between clusters. The best $\gamma$ in regards to a minimized intra-cluster distance and a maximized inter-cluster distance --- Which can be expressed by the average silhouette --- does not have to equal the $\gamma$ which produces the lowest cost function. To attest for the difference the result of the best $\gamma$ in regards to the average silhouette was compared with the best $\gamma$ in regards to the cost function. Discarding any of the two before comparison could lead to sub-optimal results.
+Results of gamma values with immediate convergence were discarded as the behaviour was deemed unwanted, and not what was expected from the algorithms.
 
-$\gamma$ was chosen by iteratively testing different values of the parameter as an input for the algorithm, from small ($1 * 10^{-3}$) to large ($\gamma = 3$).
-The results on the sample dataset -- of the different $\gamma$ values --- was compared in regards to \color{red}{silhouette and purity.}
+\subsection{FSC}
+The unique parameters of \textit{FSC}, $\beta$ --- The fuzzyness variable, and $\epsilon$ --- A small constant, were set to $2.1$ resp. $0.00001$ in \cite{Gan2006}. In our tests $\beta$ was varied between $1.5$ and $30$ while $\epsilon$ was kept to the value mentioned in the report.
 
+\subsection{LEKM}
+In \cite{Gan2016} values of $\beta$ was varied between $1$ and $16$ with a decreasing score after a value of $2.0$. Our candidate values ranged between $0.5$ and $10$. Similarly to EWKM, results of immediate convergence were disregarded.
 
+\begin{color}{red}
+$\gamma$ is a hyper-parameter of EWKM and LEKM. In short, $\gamma$ determines the likeliness to cluster on more or less features. For any given dataset the ideal $\gamma$ can vary. An ideal $\gamma$ is found (in this scenario) when there is no other $\gamma$ value that can result in a better purity.
+\end{color}
 
-% High $\gamma$ values were found to force an immediate convergence as the negative shannon entropy became larger than the euclidean distance part of the cost function. 
+% $\gamma$ was chosen by iteratively testing different values of the parameter as an input for the algorithms, from small ($1 * 10^{-3}$) to large ($\gamma = 3$). The best $\gamma$ was chosen based on purity and, if values showed similar results the smallest value was chosen.
 
-% The $\gamma$ with the lowest silhouette was then tweaked to see if a lower cost function could be obtained. 
+\subsection{K-means}
+K-means does not have any hyper-parameter that needs to be tweaked. The only thing that was necessary for the result generation was to run K-means on all values of $k$.
+
 
 \subsection{Ranking songs and clusters}
-A distance array --- based on the subspace distance measure of the algorithm ---- between each point and the cluster center in which the point is a member in was generated.  Songs within a cluster could then be ranked by the ascending distance to the center. Clusters could also be ranked by representing the cluster \textit{"goodness"} through the ascending average distance of the songs. Here, it was deemed that good clusters should not be picked based on genre purity.
+Songs were sorted in ascending order based on their distance to their respective cluster center. The distance is equivalent to the distance used for assigning a partition to an object. For \textit{k-means} that was the regular euclidean distance. For SSC algorithms the distance included the feature weights of the cluster. The distances differ from SSC algorithm to another as e.g. \textit{LEKM} uses log-transformed distances.
 
-The ranking allowed for a cutoff in songs and clusters i.e. the top 10 clusters could be chosen and the clusters and from there a cluster could be shrank by only picking songs with a certain distance to the cluster center.
+Clusters were similarly sorted in ascending order. The distance for a cluster was set as the average distance of songs with a membership in the cluster.
 
-\subsection{Judge Evaluation}
-\color{red}{
-Purity using the genre as benchmark, assumes that a good cluster is genre coherent. While it could be true, a good cluster could be cross-genre such as Christmas music. To adhere}
+The sorting was used as a ranking, based on the idea that "better" clusters would have smaller distances than "worse" clusters. The reason for not using a genre accuracy for the ranking was to allow clusters that have novel themes that are not genre-specific a chance to be high ranked.
 
-A website page was created where judges could listen to songs of a cluster and rank it. Each cluster could be ranked by cohesion (similarity between songs) and novelty (if the cluster was generating a new type of mini-genre) on a scale 1-10.
+The ranking allowed for a cutoff in songs and clusters i.e. the top five clusters could be chosen. To not have the same genre type of clusters again and again in the top 5, each genre could only appear as dominant in one cluster (except for pop and rock, as they were regarded as larger genres with more diversity). As such, after sorting the top five cluster were picked from small to large distance with the condition stated above.
 
-Ten songs were sampled on a half-norm distribution --- based on the songs distances. A blind test was created, in which five songs of each algorithm was picked. To allow a reference point, three clusters were generated from previously created playlists. Judges were to choose the novelty and cohesion of each cluster.
+\section{Expert Evaluation}
+To answer how performance varies between traditional and SSC algorithms in terms of novelty and cohesion, a test was created. In this test professional composers were used as evaluation judges.
 
-The website was built in django and bootstrap. A screenshot can be found in appendix....
+The platform of the evaluation was a webpage created by the author. In here, different clusters could be browsed. Each cluster was represented by 10 30-second song previews. The chosen songs were sampled based on a half-normal distribution, i.e. songs with a relative small distance had a higher chance to be picked than those with a high distance. A picture of the webpage is shown in \cref{fig:website}. Django \footnote{https://www.djangoproject.com/} and Bootstrap 4\footnote{https://getbootstrap.com/} were used to build the page.
+
+The top five ranked clusters of each algorithm was chosen for the test. In addition to the ten clusters sourced from the algorithms, five more clusters were added that were sourced from existing playlists on the stakeholder platform.
+
+The test was conducted as blind test to remove any bias playlist clusters might have. The composers did not know that the clusters had different sources. In their minds they were all from the same algorithm machine learning algorithm.
+
+Initially, the idea was that composers would rate a cluster on \textit{similarity} and \textit{novelty} (from a scale of 1-10). After showing a mock test and discussing it with the head of product experience, head of machine learning, and a number of composers at the stakeholder, it was conducted that the parameters had to be modified. There were two reasons: the terms were unclear for the composers, and, a general quality was hard to transcribe from the scores.
+
+To adhere to the problems, \textit{similarity} was divided into \textit{audio similarity}, and \textit{cultural similarity}. \textit{novelty} was changed to a term familiar with the composers --- \textit{playlist uniqueness}, i.e. how unique the cluster would be as a playlist compared to already existing playlists on the platform. Additionally, a \textit{general quality} field was added to solve the second problem of scores not translating to a general quality. A text box was also added where the composers could add any description they thought summarized the cluster.
+
+The composers and author were situated in the same room. All composers evaluated the clusters together --- The composers had mentioned that they believed they can give a more accurate score together if they were allowed to discuss the clusters in as a team. Discussions the composers had during the evaluation was recorded. The author also answered questions the composers on how to navigate the webpage.
 
 
 
+\begin{figure}[h!]
+  \begin{center}
+    \includegraphics[height=10cm, keepaspectratio]{Website}
+      \caption{Screenshot of the evaluation website. \newline
+      \textit{From the left-hand-side song samples are shown and played, In the middle statistics about genres and common artists. On the right-hand-side the evaluation is situated with a general description text area, and sliders for the rest of the evaluation categories}}\label{fig:website}
 
-% Songs and clusters were sorted by generating the distance between each point and the center of the cluster the point was situated in.  
-% Diffrent $\gamma$'s were chosen with parameter was found by 
-% for setting $\gamma$. A too high $\gamma$ results in a total entropy larger than the total distance. A $\gamma$ set too low resulted in slow convergence and a high cost function. The parameter was tuned by iteratively running the clustering method on multiple $\gamma$'s and choosing the $\gamma$ which results in the lowest cost function.
-% '
+  \end{center}
+\end{figure}
+
 
 \end{document}
 

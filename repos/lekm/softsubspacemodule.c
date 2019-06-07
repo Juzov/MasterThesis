@@ -147,17 +147,19 @@ softsubspace_distances(PyObject * self, PyObject *args)
 		nc,
 		k;
 
+    double 	lambda;
     /* outputs */
 
     PyObject	*ret = NULL;
 
     if(!PyArg_ParseTuple(
 			args,
-			"OiiiOOO",
+			"OiiidOOO",
 			&x_ptr,
 			&nr,
 			&nc,
 			&k,
+			&lambda,
 			&cluster_ptr,
 			&centers_ptr,
 			&weights_ptr
@@ -205,6 +207,7 @@ softsubspace_distances(PyObject * self, PyObject *args)
 		&nr, 		// Number of rows (points)
 		&nc, 		// Number of columns (attributes/variables)
 		&k, 		// Number of clusters
+		&lambda,
 		cluster, 	// Cluster assignment for each obs (nr) ()
 		centers, 	// Cluster assignment for each obs (nr) ()
 		weights, 	// Variable weights (k*nc) (clusters x variables)
@@ -235,6 +238,8 @@ softsubspace_point_distances(PyObject * self, PyObject *args)
 		*cluster_ptr = NULL,
 	     	*weights_ptr = NULL;
 
+    double 	lambda;
+
     int 	nr,
 		nc,
 		k;
@@ -245,11 +250,12 @@ softsubspace_point_distances(PyObject * self, PyObject *args)
 
     if(!PyArg_ParseTuple(
 			args,
-			"OiiiOO",
+			"OiiidOO",
 			&x_ptr,
 			&nr,
 			&nc,
 			&k,
+			&lambda,
 			&cluster_ptr,
 			&weights_ptr
 			)
@@ -259,11 +265,10 @@ softsubspace_point_distances(PyObject * self, PyObject *args)
 	return NULL;
     }
 
-    npy_intp dims[2];
-    dims[0] = nr;
-    dims[1] = nr;
+    npy_intp dims[1];
+    dims[0] = nr * nr;
     // 2 dimensions / dimension sizes / type
-    PyObject *np_point_distances = PyArray_SimpleNew(2, dims, NPY_DOUBLE);
+    PyObject *np_point_distances = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
 
     /* Interpret the objects as numpy arrays */
     /* 3rd option tells if we want to write or only read to array */
@@ -294,6 +299,7 @@ softsubspace_point_distances(PyObject * self, PyObject *args)
 		&nr, 		// Number of rows (points)
 		&nc, 		// Number of columns (attributes/variables)
 		&k, 		//
+		&lambda, 		//
 		cluster, 	// Cluster assignment for each obs (nr) ()
 		weights, 	// Variable weights (k*nc) (clusters x variables)
 		point_distance

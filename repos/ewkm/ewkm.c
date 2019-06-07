@@ -214,9 +214,9 @@ double calcCost(double *x, 	// Numeric matrix as vector by col (nr*nc)
 	for (l = 0; l < (*k); l++){
 		for (j = 0; j < *nc; j++) {
 			index = j * (*k) + l;
-			/* if(subspace_weights[l] > 0){ */
-			entropy += (subspace_weights[l] * log(subspace_weights[l]));
-			/* } */
+			if(subspace_weights[l] > 0){
+				entropy += (subspace_weights[l] * log(subspace_weights[l]));
+			}
 		}
 	}
 	printf("Disp vs Lambda * Entropy (#): %11.10f - %11.10f \n", dispersion, (*lambda) * entropy);
@@ -425,11 +425,9 @@ void updWeights( // Inputs -----------------------------------------------------
 		//final normalize
 		for (j = 0; j < *nc; j++) {
 			index = j * (*k) + l;
-			if(subspace_weights[index] != 0){
-				subspace_weights[index] /= *sum2;
-			}
+			subspace_weights[index] /= *sum2;
 		}
-		printf("%f", *sum2);
+		printf("%f\n", *sum2);
 	}
 
 	free(max);
@@ -437,81 +435,6 @@ void updWeights( // Inputs -----------------------------------------------------
 	free(sum2);
 }
 
-
-
-/* void updWeightsPaper( // Inputs ------------------------------------------------------- */
-/* 		double *x, 	// Numeric matrix as vector by col (nr*nc) */
-/* 		int *nr, 	// Number of rows */
-/* 		int *nc, 	// Number of columns */
-/* 		int *k, 	// Number of clusters */
-/* 		double *lambda,	// Learning rate */
-/* 		int *partition,	// Partition matrix (nr) */
-/* 		double *o_prototype, // Numeric prototype matrix (k*nc) */
-/* 		// Output ------------------------------------------------------- */
-/* 		double *subspace_weights) // Weights for variable/cluster (k*nc) */
-/* { */
-/* 	int i, j, l, index; */
-
-/* 	for (l = 0; l < (*k) * (*nc); l++) { */
-/* 		subspace_weights[l] = 0; */
-/* 	} */
-
-/* 	for (i = 0; i < *nr; i++) { */
-/* 		for (j = 0; j < *nc; j++) { */
-/* 			/1* find the distance for index *1/ */
-/* 			index = j * (*k) + partition[i]; */
-/* 			subspace_weights[index] += pow( */
-/* 					(x[j * (*nr) + i] - o_prototype[index]), 2); */
-/* 		} */
-/* 	} */
-
-/* 	double *max, *sum, *sum2, *sum3; */
-/* 	max = (double*) malloc(sizeof(double)); */
-/* 	sum = (double*) malloc(sizeof(double)); */
-/* 	sum2 = (double*) malloc(sizeof(double)); */
-/* 	sum3 = (double*) malloc(sizeof(double)); */
-/* 	double minWeight = 0.0001 / (*nc); */
-
-/* 	for (l = 0; l < *k; l++) { */
-/* 		*max = -1.79769e+308; */
-/* 		*sum = 0; */
-/* 		*sum2 = 0; */
-/* 		//find maximum */
-/* 		for (j = 0; j < *nc; j++) { */
-/* 			index = j * (*k) + l; */
-/* 			subspace_weights[index] = exp(-subspace_weights[index] / (*lambda)); */
-/* 			*sum += subspace_weights[index]; */
-/* 		} */
-/* 		//first normalize */
-/* 		for (j = 0; j < *nc; j++) { */
-/* 			index = j * (*k) + l; */
-/* 			subspace_weights[index] /= *sum; //? */
-/* 			if (subspace_weights[index] < minWeight) { */
-/* 				subspace_weights[index] = minWeight; */
-/* 			} */
-/* 			*sum2 += subspace_weights[index]; */
-/* 		} */
-/* 		if(l ==0) */
-/* 			printf("%f\n", *sum2); */
-/* 		//final normalize */
-/* 		for (j = 0; j < *nc; j++) { */
-/* 			index = j * (*k) + l; */
-/* 			subspace_weights[index] /= *sum2; */
-/* 			*sum3 += subspace_weights[index]; */
-/* 		} */
-/* 		if(l ==0) */
-/* 			printf("%f\n", *sum3); */
-/* 	} */
-
-/* 	free(max); */
-/* 	free(sum); */
-/* 	free(sum2); */
-/* 	free(sum3); */
-/* } */
-// ***** Primary Interface *****
-
-// This is oriented toward interfacing with R, though a
-// separate main.c can be used for stand alone testing.
 
 double ewkm( // Inputs ----------------------------------------------------------
 		double *x, 		// Numeric matrix as vector by col (nr*nc)

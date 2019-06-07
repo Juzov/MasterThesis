@@ -2,7 +2,7 @@
 
 \begin{document}
 \chapter{Background}
-Chapter 2. intends to introduce the theory and relevant related work that is necessary to understand the research topic.
+The fundamentals of clustering are introduced in Chapter 2. Distance measurements of varying data-types are shown. Hierarchical-, Partition- and, Density-clustering are all described. The pre-study goes into detail on how the popular \textit{K-means} algorithm functions. It continues by mentioning different feature-weighted clustering algorithms including \textit{Soft Subspace Clustering} (SSC) algorithms. The chapter ends with a method justification.
 
 \section{Objective of Clustering}
 Given the inputs of a Dataset $\mathcal{D} = \{X_{ 1 }, X_{ 2 },..., X_{ n } \}$ --- where $X_i = [x_{i1}, x_{i2},...,x_{im} ]$ is a single data point with $m$ attributes --- and $k$ is a positive integer, the objective of partition clustering is to divide objects into $k$ disjoint clusters ${C} = \{C_1, C_2,..., C_k \}$ \cite{Huang97clusteringlarge}.
@@ -322,7 +322,7 @@ w_{lj} &= \frac{1}{{\sum_{t=1}^{m}\Big[\frac{D_{lj} + \epsilon}{D_{lt} + \epsilo
 \end{align}
 
 
-Entropy can also be used in soft-subspace clustering. The main idea is to weigh features in the cluster with respect to the variance of the data within the cluster\cite{Domeniconi2007}. The entropy of a weight can then be used to describe the certainty of a feature in the cluster. In Entropy Weighed K-means (\textit{EWKM}) \cite{Jing2007} the intra-cluster distance is combined with the negative entropy to create the cost function shown in \ref{eq:ewkm}. Here, the negative entropy is a regularization term that the algorithm tries to maximize while still minimizing the intra-cluster distance. Unlike, the \textit{Fuzzy}-weighted algorithms, \textit{EWKM} does not need another variable to handle variances of zero. As in \textit{W-k-means} \textbf{P3.} and Step \textbf{4.} becomes optimizing $W$ for the function while fixing $U$ and $C$. $\gamma$ is a user-inputted variable used to control the size of the weights, For $\gamma > 0$ The smaller $D_{ lj }$ the more important attribute $A_j$ is to cluster $C_l$. A modified version of \textit{EWKM} is \textit{IEWKM} \cite{Li2008}. It specifies a cost function for both numerical and categorical data.
+Entropy can also be used in soft-subspace clustering. The main idea is to weigh features in the cluster with respect to the variance of the data within the cluster\cite{Domeniconi2007}. The entropy of a weight can then be used to describe the certainty of a feature in the cluster. In Entropy Weighed K-means (\textit{EWKM}) \cite{Jing2007} the intra-cluster distance is combined with the shannon entropy to create the cost function shown in \ref{eq:ewkm}. Here, the shannon entropy cab be rergarded as a regularization term that the algorithm tries to maximize while still minimizing the intra-cluster distance. Unlike, the \textit{Fuzzy}-weighted algorithms, \textit{EWKM} does not need another variable to handle variances of zero. As in \textit{W-k-means} \textbf{P3.} and Step \textbf{4.} becomes optimizing $W$ for the function while fixing $U$ and $C$. $\gamma$ is a user-inputted variable used to control the size of the weights, For $\gamma > 0$ The smaller $D_{ lj }$ the more important attribute $A_j$ is to cluster $C_l$. A modified version of \textit{EWKM} is \textit{IEWKM} \cite{Li2008}. It specifies a cost function for both numerical and categorical data.
 
 \begin{align}
   P(U,C,W) &= \sum^k_{l=1} \Bigg[ \sum^n_{i=1} \sum^m_{j=1} u_{il} w_{ lj } d(x_{ij},c_{lj}) + \gamma \sum_{j=1}^{m}{ w_{lj} log (w_{lj}) } \Bigg] \\
@@ -334,16 +334,17 @@ u_{lj} &= \min_{1 \leq l \leq k}\Big( \sum_{j=1}^{d} w_{lj} d(x_{ij},c_{ lj })\B
 \textit{where:}\quad D_{ lj } &= \sum_{X_i \in C_l}{d(x_{ij},c_{ lj })}
 \end{align}
 
-A recent paper introdcing the \textit{LEKM} algorithm, has modified EWKM \cite{Gan2016}. Two problems of EWKM are adressed: The algorithm is very sensitive to $\gamma$, and noicy data. To solve the problems EWKM was modified to use log-transformed distances. The modification allows intra-cluster variance of different features to become smaller and more similar, decreasing the chance of one dominant feature of a cluster. Additionally, centers are set in such fashion that noicy data are less impactful. LEKM is shown below.
+A recent paper introdcing the \textit{LEKM} algorithm (log-transformed entropy weighting \textit{K}-means), has modified EWKM \cite{Gan2016}. Two problems of EWKM are adressed: EWKM is very sensitive to $\gamma$, and noicy data. To solve the problems EWKM was modified to use log-transformed distances. The modification allows intra-cluster variance of different features to become smaller and more similar, decreasing the chance of one dominant feature of a cluster. Additionally, centers are set in such fashion that noicy data are less impactful. LEKM is shown below.
 
 \begin{align}
-  P(U,C,W) &= \sum^k_{l=1} \sum^n_{i=1} u_{il} \Bigg[ \sum^m_{j=1} w_{ lj } \ln\big[1 + d(x_{ij},c_{lj})\big] + \gamma \sum_{j=1}^{m}{ w_{lj} \ln (w_{lj}) } \Bigg] \\
-\textit{where:}\quad\gamma&\geq 0 \\
-\label{eq:lekm}
-        c_{lj} &= \frac{\sum_{X_i \in C_l}{ {\big[1 + d(x_{ij},c_{ lj })\big]}^{-1} x_{ij} }}{\sum_{X_i \in C_l}{\big[1 + d(x_{ij},c_{ lj })\big]}^{-1}} \\
-        u_{lj} &= \min_{1 \leq l \leq k}\Bigg(\sum_{j=1}^{d} w_{lj} \ln\big[1 + d(x_{ij},c_{ lj })\big] + \gamma \sum_{j=1}^{d} w_{lj} \ln w_{lj}\Bigg) \\
-	w_{lj} &= \frac{\exp({\frac{-D_{lj}}{\gamma})}}{\sum_{t=1}^{m}{\exp{(\frac{-D_{lt}}{\gamma})}}} \\
-        \textit{where:}\quad D_{ lj } &= \frac{\sum_{X_i \in C_l}{\ln\big[1 + d(x_{ij},c_{ lj })\big]}}{\text{Count}_{X_i \in C_l}}
+    P(U,C,W) &= \sum^k_{l=1} \sum^n_{i=1} u_{il} \Bigg[ \sum^m_{j=1} w_{ lj } \ln\big[1 + d(x_{ij},c_{lj})\big] + \gamma \sum_{j=1}^{m}{ w_{lj} \ln (w_{lj}) } \Bigg] \\
+  \label{eq:lekm}
+  \textit{where:}\quad\gamma&\geq 0 \\
+          c_{lj} &= \frac{\sum_{X_i \in C_l}{ {\big[1 + d(x_{ij},c_{ lj })\big]}^{-1} x_{ij} }}{\sum_{X_i \in C_l}{\big[1 + d(x_{ij},c_{ lj })\big]}^{-1}} \\
+          u_{lj} &= \min_{1 \leq l \leq k}\Bigg(\sum_{j=1}^{d} w_{lj} \ln\big[1 + d(x_{ij},c_{ lj })\big] + \gamma \sum_{j=1}^{d} w_{lj} \ln w_{lj}\Bigg) \\
+          w_{lj} &= \frac{\exp({\frac{-D_{lj}}{\gamma})}}{\sum_{t=1}^{m}{\exp{(\frac{-D_{lt}}{\gamma})}}} \\
+          \textit{where:}\quad D_{ lj } &= \frac{\sum_{X_i \in C_l}{\ln\big[1 + d(x_{ij},c_{ lj })\big]}}{\text{Count}_{X_i \in C_l}}
+  \label{eq:lekm2}
 \end{align}
 
 WOCIL \cite{Jia2018} is a Mixed-data soft-subspace \textit{k-means} type clustering algorithm.
@@ -362,18 +363,17 @@ To determine $W$ --- which in this case is a matrix, due to the method being a s
 
 
 \section{Evaluation}
-There are two main ways of which clustering are evaluated: Internal- and external-criterion.\cite{manning2010introduction}
+There are two main ways of which clustering are evaluated: Internal- and external-criterion.\cite{manning2010introduction}. The types are sometimes referred as cluster validation indices \cite{Halkidi2002}.
 In some research the categories are extended with the relative-criterion.\cite{Halkidi2002}
 
 \subsection{Inner Criteria} \label{sec:Internal}
 Internal criterion is an unsupervised validation approach and can be described as evaluating the results without respect to external information \cite{Halkidi2002}. An internal criterion tries to verify the objective of the clustering algorithm on the dataset. For example: Making sure that points assigned to the same cluster are in general more similar than points outside of the cluster.
 
 \subsubsection{Average Silhouette Coefficient}
-
-The average silhouette coefficient upon all datapoints shown in \ref{eq:avg_s}, is one way to evaluate the internal criteria \cite{ROUSSEEUW198753}. A single silhouette coefficient shown in \ref{eq:sil}, looks at a data points' intra-cluster similarity --- similarity to points within the same cluster, and, inter-cluster similarity --- similarity with point outside of the cluster. $\overline{s}_{co}$ goes between -1 and 1 where a high value (close to 1) indicates a natural clustered dataset.
+The average silhouette coefficient upon all data points shown in \ref{eq:avg_s}, is one way to evaluate the internal criteria \cite{ROUSSEEUW198753}. A single silhouette coefficient shown in \ref{eq:sil}, looks at a data points' intra-cluster similarity --- similarity to points within the same cluster, and, inter-cluster similarity --- similarity with point outside of the cluster. $\overline{s}_{co}$ goes between -1 and 1 where a high value (close to 1) indicates a natural clustered dataset.
 
 When $s_{co}(X_i)$ is a high value (close to 1) a point is well clustered i.e. the intra-cluster similarity is high relative to the inter-cluster similarity \cite{ROUSSEEUW198753}
-. The same reasoning is extended to $\overline{s}_{co}(\mathcal{D})$ where a high value is a well clustered dataset.
+. The same reasoning is extended to $\overline{s}_{co}(\mathcal{D})$ where a high value is a well clustered dataset. The measure is common to use when tuning the parameters of traditional partitioning algorithms. There is limited information on how to implement and use the measurement or any other internal index for subspace clustering methods. Unlike, \textit{k-means} soft-subspace clustering have asymmetric distances between two points of different clusters.
 
 \begin{align}
   d_{avg}(X_i,C_l) &= \frac{\sum_{X_k \in C_l}d(X_i,X_k)}{Count(X_k \in C_l)} \\
@@ -384,9 +384,6 @@ When $s_{co}(X_i)$ is a high value (close to 1) a point is well clustered i.e. t
 \label{eq:avg_s}
   \overline{s}_{co}(\mathcal{D}) &= \frac{\sum^{N}_{i=1} s_{co}(X_i)}{N}
 \end{align}
-
-\subsubsection{Calinski-Harabasz Index}
-Calinski-Harabasz is for measuring the validity
 
 
 \subsection{External Criteria}
@@ -409,7 +406,7 @@ $\Psi = \{\Psi_1,\Psi_2,...,\Psi_t \}$ is the set of \textit{truth}-classes.
 
 \textit{$F$-measure} is another measurement for the evaluation of the external criteria. The measurement is shown in \ref{eq:f-measure}\cite{manning2010introduction}. The resulting clusters of an algorithm are seen as a series of decisions on each pair of data-points in the set.
 
-An ideal clustering in this reasoning would mean all similar points are within the same cluster i.e. only \textit{True Positives} and no \textit{False Positives}. In reality, some non-similar pairs are clustered together leading to \textit{False Positives}. Similarly, \textit{True Negatives} and \textit{False Negatives} can exist. 
+An ideal clustering in this reasoning would mean all similar points are within the same cluster i.e. only \textit{True Positives} and no \textit{False Positives}. In reality, some non-similar pairs are clustered together leading to \textit{False Positives}. Similarly, \textit{True Negatives} and \textit{False Negatives} can exist.
 
 The terms can be combined to create the \textit{precision} and \textit{recall}. The precision defines the ratio of \textit{True Positives} on all positives --- pairs in the same cluster. The precision is shown in \ref{eq:precision}. The recall on the other hand measures the ratio of how many similar pairs have been clustered together given all possible similar pairs. 
 
@@ -428,26 +425,10 @@ $\beta$ in \ref{eq:f-measure} determines in what ratio \textit{precision} and \t
 Where:\newline
 $TP$ are true positives, $FP$ false positives, $FN$ false negatives, and, $\beta$ is a weight between $P$ and $R$, a $\beta > 1$ emphasizes the $R$.
 
-\section{Chapter Summary}
-The fundamentals of clustering have been introduced in this chapter, distance measures are described as well as how they correlate to different datatypes. Hierarchical-, Partition- and, Density-clustering are all described. Figure \ref{tab:comp} summarizes the properties of all the mentioned algorithms in this chapter. The pre-study goes into detail on how the popular \textit{K-means} algorithm functions as it is pivotal for understanding weighted clustering.
-
-The findings of the prestudy suggests that feature-weighted clustering can be used to attack the challenging problem of clustering high-dimensional data. Algorithms such as \textit{Weighted K-means}, \textit{FSC}, and, \textit{Entropy Weighted K-means} have all been introduced.  The mentioned algorithms manage high-dimensional data clustering in different ways. The last two, are examples of soft subspace clustering --- an extension of \textit{feature weighting}, which allows each cluster an individual subspace. The soft-subspace methods have been shown to deal with high-dimensional data better than traditional algorithms while still allowing the performance similar to traditional partitioning algorithms.
-
-As for evaluation, it is necessary to use both an internal and external criteria. While an internal criteria can give a score of inter- and intra-cluster performance through methods such as the silhouette coefficient it cannot replace a ground truth, and should instead be used as a tool for parameter tuning. The supervised method of using an external criteria should instead be used. Data can be tested against a ground truth label or a panel of judges through measurements like, the mentioned $F_1$-Score.
-
-The clustering method for this thesis will be to use EWKM algorithm on the given dataset. The first reason for choosing the algorithm is that it is a soft-subspace clustering algorithm. Secondly, it takes into account the information gain in the cost function. To evaluate the performance, the algorithm will be compared with the traditional \textit{K-means} algorithm. \textcolor{red}{
-The evaluation will compare the average silhouette coefficient for a chosen \textit{K-parameter} on the two algorithms results. The results will also be evaluated by an external criteria of $Purity$ basing the ground truth on the genre feature which is a given label for all songs in the dataset.}
-
-The chosen methods, are possible to implement for mixed data, but are available online as numerical methods. From a thesis standpoint, tackling the high-dimensionality of a dataset was the main priority. As such, only numerical features of the dataset can be used --- See Dataset in Chapter 3. For more details. % The prestudy has
-% The following 
-% A summary of the mentioned algorithms is shown in Table. \ref{tab:comp}
-% . It states the type of the algorithm, complexity, data type, and if it is a weighed algorithm.
-
-\captionof{table}{
-  Properties of algorithms discussed in this chapter \cite{Wunsch2005,Deng2016}
-\label{tab:comp}
-}
-\hspace*{-2cm}
+\newpage
+\begin{table}[h]
+\caption{Properties of algorithms discussed in this chapter \cite{Wunsch2005,Deng2016,Jia2018,Jing2007,Gan2016}}\label{tab:comp}
+\hspace*{-1cm}
 \begin{tabular}{l@{\hspace{0.2in}}l@{\hspace{0.5in}}rrc}
   \hline\noalign{\smallskip}
   \tbtitle{Type} & \tbtitle{Algorithm} & \tbtitle{Properties}\\
@@ -474,10 +455,11 @@ The chosen methods, are possible to implement for mixed data, but are available 
   & WKM & $O(tnk+tkm+tm)$ & Numerical$^{ b }$ & Yes$^c$ \\
   & FSC$$ & $O(tnk+tk+tkm)$ & Numerical$^b$ & Yes$^d$ \\
   & EWKM & $O(tnk+2tkd)$ & Numerical$^b$ & Yes$^e$\\
+  & LEKM & $\approx O(tnkm)$** & Numerical$^b$ & Yes$^e$\\
   & WOCIL & $\approx O(tnkm)$ & Mixed & Yes \\
   \noalign{\smallskip}\hline
 \end{tabular}
-\hspace*{-2cm}
+\end{table}
 \captionof*{table}{
 \\$^a$ Not all features have independent weights.
 \\$^b$ Has been modified to allow mixed data.
@@ -485,8 +467,23 @@ The chosen methods, are possible to implement for mixed data, but are available 
 \\$^d$ Fuzzy-Weighting, Within-distance
 \\$^e$ Entropy-Weighting, Within-distance
 \\$^*$ Dimensionality disregarded in complexity notation
+\\$^{**}$ Exact complexity is not given, but mentioned to be slower than EWKM due to how cluster centers are updated.
 }
-
 \newpage
+
+\section{Summary and Method Justification}
+
+Figure \ref{tab:comp} summarizes the properties of all the mentioned algorithms in this chapter.\newline
+
+The findings of the pre-study suggests that feature-weighted clustering can be used to attack the challenging problem of clustering high-dimensional data by reducing the weight of irrelevant features. Algorithms such as \textit{Weighted K-means}, \textit{FSC}, \textit{Entropy Weighted K-means} and \textit{LEKM} have all been introduced.  The mentioned algorithms manage high-dimensional data clustering in different ways. The last three, are examples of soft subspace clustering --- an extension of \textit{feature weighting}, which allows each cluster an individual subspace. The soft-subspace methods have been shown to deal with high-dimensional data better than traditional algorithms while still allowing a time complexity (linear) similar to traditional partitioning algorithms.\newline
+
+Due to the previous mentioned benefits of SSC algorithms, three types of SSC methods will be tested for this thesis. They are \textit{EWKM}, \textit{FSC} and \textit{LEKM}. \textit{EWKM} is chosen as it takes into account the information gain in the cost function. FSC is chosen for the purpose of having an algorithm with different properties i.e. being a \textit{Fuzzy} SSC algorithm that does not take into account information gain. \textit{LEKM} is added for its use of logarithmic distances that could possibly help resolve problems with noisy data. To evaluate the performance, the algorithms will be compared to the traditional \textit{K-means} algorithm.\newline
+
+The evaluation will consist of a supervised external index due to the difficulty of implementing a correct internal validation for \textit{SSC} algorithms. Data was to be tested against a ground truth label through the measurement of Purity and a panel of judges.\newline
+
+The chosen methods, are possible to implement for mixed data, but are not originally implemented for the purpose. From a thesis standpoint, tackling the high-dimensionality of a dataset was the main priority. As such, only numerical features of the dataset can be used --- See Dataset in Chapter 3. For more details. \newline
+% The following
+% A summary of the mentioned algorithms is shown in Table. \ref{tab:comp}
+% . It states the type of the algorithm, complexity, data type, and if it is a weighed algorithm.
 \end{document}
 

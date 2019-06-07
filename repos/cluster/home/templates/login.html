@@ -1,0 +1,56 @@
+
+<!-- <!DOCTYPE html> -->
+<!-- <html lang="en"> -->
+<!--   <head> -->
+<!--     <meta charset="utf-8"> -->
+<!--   </head> -->
+<!--   Hello -->
+<!-- </html> -->
+
+{# Load the tag library #}
+{% load bootstrap4 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+<div class="container-fluid">
+      <div class="row mt-5">
+          <div class="col">
+
+          </div>
+          <div class="col-8 p-4 rounded bg-secondary shadow-sm">
+            <div class="row">
+                  <div class="col">
+                        <h2 class="text-white">Login</h2>
+                  </div>
+                  <div class="col">
+                  </div>
+                  <div class="col">
+                  </div>
+            </div>
+            <div class="row pt-4">
+                  <div class="col">
+                  </div>
+                  <div class="col-6">
+                  <form action="{% url 'home' %}" class="form-inline" method='get' id="login">
+                        {% csrf_token %}
+                        <input type="hidden" id="date_id" name="date_time" value="{{date_time}}">
+                        <div class="form-group justify-content-center">
+                            <input type="text" class="form-control form-control-lg" id="name_id" name="name" placeholder="Enter Your Name">
+                           <button type="submit" class="btn btn-lg btn-light text-secondary border-secondary ml-2">Submit</button>
+                        </div>
+                        <small id="noveltyExtra" class="form-text text-white">*No spaces in the name allowed</small>
+                  </form>
+                  </div>
+                  <div class="col">
+                  </div>
+            </div>
+          </div>
+          <div class="col">
+          </div>
+      </div>
+</div>

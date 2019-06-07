@@ -89,6 +89,7 @@ class LEKM:
             self._nr,
             self._nc,
             self._k,
+            self._lamb,
             self._cluster,
             self._centers,
             self._weights
@@ -134,6 +135,7 @@ class LEKM:
             sample_size,
             self._nc,
             self._k,
+            self._lamb,
             sample_cluster,
             self._weights
         )

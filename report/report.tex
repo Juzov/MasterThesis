@@ -5,7 +5,7 @@
 \graphicspath{{img/}}
 
 \usepackage{csquotes} % Recommended by biblatex
-\usepackage[style=numeric,sortcites=true,sorting=none,backend=biber,url=false,doi=false]{biblatex}
+\usepackage[style=numeric,sortcites=true,sorting=none,backend=biber,url=false,doi=false,isbn=false]{biblatex}
 
 \usepackage{subfiles}
 \usepackage{amsmath}
@@ -14,12 +14,17 @@
 \usepackage{commath}
 \usepackage{mathtools}
 \usepackage{array}
+\usepackage{float}
 \usepackage{parskip} % Newline for new paragraph
 \usepackage{footnote}
 \usepackage{caption}
 % \usepackage{subfigure}
 \usepackage{multirow}
 \usepackage{subcaption}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
+\usepackage{tikz}
+\usepackage{cleveref}
 
 \setcounter{secnumdepth}{4}
 
@@ -27,7 +32,7 @@
 \addbibresource{../refs/SYB Exploratory Clustering.bib} % The file containing our references, in BibTeX format
 
 
-\title{An Evaluation of K-means and EWKM on a High-dimensional dataset}
+\title{A Comparision Between K-means and Soft-Subspace Clustering Algorithms on a High-dimensional Musical Dataset}
 \alttitle{Detta är den svenska översättningen av titeln}
 \author{Emil Juzovitski}
 \email{emiljuz@kth.se}
@@ -77,17 +82,14 @@
 \subfile{./tex/background.tex}
 \subfile{./tex/method.tex}
 \subfile{./tex/results.tex}
-
-\chapter{Discussion}
-
-\chapter{Conclusions}
+\subfile{./tex/discussion.tex}
+\subfile{./tex/conclusion.tex}
 
 % Print the bibliography (and make it appear in the table of contents)
 \printbibliography[heading=bibintoc]
 
 \appendix
 
-\chapter{Something Extra}
 
 % Tailmatter inserts the back cover page (if enabled)
 \tailmatter

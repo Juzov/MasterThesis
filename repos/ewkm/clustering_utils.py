@@ -198,6 +198,8 @@ def generate_run_specific_plot(lambdas, costs, scores, purities, iterations, res
     os.mkdir(plot_path)
 
     plt.plot(lambdas, scores, marker='D', linestyle='-')
+    for xy in zip(lambdas, scores):
+        plt.annotate('(%s)' % xy[0], xy=xy, textcoords='data')
     plt.xscale('log')
     plt.ylabel(
         r'Average Silhouette ($\overline{s}_{co}(\mathcal{D})$) (1000 Point Sample)')
@@ -220,6 +222,7 @@ def generate_run_specific_plot(lambdas, costs, scores, purities, iterations, res
     plt.clf()
 
     plt.plot(lambdas, restarts, color='g', marker='D', linestyle='-')
+    plt.xscale('log')
     plt.ylabel(r'Restarts (Re-sampling of start centers)')
     plt.xlabel(r'Gamma ($\gamma$)')
     plt.savefig(plot_path + "/gamma-restarts.png")
@@ -227,6 +230,7 @@ def generate_run_specific_plot(lambdas, costs, scores, purities, iterations, res
 
 
     plt.plot(lambdas, iterations, color='orange', marker='D', linestyle='-')
+    plt.xscale('log')
     plt.ylabel(r'Total amount of iterations until convergance')
     plt.xlabel(r'Gamma ($\gamma$)')
     plt.savefig(plot_path + "/gamma-iterations.png")
@@ -370,8 +374,6 @@ def generate_parameter_specific_plots(weights, k, lamb, path):
     # low_bin = columns / 160
     bins = np.linspace(0, 1, 100)
     # bins = np.insert(bins, 1, low_bin)
-    plt.title(
-        r'Weight Distribution at $\gamma = {0}, k = {1}$'.format(lamb, k))
     plt.yscale('log')
     plt.hist(np.hstack(weights), bins=bins,
              color='white', edgecolor='black', linewidth=0.5)
@@ -382,8 +384,6 @@ def generate_parameter_specific_plots(weights, k, lamb, path):
 
     bins = np.linspace(0, 0.01, 1000)
     # bins = np.insert(bins, 1, low_bin)
-    plt.title(
-        r'Weight Distribution at $\gamma = {0}, k = {1}$'.format(lamb, k))
     plt.yscale('log')
     plt.hist(np.hstack(weights), bins=bins,
              color='white', edgecolor='black', linewidth=0.5)
@@ -391,9 +391,6 @@ def generate_parameter_specific_plots(weights, k, lamb, path):
     plt.xlabel(r'Value of Weight')
     plt.savefig(path_plots + "/weights-v2.png")
     plt.clf()
-
-    plt.title(
-        r'Weight Distribution at $\gamma = {0}, k = {1}$'.format(lamb, k))
 
     im = plt.imshow(weights, aspect='auto')
     plt.colorbar(im)

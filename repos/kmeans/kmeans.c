@@ -309,7 +309,7 @@ double kmeans( // Inputs -------------------------------------------------------
 
 	//TODO enable it for R
 	// Initialise a rand sequence.
-	srand(time(NULL));
+	srand(20);
 
 	// Initialize the prototypes. The user can pass in a list of k
 	// indicies as the row indicies for the initial protoypes. A

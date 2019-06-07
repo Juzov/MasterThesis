@@ -2,11 +2,20 @@
 
 \begin{document}
 \chapter{Introduction}
+Clustering analysis is the exploratory art of finding clusters(groups) in a dataset \cite{Kaufman1990}. Informally, data objects are grouped by their similarity, with the most similar objects being categorized into the same group, a \textit{cluster}.
+
+There are many applications for clustering. Two examples are: Deciding what items to put in the same aisle in a shop in order to increase revenue, and, categorizing insurance holders to into risk groups, to provide the best price to each customer. The items and the insurance holders are the objects of the dataset that are the subjects for clustering. Topics that help describe a data object e.g. \textit{cost}, \textit{brand}, and \textit{origin}, are often referred as features or attributes.
+
+Data objects with similar feature properties are partitioned into the same cluster. For datasets with one- or two-features (dimensions) it may be possible to determine by-eye, which objects are similar and should be grouped together. Other datasets could need tens- or hundreds- of features to describe a single object. Here, it is almost impossible to tell by-eye how to cluster the dataset as it becomes hard to represent feature-spaces with a degree higher than three.
+
+\begin{color}{red}
+In clustering analysis, methods are instead able to automatically determine partitions by expressing the similarity of objects as a numerical value.
+\end{color}
 
 \section{Background}
-Clustering analysis is an unsupervised method for categorizing a set of data objects. Informally, data objects are grouped by their similarity, with the most similar objects being categorized into the same group, a \textit{cluster}.
+% Clustering analysis is an unsupervised method for categorizing a set of data objects. Informally, data objects are grouped by their similarity, with the most similar objects being categorized into the same group, a \textit{cluster}.
 
-There are various methods on how to cluster data. The properties of the to be clustered dataset, is what decides the suitability of a method.
+There are various methods on how to cluster data. The properties of the dataset to be clustered, is what decides the suitability of a method.
 The data-types, the size, and, the feature-dimensionality of a dataset are big factors when choosing a method. Picking the right method can be the difference between inadequate clustering performance and stellar performance.
 
 In this thesis we explore the problem of clustering a new real-world high-dimensional dataset consisting of songs, where each song is described through a vector of features. In its raw form the dataset consists of both numerical and categorical data. The dataset is also large, it consists of $5 \cdot 10^7$ songs. The dataset was given by a stakeholder, aiming to find new categorizations of their set of music.
@@ -16,31 +25,31 @@ Clustering high-dimensional data suffers from the curse of dimensionality \cite{
 
 Traditional methods such as \textit{K-means} do not include any additional steps to cluster high-dimensional data and leaves things desired in terms of performance. The usage of feature reduction techniques can lower the dimensionality but leads to loss of information \cite{Gan2006}.  Newer algorithms made for the specific purpose of categorizing high-dimensional data have been mentioned to perform better.
 
-In this thesis we compare how the traditional \textit{K-means} algorithm compares to a \textit{soft-subspace} clustering algorithm, \textit{EWKM} chosen specifically for its ability to handle high-dimensional data. The two algorithms are compared on the new real-world dataset of songs.
+In this thesis we study how the traditional \textit{K-means} algorithm compares to \textit{soft-subspace} clustering(SSC) algorithms. The two types of clustering algorithms are compared on the new real-world dataset of songs.
 
-\textit{How does the performance of EWKM compare to K-means on the given high-dimensional dataset?}
+There are two problem statements of the thesis.
+
+To answer how $K-means$ compare to SSC algorithms, an SSC algorithm has to be chosen and so the first problem statement becomes:
+
+\textit{What is a suitable soft-subspace algorithm for the given dataset?}
+
+With the first statement answered the second and the main problem statement can be answered:
+
+\textit{How does the performance of a soft-subspace clustering algorithm compare to K-means on the given high-dimensional dataset?}
 
 \section{Purpose}
-% The purpose is to explore how soft-subspace clustering
-% The purpose of the thesis is to show what difference picking the right algorithm for high-dimensional data and explore
 
-The purpose is twofold: Show how soft-subspace clustering methods fair in terms of performance --- Convergence Rate and Clustering Accuracy --- compared to \textit{K-means}, and determine whether novel song themes can be found through the usage of the clustering methods.
-
-% Two.
-% The purpose is to explore how the field of cluster analysis has improved with regards to managing high-dimensional data and highlight the existence of soft-subspace clustering algorithms.
-
-% The purpose of the thesis is to decide whether it is possible to find categorizations of the songs through an algorithm that is widely accepted by professional playlist composers.
+The purpose is twofold: Show how soft-subspace clustering methods fair in terms of performance --- Clustering Accuracy --- compared to \textit{K-means}, and determine whether novel song themes can be found through the usage of the clustering methods.
+% Convergence Rate and
 
 \section{Goal}
-To adhere to the purpose a traditional clustering algorithm \textit{K-means} is evaluated against a more sophisticated, soft-subspace algorithm \textit{EWKM}.
+To adhere to the purpose a traditional clustering algorithm \textit{K-means} is evaluated against more sophisticated, soft-subspace algorithms.
 Convergence speeds are compared, The accuracy and novelty of the generated clusters are evaluated by judges --- playlist composers.
 
 \section{Ethics and Sustainability}
 Ethical concerns are commonplace in automatic categorization. In the context of the song dataset, songs from a specific cluster could be used to generate a playlist for a popular streaming platform. That cluster might have it pivotal that an artist's country of origin is a specific country. Artists outside of that country that otherwise fit the cluster, are disregarded due to a seemingly, artificial wall. As such, artists from less established markets can become invincible for that playlist resulting in loss of revenue. Ethically, it is questionable whether county of origin, should have merit or not. From a cluster quality standpoint excluding some songs, for a better precision is a worthy trade-off.
 
 \section{Delimitations}
-This thesis will focus on the problem of high-dimensionality. Other properties such as mixed data are mentioned however, the algorithms chosen were evaluated on a numerical feature subspace of the dataset. Tackling mixed data through soft-subspace clustering is seen as future work.
-
-
+This thesis focuses on the problem of high-dimensionality. Other properties such as mixed data are mentioned however, the algorithms chosen were evaluated on a numerical feature subspace of the dataset. Tackling mixed data through soft-subspace clustering is out of the scope of the project as the core features of the dataset are numerical.
 \end{document}
 

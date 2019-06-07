@@ -2,105 +2,376 @@
 
 \begin{document}
 \chapter{Results}
+The results of this chapter has been divided into two sections: \textit{General Results} and \textit{Evaluation Results}. \textit{General Results} show how different algorithms perform in terms of \textit{purity}, \textit{convergence speed} and \textit{feature weight distribution}. The section ends with a summary showing the best parameters, and, purity scores for each algorithm. \textit{Evaluation Results} presents the expert evaluation scores of \textit{K-means}, the best performing \textit{SSC-algorithm}, and playlists through \cref{table:rating}.
 
-\section{Comparision Between SSC Algorithms}
-EWKM, LEKM, and, FSC were compared on their best hypterparameters according to the \begin{color}{red}cost function\end{color} on different values of \textit{k} (50, 100, 500). Figure \ref{ewkm-weights} shows the weight grid of EWKM on different values of \textit{k}. Figure \ref{lekm-weights} shows the weight grid of EWKM on different values of \textit{k}. Figure \ref{lekm-weights} shows the weight grid of EWKM on different values of \textit{k}.
+\section{General Results}
+Below sections describe the results of K-means, EWKM, LEKM, and FSC with different parameters on the dataset. The chapter is summarized by \cref{table:purity}, which shows the \textit{purity} of the best performing parameters for each algorithm.
 
-Table ... shows the different purity of the different algorithms on different \textit{k}
+To avoid repetitiveness algorithm-specific figures are shown only for $k=500$. The choice of $k=500$ is justified as it is the best performing $k$ for algorithms in regards to purity (see the section summary).
 
 \subsection{EWKM}
-EWKM was first ran on between values of $\gamma = [0.5-3]$, the recommended range as described in \cite{Jing2007, wskm2014hz}. The negative entropy ended up being larger than the cost function resulting in immediate convergence.
+\label{subsection:ewkm}
 
-On the next iteration of tests, $\gamma$ was lowered until immediate convergence did not occur, the best $\gamma$ parameter and purity is shown in . The resulting Purity is lower than other algorithms for all $k$. All tested $\gamma$'s resulted in a weight distribution, in which all clusters only had one significant dimension.
+\Cref{fig:ewkm-purity} presents the purity given different $\gamma$'s for EWKM. From the figure we see a trend of the purity slowly decreasing until a value of $\gamma = 2$, where a steep increase occurs to a score of $0.44$.
 
-Table ... shows diff
+\Cref{fig:ewkm-iterations} show the corresponding amount of iterations until convergence. The amount of iterations needed to converge is decreasing with the value of $\gamma$. Here, we see the immediate convergence of values of $0.05$ and higher.
+
+\Cref{fig:ewkm-restarts} show the amount of restarts needed to generate non-empty cluster partitions. Most value selections needed zero or one restarts. The outlier was the choice of $0.01$, which required $10$ restarts. Selections larger than $2.0$ resulted in zero restarts.
+
+Immediate convergence (with no restarts) --- as shown in the figures to be $2.0$ and higher, were caused by the Shannon entropy being more negative than the total dispersion within clusters, making the objective function negative.
+
+\Cref{fig:ewkm-meshgrid} represents the feature weights of each cluster as colored grids (often referred to as a meshgrid) for various choices of $\gamma$. The grids in \cref{fig:ewkm-meshgrid} show the weight of a specific feature for a cluster as a colored rectangle. Yellow denotes a high feature weight, while purple denotes a low value. A cluster's feature weight vector is a horizontal line in the grid. For all the tested values of $\gamma$ that did not result in immediate convergence, the weight distribution of the clusters were similar. One feature was often dominant i.e. had a high weight (around 1) while the rest had feature weights near zero. The grids do however, show a trend of less dominant features being produced with larger values of $\gamma$. The results of dominant features are unlike what is presented in \cite{Jing2007}
+
+\begin{frame}
+
+  \begin{figure}
+\begin{minipage}{.45\textwidth}
+  \includegraphics[width=\linewidth, keepaspectratio]{../../repos/ewkm/clusters/500-plots-mannen-riktiga-svar-pa-allt-9/plots/gamma-purities.png}
+  \caption{Purity accuracy of EWKM given various values of $\gamma$, $k=500$}
+  \label{fig:ewkm-purity}
+\end{minipage}\hfill
+\begin{minipage}{.45\textwidth}
+  \includegraphics[width=\linewidth, keepaspectratio]{../../repos/ewkm/clusters/500-plots-mannen-riktiga-svar-pa-allt-9/plots/gamma-iterations.png}
+  \caption{Iterations until convergence of EWKM given various values of $\gamma$, $k=500$}
+  \label{fig:ewkm-iterations}
+\end{minipage}\hfill
+\centering
+\begin{minipage}{.45\textwidth}
+  \includegraphics[width=\linewidth, keepaspectratio]{../../repos/ewkm/clusters/500-plots-mannen-riktiga-svar-pa-allt-9/plots/gamma-restarts.png}
+  \caption{Restarts of EWKM given various values of $\gamma$, $k=500$}
+  \label{fig:ewkm-restarts}
+\end{minipage}
+\end{figure}
+
+\end{frame}
+
+% The results of the figures, shows one dominant feature weight (with a value around 1.0) in each cluster for .
+
+% , is different from the expected results of a normalized global feature space as described in \cite{Jing2007} for the algorithm.
+
+\newpage
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}{0.7\textwidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{../../repos/ewkm/clusters/500-plots-mannen-riktiga-svar-pa-allt-9/K_500_L_0-0005/plots/heatmap.png}
+      \caption{$\gamma=0.0005$}
+    \end{center}
+  \end{subfigure}
+  \medskip
+  \centering
+  \begin{subfigure}{0.7\textwidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{../../repos/ewkm/clusters/500-plots-mannen-riktiga-svar-pa-allt-9/K_500_L_0-05/plots/heatmap.png}
+      \caption{$\gamma=0.05$}
+    \end{center}
+  \end{subfigure}
+  \medskip
+  \centering
+  \begin{subfigure}{0.7\textwidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{../../repos/ewkm/clusters/500-plots-mannen-riktiga-svar-pa-allt-9/K_500_L_0-5/plots/heatmap.png}
+      \caption{$\gamma=0.5$}
+    \end{center}
+  \end{subfigure}
+  \caption{Feature-Weight Meshgrid of EWKM}
+  \label{fig:ewkm-meshgrid}
+\end{figure}
+\newpage
+
+
+% Figure \cref{ewkm-weights} shows the weight grid of EWKM on different values of \textit{k}. Figure \cref{lekm-weights} shows the weight grid of EWKM on different values of \textit{k}. Figure \cref{lekm-weights} shows the weight grid of EWKM on different values of \textit{k}. The convergence delta was set to $0.005$ i.e. $\frac{ \text{prev_disp} - \text{cur_disp} }{ \text{prev_disp} } < 0.005$
+
+% On the next iteration of tests, $\gamma$ was lowered until immediate convergence did not occur, the best $\gamma$ parameter and purity is shown in . The resulting Purity is lower than other algorithms for all $k$. All tested $\gamma$'s resulted in a weight distribution, in which all clusters only had one significant dimension.
+
+% Table ... shows diff
+
+% Figure \cref{ewkm-weights} shows the weight grid of EWKM on different values of \textit{k}. Figure \cref{lekm-weights} shows the weight grid of EWKM on different values of \textit{k}. Figure \cref{lekm-weights} shows the weight grid of EWKM on different values of \textit{k}. The convergence delta was set to $0.005$ i.e $\frac{ prev_disp - cur_disp }{prev_disp } < 0.005$
+
+% Table ... shows the different purity of the different algorithms on different \textit{k}
 
 \subsection{LEKM}
-LEKM was ran on $\gamma$'s ranging from 0.5 to 3. The LEKM did not have the same problem as EWKM on the given range. The best performing gamma is shown in ... . The scores were comparable to FSC. All $\gamma$'s resulted in normal distribution of feature weights. Higher values of $\gamma$ resulted in a smaller standard deviation, leading to a more uniform distribution.
+The purity scores of LEKM is shown in \cref{fig:lekm-purity}. With higher values the purity is increasing until a peak purity is reached at $\gamma = 1.4$ with a score of $45.5\%$. For values $\geq 2.6$ the purity decreases steeply to values of $43.8\%$, these values correspond to values of immediate convergence.
 
+The amount of iterations until convergence is shown in \cref{fig:lekm-iterations}. Higher values resulted in increasingly more iterations needed, with the peak reached at 20 iterations with $\gamma=2.2$, until a drop to zero --- immediate convergence ---  occurs at values of $2.6$ and larger. Compared to EWKM, the $\gamma$'s of LEKM is larger when immediate convergence occurs.
 
-Table ... shows diff
+% \textit{LEKM} performed significantly better than EWKM in terms of purity for most values of $\gamma$. Similar to EWKM, $\gamma$ of a certain size resulted in immediate convergence, due to the same reason; A negative entropy more negative than the within cluster variance.
+% The interval of $\gamma$'s ranging from 0.5 to 10 were tested on LEKM. Generally,
+
+% \Cref{fig:ewkm-meshgrid} represents the feature weights of each cluster as colored grids (often referred to as a meshgrid) for various choices of $\gamma$. The grids in \cref{fig:ewkm-meshgrid} show the weight of a specific feature for a cluster as a colored rectangle. Yellow denotes a high feature weight, while purple denotes a low value. A cluster's feature weight vector is a horizontal line in the grid. For all the tested values of $\gamma$ that did not result in immediate convergence, the weight distribution of the clusters were similar. One feature was often dominant i.e. had a high weight (around 1) while the rest had feature weights near zero. The grids do however, show a trend of less dominant features being produced with larger values of $\gamma$. The results of dominant features are unlike what is presented in \cite{Jing2007}
+
+The feature weight grids of LEKM is shown in \cref{fig:lekm-meshgrid} (Note that the values colors represent, are different for each grid). We see that there are multiple features representing the cluster through the figures. Certain features are dominant in a very few clusters (shown as a purple-dominant vertical line in the grid) while others are dominant in most clusters (shown as a yellow-dominant vertical line in the grid). The highest weights are also very small compared to EWKM, but are still, larger than the least important features of the cluster. The dispersion between small and large weight values decrease with a higher $\gamma$.
+
+Another perspective of how the weights differ given various $\gamma$ is shown in \cref{fig:lekm-distribution}. The plots of the figure show the values of all feature weights in all clusters, summarized into a histogram. The resulting histograms show a distribution with properties of a normal distribution, similar to what is mentioned in \cite{Jing2007}. From smaller- to larger-values, we see the deviation of the distribution decrease, leading to a more and more uniform distribution.
+
+\begin{frame}
+
+\begin{figure}
+\makebox[\linewidth][c]{%
+\begin{minipage}{.6\textwidth}
+  \includegraphics[width=\linewidth, keepaspectratio]{../../repos/lekm/clusters/500-plots-mannen-riktiga-svar-pa-allt/plots/gamma-purities.png}
+  \caption{Purity accuracy of LEKM \newline given various values of $\gamma$, $k=500$}
+  \label{fig:lekm-purity}
+\end{minipage}\hfill
+\begin{minipage}{.61\textwidth}
+  \includegraphics[width=\linewidth, keepaspectratio]{../../repos/lekm/clusters/500-plots-mannen-riktiga-svar-pa-allt/plots/gamma-iterations.png}
+  \caption{Iterations until convergence \newline of LEKM given various values of $\gamma$, $k=500$}
+  \label{fig:lekm-iterations}
+\end{minipage}
+}
+\end{figure}
+
+\end{frame}
+
+\newpage
+\begin{figure}[H]
+\makebox[\linewidth][c]{%
+\begin{subfigure}[b]{.7\textwidth}
+\centering
+\includegraphics[width=.99\textwidth]{../../repos/lekm/clusters/500-plots-mannen-riktiga-svar-pa-allt-new-distance/K_500_L_0-5/plots/heatmap.png}
+\caption{$\gamma=0.5$}
+\end{subfigure}%
+\begin{subfigure}[b]{.7\textwidth}
+\centering
+\includegraphics[width=.99\textwidth]{../../repos/lekm/clusters/500-plots-mannen-riktiga-svar-pa-allt-new-distance/K_500_L_1-0/plots/heatmap.png}
+\caption{$\gamma=1.0$}
+\end{subfigure}%
+}\\
+\makebox[\linewidth][c]{%
+\begin{subfigure}[b]{.7\textwidth}
+\centering
+\includegraphics[width=.99\textwidth]{../../repos/lekm/clusters/500-plots-mannen-riktiga-svar-pa-allt-new-distance/K_500_L_1-6/plots/heatmap.png}
+\caption{$\gamma=1.6$}
+\end{subfigure}%
+\begin{subfigure}[b]{.7\textwidth}
+\centering
+\includegraphics[width=.99\textwidth]{../../repos/lekm/clusters/500-plots-mannen-riktiga-svar-pa-allt-new-distance/K_500_L_2-2/plots/heatmap.png}
+\caption{$\gamma=2.2$}
+\end{subfigure}%
+}
+\caption{Feature-Weight Meshgrid of LEKM (k=500)}
+\label{fig:lekm-meshgrid}
+\end{figure}
+\newpage
+
+\newpage
+\begin{figure}[H]
+\makebox[\linewidth][c]{%
+\begin{subfigure}[b]{.7\textwidth}
+\centering
+\includegraphics[width=.99\textwidth]{../../repos/lekm/clusters/500-plots-mannen-riktiga-svar-pa-allt-new-distance/K_500_L_0-5/plots/weights-v2.png}
+\caption{$\gamma=0.5$}
+\end{subfigure}%
+\begin{subfigure}[b]{.7\textwidth}
+\centering
+\includegraphics[width=.99\textwidth]{../../repos/lekm/clusters/500-plots-mannen-riktiga-svar-pa-allt-new-distance/K_500_L_1-0/plots/weights-v2.png}
+\caption{$\gamma=1.0$}
+\end{subfigure}%
+}\\
+\makebox[\linewidth][c]{%
+\begin{subfigure}[b]{.7\textwidth}
+\centering
+\includegraphics[width=.99\textwidth]{../../repos/lekm/clusters/500-plots-mannen-riktiga-svar-pa-allt-new-distance/K_500_L_1-6/plots/weights-v2.png}
+\caption{$\gamma=1.6$}
+\end{subfigure}%
+\begin{subfigure}[b]{.7\textwidth}
+\centering
+\includegraphics[width=.99\textwidth]{../../repos/lekm/clusters/500-plots-mannen-riktiga-svar-pa-allt-new-distance/K_500_L_2-2/plots/weights-v2.png}
+\caption{$\gamma=2.2$}
+\end{subfigure}%
+}
+\caption{Distribution of feature weights values upon all clusters ($k=500$)}
+\label{fig:lekm-distribution}
+\end{figure}
+\newpage
 
 \subsection{FSC}
-$\beta$ was recommended to be set to 2.1 and $\epsilon$ to 0.0001 \cite{Gan2006}. In our tests, we tested $\beta$'s between 1.5 and 30 with $\epsilon$ set to 0.0001. Based on purity $\lim_{\beta}{\inf}$ led to the best score. The score of FSC was better than EWKM and similar to LEKM. $\beta = 1.5$ led to a single dominant feature, similar to EWKM. For 
+\Cref{fig:fsc-purity} shows how the algorithm performs based on purity on the dataset. From the figure we can see a tendency of $\lim_{\beta \to{\infty}}$ led to the best score. The score is slightly worse than \textit{LEKM}
 
-Table ... shows diff
+The amount of iterations, as shown in \cref{fig:fsc-iterations}, are high for smaller values of $\beta$ and a constant of two for larger $\beta$.
 
-\begin{figure}
-     \centering
-     \begin{subfigure}[b]{0.3\textwidth}
-         \centering
-         \includegraphics[width=\textwidth, height=40mm, keepaspectratio]{../../repos/lekm/clusters/z/K_500_L_0-5/plots/heatmap.png}
-         \caption{$k=500 \text{, } \gamma=2$}
-         \label{fig:y equals x}
-     \end{subfigure}
-     \hfill
-     \begin{subfigure}[b]{0.3\textwidth}
-         \centering
-         \includegraphics[width=\textwidth, height=40mm, keepaspectratio]{../../repos/lekm/clusters/z-100/K_100_L_2-0/plots/heatmap.png}
+\Cref{fig:fsc-meshgrid} show how feature weights are distributed along clusters. A selection of a lower $\beta$ i.e $\beta=1.5$ results with a single dominant feature weight for most clusters, similar to \textit{EWKM}. As $\gamma$ increased, more and more features were given importance in clusters. Some small amount of clusters had larger differences between feature weight values, thus, the pictures becoming more blue than yellow.
 
-         \caption{$k=100 \gamma=2$}
-         \label{fig:three sin x}
-     \end{subfigure}
-     \hfill
-     \begin{subfigure}[b]{0.3\textwidth}
-         \centering
-         \includegraphics[width=\textwidth, height=40mm, keepaspectratio]{../../repos/lekm/clusters/z-50/K_50_L_0-5/plots/heatmap.png}
-         \caption{$k=50 \gamma=0.5$}
-         \label{fig:five over x}
-     \end{subfigure}
-        \caption{Three simple graphs}
-        \label{fig:three graphs}
-\end{figure}
+The feature weight distribution of different $\beta$'s are shown through mesh-grids in \cref{fig:fsc-meshgrid}, and histograms in \cref{fig:fsc-distribution}. The figures show that a selection of a lower $\beta$ i.e $\beta=1.5$ results with a single dominant feature weight for most clusters.
+
+A choice of $\beta=1.5$ is shown to have feature weights let to a single dominant weight per feature. Higher values resulted in uniform more dominant features. Similar to LEKM, certain features appeared more as a dominant feature in clusters as well as certain feature weights being small for many clusters. Unilke LEKM, certain feature outlier existed, that had larger feature-weights. In terms of distribution as shown in \cref{fig:fsc-distribution} from the resulting distribution is not normally distributed but like LEKM the distribution ended up being more sharp for larger values.
+
+\subsection{K-means}
+K-means converged after 7 iterations given $k=500$. The purity score was $45.4\%$ as shown in \cref{table:purity}.
+
+\subsection{Summary}
+The best parameters, together with their \textit{purity} scores are shown for $k=50,100,500$ in \cref{table:purity} for each algorithm. The table shows that $k=500$ achieves the best purity scores for all algorithms except EWKM (where $k=100$ results in the greatest purity). For $k=50$ and $k=100$, \textit{K-means} is the best performing algorithm, but only marginally. For $k=500$ \textit{LEKM} performs marginally better than \textit{K-means} with the best overall score of (45.5\%). In all values of $k$, EWKM is the worst performing algorithm.
+
+
+\begin{frame}
 
 \begin{figure}
-     \centering
-     \begin{subfigure}[b]{0.3\textwidth}
-         \centering
-         \includegraphics[width=\textwidth, height=40mm, keepaspectratio]{../../repos/lekm/clusters/z/K_500_L_2-0/plots/weights-v2.png}
-         \caption{$k=500 \text{, } \gamma=2$}
-         \label{fig:y equals x}
-     \end{subfigure}
-     \hfill
-     \begin{subfigure}[b]{0.3\textwidth}
-         \centering
-         \includegraphics[width=\textwidth, height=40mm, keepaspectratio]{../../repos/lekm/clusters/z-100/K_100_L_2-0/plots/weights-v2.png}
+\begin{minipage}{.45\textwidth}
+  \includegraphics[width=\linewidth, keepaspectratio]{../../repos/fsc/clusters/500-plots-mannen-1/plots/gamma-purities.png}
+  \caption{Purity accuracy of FSC given various values of $\gamma$ $k=500$}
+  \label{fig:fsc-purity}
+\end{minipage}\hfill
+\begin{minipage}{.45\textwidth}
+  \includegraphics[width=\linewidth, keepaspectratio]{../../repos/fsc/clusters/500-plots-mannen-1/plots/gamma-iterations.png}
+  \caption{Iterations until convergence of FSC given various values of $\gamma$ $k=500$}
+  \label{fig:fsc-iterations}
+\end{minipage}
+\end{figure}
+\end{frame}
 
-         \caption{$k=100 \gamma=2$}
-         \label{fig:three sin x}
+
+\begin{figure}[!h]
+         \centering
+     \begin{subfigure}{0.45\textwidth}
+         \centering
+         \includegraphics[width=\linewidth, keepaspectratio]{../../repos/fsc/clusters/500-plots-mannen-1/K_500_L_1-5/plots/heatmap.png}
+         \caption{$k=500 \text{, } \gamma=1.5$}
      \end{subfigure}
      \hfill
-     \begin{subfigure}[b]{0.3\textwidth}
+     \begin{subfigure}{0.45\textwidth}
          \centering
-         \includegraphics[width=\textwidth, height=40mm, keepaspectratio]{../../repos/lekm/clusters/z-50/K_50_L_0-5/plots/weights-v2.png}
-         \caption{$k=50 \gamma=0.5$}
-         \label{fig:five over x}
+         \includegraphics[width=\linewidth, keepaspectratio]{../../repos/fsc/clusters/500-plots-mannen-1/K_500_L_2-1/plots/heatmap.png}
+         \caption{$k=500 \text{, } \gamma=2.1$}
      \end{subfigure}
-        \caption{Three simple graphs}
-        \label{fig:three graphs}
+     \hfill
+     \centering
+     \begin{subfigure}{0.45\textwidth}
+         \centering
+         \includegraphics[width=\linewidth, keepaspectratio]{../../repos/fsc/clusters/500-plots-mannen-1/K_500_L_3-0/plots/heatmap.png}
+         \caption{$k=500 \text{, } \gamma=3.0$}
+     \end{subfigure}
+     \hfill
+     \centering
+     \begin{subfigure}{0.45\textwidth}
+         \centering
+         \includegraphics[width=\linewidth, keepaspectratio]{../../repos/fsc/clusters/500-plots-mannen-1/K_500_L_5-0/plots/heatmap.png}
+         \caption{$k=500 \text{, } \gamma=5.0$}
+     \end{subfigure}
+      \caption{Feature-Weight Meshgrid of FSC}
+      \label{fig:fsc-meshgrid}
 \end{figure}
 
-\begin{table}[h]
+\begin{figure}[!h]
+         \centering
+     \begin{subfigure}{0.45\textwidth}
+         \centering
+         \includegraphics[width=\linewidth, keepaspectratio]{../../repos/fsc/clusters/500-plots-mannen-1/K_500_L_1-5/plots/weights-v2.png}
+         \caption{$k=500 \text{, } \gamma=1.5$}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}{0.45\textwidth}
+         \centering
+         \includegraphics[width=\linewidth, keepaspectratio]{../../repos/fsc/clusters/500-plots-mannen-1/K_500_L_2-1/plots/weights-v2.png}
+         \caption{$k=500 \text{, } \gamma=2.1$}
+     \end{subfigure}
+     \hfill
+     \centering
+     \begin{subfigure}{0.45\textwidth}
+         \centering
+         \includegraphics[width=\linewidth, keepaspectratio]{../../repos/fsc/clusters/500-plots-mannen-1/K_500_L_3-0/plots/weights-v2.png}
+         \caption{$k=500 \text{, } \gamma=3.0$}
+     \end{subfigure}
+     \hfill
+     \centering
+     \begin{subfigure}{0.45\textwidth}
+         \centering
+         \includegraphics[width=\linewidth, keepaspectratio]{../../repos/fsc/clusters/500-plots-mannen-1/K_500_L_5-0/plots/weights-v2.png}
+         \caption{$k=500 \text{, } \gamma=5.0$}
+     \end{subfigure}
+     \caption{Distribution of feature weights values upon all clusters}
+     \label{fig:fsc-distribution}
+\end{figure}
+
+
+\begin{table}[h!]
 \begin{center}
-\begin{tabular}{lr@{\hspace{0.2in}}rrrrrrrr}
+  \begin{tabular}{lr@{\hspace{0.2in}}rrr@{\hspace{0.2in}}rrrrrrrr}
   \hline\noalign{\smallskip}
-  && \multicolumn{2}{c}{\tbtitle{EWKM}} && \multicolumn{2}{c}{\tbtitle{LEKM}} && \multicolumn{2}{c}{\tbtitle{FSC}} \\
-  \noalign{\smallskip} \cline{3-4} \cline{6-7} \cline{9-10}
-        \multicolumn{1}{c}{\textit{k}} && \tbtitle{$\gamma$} & \tbtitle{Purity} && \tbtitle{$\gamma$} & \tbtitle{Purity} && \tbtitle{$\beta$} & \tbtitle{Purity}\\
-        \hline
-        \multicolumn{1}{r|}{50 } && 0.005 & 28.2\% && 0.0 & 0.0 && 2.1* & 0.0\\
-        \multicolumn{1}{r|}{100} && 0.005 & 28.9\% && 2.1 & 40.6\% && 2.1* & 0.0\\
-        \multicolumn{1}{r|}{500} && 0.001 & 28.6\% && 2.2 & 45.2\% && 2.1* & 43.8\\
+  && \multicolumn{2}{c}{\tbtitle{K-means}} && \multicolumn{2}{c}{\tbtitle{EWKM}} && \multicolumn{2}{c}{\tbtitle{LEKM}} && \multicolumn{2}{c}{\tbtitle{FSC}} \\
+  \cline{3-4}\cline{6-7}\cline{9-10}\cline{12-13}
+        \noalign{\smallskip} \multicolumn{1}{c}{\textit{k}} && & \tbtitle{Purity} && \tbtitle{$\gamma$} & \tbtitle{Purity} && \tbtitle{$\gamma$} & \tbtitle{Purity} && \tbtitle{$\beta$} & \tbtitle{Purity}
+\\
+  \noalign{\smallskip}
+  \hline\noalign{\smallskip}
+
+        \multicolumn{1}{r|}{50 } && & 39.0\% && 0.005 & 28.2\% && 0.0 & 38.8\% && 30.0 & 38.0\\
+        \multicolumn{1}{r|}{100} && & 40.8\% && 0.005 & 28.9\% && 2.1 & 40.6\% && 15 & 39.6\\
+        \multicolumn{1}{r|}{500} && & 45.4\% && 0.001 & 28.6\% && 1.4 & \textbf{45.5\%} && 30.0 & 43.8\%\\
+  \noalign{\smallskip}
+  \hline
 \end{tabular}
 \end{center}
-\caption{Best hyperparameter ($\gamma$, $\beta$) given \textit{k}}
+\caption{Best parameter- and purity-score ($\gamma$, $\beta$) given \textit{k}}
+\label{table:purity}
 \end{table}
 
 
-\section{K-means}
-
 \section{External Evaluation}
-8 contestents were
+The results of the blind test can be found in \cref{table:rating} and figure \cref{fig:rating}. The table and figure show how the different sources was rated on average on the clusters of the source. The clusters sourced from playlists perform better than K-means and LEKM on all parametrs as expected. In general quality there is only as 0.4 respectivly 0.6  difference between playlist, K-means and LEKM. The algorithms perform better in terms of audio similarity than cultural similarity. There is a great difference between the cultural similarity rating between the playlist clusters and the algorithmic clusters. Regarding K-means vs LEKM, K-means performs marginally better than LEKM in all categories, where the biggest difference is in novelty. Listening to the discussions during the blind test, clusters from the algorithms were mentioned to have a core of songs that were an obvious theme with an additional 2-3 songs that were culturally different. For well performing clusters that difference added depth to the playlist in a positive way. For bad performing clusters the mixins were offputting for the theme of the cluster, and made the cluster worse in terms of general quality.
+
+\begin{table}[h!]
+\hspace*{-2cm}
+\begin{tabular}{l@{\hspace{0.2in}}rrrrr}
+  \hline\noalign{\smallskip}
+  \multicolumn{1}{l}{} & \multicolumn{4}{c}{\tbtitle{Evaluation}}\\
+  \noalign{\smallskip}\cline{2-5}\noalign{\smallskip}
+  \multicolumn{1}{l}{\tbtitle{Source}} & \tbtitle{General Quality} & \tbtitle{Audio Similarity} & \tbtitle{Cultural Similarity} & \tbtitle{Playlist Uniqueness}
+  \\
+\noalign{\smallskip}
+  \hline
+  \noalign{\smallskip}
+  \textit{Playlist} & 7 & 7.6 & 8 & 5.6 \\
+  \noalign{\smallskip}
+  \hline
+  \noalign{\smallskip}
+  \textit{K-means} & 6.6 & 7 & 6.2 & 5.4 \\
+  \textit{LEKM} & 6.4 & 6.4 & 6 & 3.8 \\
+  \noalign{\smallskip}
+  \hline
+\end{tabular}
+\caption{Average rating of clusters given source type}
+\label{table:rating}
+\end{table}
+
+
+% \begin{figure}[h]
+% \begin{tikzpicture}
+%     \begin{axis}[
+%         width  = 0.85*\textwidth,
+%         height = 8cm,
+%         major x tick style = transparent,
+%         ybar=2*\pgflinewidth,
+%         bar width=14pt,
+%         ymajorgrids = true,
+%         ylabel = {Rating (1-10)},
+%         symbolic x coords={Playlist,K-means,LEKM},
+%         xtick = data,
+%         scaled y ticks = false,
+%         enlarge x limits=0.25,
+%         ymin=0,
+%         legend style={
+%           at={(1.25,0.5)},
+% 	  anchor=south,
+%           legend columns=1
+%         }
+%     ]
+%       \addplot
+%         coordinates {(Playlist, 7.0) (K-means,6.6) (LEKM,6.4)};
+%       \addplot
+%         coordinates {(Playlist, 7.6) (K-means,7.0) (LEKM,6.4)};
+%       \addplot
+%         coordinates {(Playlist, 8.0) (K-means,6.2) (LEKM,6.0)};
+%       \addplot
+%         coordinates {(Playlist, 5.6) (K-means,5.4) (LEKM,3.8)};
+%       \legend{General Quality, Audio Similarity, Cultural Similarity, Playlist Uniqueness}
+%     \end{axis}
+% \end{tikzpicture}
+% \caption{Average rating of clusters given source type}
+% \label{fig:rating}
+% \end{figure}
+
+
+
 
 
 \end{document}

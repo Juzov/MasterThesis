@@ -226,22 +226,26 @@ void updPartition(  // Inputs
 	// We record the cluster number with the smallest distance to a
 	// certain object and store the smallest distence between clusers.
 
-	double o_dist, o_reg, min_dist;
+	double o_dist, min_dist;
 
 	for (i = 0; i < *nr; i++) {
 		min_dist = 1.79769e+308;
 		partition[i] = 0;
 		for (l = 0; l < *k; l++) {
 			o_dist = 0.0;
-			o_reg = 0.0;
 
 			for (j = 0; j < *nc; j++) {
 				index = j * (*k) + l;
-				o_dist += subspace_weights[index] * log(1 + pow(x[j * (*nr) + i] - o_prototype[index], 2));
-				o_reg += subspace_weights[index] * log(subspace_weights[index]);
+				o_dist += subspace_weights[index] * (log(1 + pow(x[j * (*nr) + i] - o_prototype[index], 2)));
+				// we disregard the entropy
+				/* o_reg += subspace_weights[index] * log(subspace_weights[index]) */
 			}
 
-			o_dist = o_dist + o_reg * *lambda;
+			o_dist = o_dist;
+			if(l % 100 == 0 && i % (int)(*nr * 0.5) == 0){
+				printf("%f\n",o_dist);
+			}
+
 
 			if (min_dist >= o_dist) {
 				min_dist = o_dist;
@@ -273,6 +277,7 @@ int updPrototypes(  // Inputs ---------------------------------------------
 
 	for (i = 0; i < *nr; i++) {
 		for (j = 0; j < *nc; j++){
+			// Note could use 1 / instead
 			*inner_distance = pow(1 + pow(x[j * (*nr) + i] - o_prototype[j * (*k) + partition[i]], 2), -1);
 
 			cluster_distances[j * (*k) + partition[i]] += *inner_distance;

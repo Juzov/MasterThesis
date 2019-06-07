@@ -45,7 +45,7 @@ def main(only_embedding, re_parse, k, convergance_delta, name, k_plusplus, max_i
 
 
     sil = cs.k_means_silhouette(numerical_data.values, clusters, k, sample_size=1000)
-    merged_data = cs.merge_columns(mixed_data, clusters, sil)
+    merged_data = cs.merge_columns(mixed_data, clusters, distances)
     cs.generate_cluster_specific_json(merged_data, k, 0, None, path)
     pur = cs.get_purity(merged_data)
     cs.generate_run_specific_json(np.array([0.0, 0.0]), [0.0, 0.0], [sil, sil], [pur, pur], path)

@@ -94,6 +94,7 @@ class Kmeans:
             self._weights
         )
 
+
         unraveled_weights = np.reshape(
             a=self._weights,
             newshape=(k, self._nc),
@@ -105,6 +106,14 @@ class Kmeans:
             newshape=(k, self._nc),
             order='F'
         )
+
+        print(unraveled_weights.shape)
+        print(self._orig_X.shape)
+
+        # for i in range(0, self._nr):
+        #     partition = self._cluster[i]
+        #     for j in range(0, self._nc):
+        #         distances[i] += pow((self._orig_X[i,j] - unraveled_centers[partition,j]),2)
 
 
         return dispersion, self._cluster, unraveled_centers, \

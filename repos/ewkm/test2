@@ -79,7 +79,7 @@ def main(only_embedding, re_parse, k, lamb, max_iter, convergance_delta, max_res
             costs,
             scores,
             purities,
-            iteration_list,
+            iterations_list,
             restart_list,
             path
         )

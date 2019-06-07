@@ -132,7 +132,7 @@ def run_for_lambda(
             init=int(k_plusplus)
         )
 
-    silhouette_score = lekm.silhouette()
+    silhouette_score = 0
     print('sil: {0}'.format(silhouette_score))
 
     merged_data = cs.merge_columns(mixed_data, clusters, distances)

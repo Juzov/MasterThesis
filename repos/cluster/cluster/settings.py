@@ -25,7 +25,7 @@ SECRET_KEY = 'jvt5rfg0#3c62rjs3-=(myp3t98o%)uji%-2gfx^x7qkdiviz6'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['clustering-thesis.syb.sh', 'localhost', '0.0.0.0']
+ALLOWED_HOSTS = ['clustering-thesis.syb.sh', 'localhost', '0.0.0.0', '127.0.0.1']
 
 
 # Application definition
