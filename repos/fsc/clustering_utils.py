@@ -207,6 +207,7 @@ def generate_run_specific_plot(lambdas, costs, scores, purities, iterations, res
     plt.savefig(plot_path + "/gamma-sil.png")
     plt.clf()
 
+    costs = [min(cost, 100000) for cost in costs]
     plt.plot(lambdas, costs, color='r', marker='D', linestyle='-')
     plt.ylabel(r'Cost Function ($P(U,C,W)$)')
     plt.xlabel(r'Gamma ($\gamma$)')

@@ -1,0 +1,183 @@
+\documentclass{beamer}
+
+\definecolor{KTHblue}{RGB}{25 84 166}
+\definecolor{KTHlightblue}{RGB}{46 171 224}
+\definecolor{KTHgreen}{RGB}{163 207 68}
+\definecolor{KTHpink}{RGB}{227 89 171}
+\definecolor{KTHgrey}{RGB}{103 108 118}
+
+\usetheme[titleformat=smallcaps, sectionpage=contents, progressbar=frametitle, block=fill]{metropolis}
+\title{Soft-Subspace Clustering on a High-Dimensional Musical Dataset}
+\setbeamercolor{normal text}{fg=KTHblue, bg=white}
+\setbeamercolor{alerted text}{fg=KTHgreen, bg=purple}
+\setbeamercolor{example text}{fg=KTHpink, bg=KTHgrey}
+\setbeamercolor{progress bar}{fg=KTHpink}
+\setbeamerfont{examiner}{size=\fontsize{8pt}{8pt}}
+\setbeamerfont{supervisor}{size=\fontsize{8pt}{8pt}}
+\setsansfont[BoldFont={Fira Sans SemiBold}]{Fira Sans Book}
+% Use metropolis theme
+
+% -------------------------------------
+
+\date{\today}
+\author{Emil Juzovitski}
+\examiner{Pawel Herman}
+\supervisor{Johan Gustavsson}
+\institute{Master Thesis Presentation}
+\begin{document}
+\maketitle
+
+% -------------------------------------
+
+\begin{frame}{Table of Contents}
+  \tableofcontents
+\end{frame}
+
+% -------------------------------------
+
+\section{Introduction}
+
+% -------------------------------------
+
+\begin{frame}{Clustering Analysis}
+\begin{block}{What is clustering analysis about?}
+Finding \alert{clusters} (groups) in a set of data objects \pause , with \alert{feature similar} data objects partitioned into the same cluster \pause , and \alert{feature dissimilar} data objects partitioned into different cluster.
+\end{block}
+\end{frame}
+
+% -------------------------------------
+
+\begin{frame}{Clustering Analysis}
+\begin{columns}
+  \column{.5\textwidth}
+    \begin{block}{Clustering analysis}
+    Finding \alert{clusters} (groups) in a set of data objects.
+    \end{block}
+  \column{.5\textwidth}
+    \begin{itemize}
+      \item<2> \alert{feature similar} data objects partitioned into the same cluster
+      \item<2> \alert{feature dissimilar} data objects partitioned into different cluster.
+    \end{itemize}
+\end{columns}
+\end{frame}
+
+% -------------------------------------
+
+\begin{frame}{Clustering Analysis}
+    \begin{block}{Clustering analysis}
+    Finding \alert{clusters} (groups) in a set of data objects \only<3->{, based on \alert{similarity}}
+    \end{block}
+    \only<2>{
+    \begin{itemize}
+      \item \alert{feature similar} data objects partitioned into the same cluster
+      \item \alert{feature dissimilar} data objects partitioned into different cluster.
+    \end{itemize}
+    }
+    \only<3>{Example Tasks:
+    \begin{itemize}
+      \item Fitting products into different aisles in a grocery store
+      \item Grouping distributors based on the products they sell
+    \end{itemize}
+    }
+    \only<4->{
+      How do we measure similarity?
+      % With a distance measure.
+    }
+
+    \only<5->{
+      By defining a \alert{distance} measurement between points: 
+      % With a distance measure.
+    }
+
+    \begin{center}
+      \only<6->{\alert{$D(X_1,X_2)$}}
+      \only<7>{
+        $= \sum_{j}^{m}{d(x_{1j},x_{2j})}$
+      }
+    \end{center}
+
+\end{frame}
+
+% -------------------------------------
+
+
+\begin{frame}[fragile]
+\frametitle{An Algorithm For Finding Primes Numbers.}
+\begin{semiverbatim}
+\uncover<1->{\alert<0>{int main (void)}}
+\uncover<1->{\alert<0>{\{}}
+\uncover<1->{\alert<1>{ \alert<4>{std::}vector<bool> is_prime (100, true);}}
+\uncover<1->{\alert<1>{ for (int i = 2; i < 100; i++)}}
+\uncover<2->{\alert<2>{
+if (is_prime[i])}}
+\uncover<2->{\alert<0>{
+\{}}
+\uncover<3->{\alert<3>{
+\alert<4>{std::}cout << i << " ";}}
+\uncover<3->{\alert<3>{
+for (int j = i; j < 100;}}
+\uncover<3->{\alert<3>{
+is_prime [j] = false, j+=i);}}
+\uncover<2->{\alert<0>{
+\}}}
+\uncover<1->{\alert<0>{ return 0;}}
+\uncover<1->{\alert<0>{\}}}
+\end{semiverbatim}
+\visible<4->{Note the use of \alert{\texttt{std::}}.}
+\end{frame}
+% -------------------------------------
+
+\begin{frame}{Features}
+\begin{itemize}
+  \item Describes a property of a object/point \pause
+  \item An object e.g. A shoe, can be represented by features such as \alert{brand} (nike, adidas), \alert{style} (sneaker, flip-flops, leather), and \alert{cost} (\$) \pause
+  \item \alert{brand} is \alert{categorical}
+  \item \alert{cost} is \alert{numerical}
+
+\end{itemize}
+\end{frame}
+
+% -------------------------------------
+
+\section{Background}
+
+% -------------------------------------
+
+\begin{frame}{Third Frame}
+Hello, world!
+\begin{example}
+  Hello
+\end{example}
+\end{frame}
+
+% -------------------------------------
+
+\begin{frame}[standout]
+  Thank you!
+\end{frame}
+
+% -------------------------------------
+
+\section{Method}
+
+% -------------------------------------
+
+\begin{frame}{fourth Frame}
+Hello, world!
+\end{frame}
+
+% -------------------------------------
+
+\section{Results}
+
+% -------------------------------------
+
+\section{Discussion}
+
+% -------------------------------------
+
+\begin{frame}{fourth Frame}
+Hello, world!
+\end{frame}
+
+\end{document}

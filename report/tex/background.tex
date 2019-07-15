@@ -2,29 +2,27 @@
 
 \begin{document}
 \chapter{Background}
-The fundamentals of clustering are introduced in Chapter 2. Distance measurements of varying data-types are shown. Hierarchical-, Partition- and, Density-clustering are all described. The pre-study goes into detail on how the popular \textit{K-means} algorithm functions. It continues by mentioning different feature-weighted clustering algorithms including \textit{Soft Subspace Clustering} (SSC) algorithms. The chapter ends with a method justification.
+The fundamentals of clustering are introduced in this chapter. Distance measurements of varying data-types are shown. Hierarchical, partition and density-based clustering are all described. The chapter details how the popular K-means algorithm functions and continues by mentioning different feature-weighted clustering algorithms including soft-subspace clustering (SSC) that are based on K-means. The chapter ends with a method justification for the research design.
 
 \section{Objective of Clustering}
-Given the inputs of a Dataset $\mathcal{D} = \{X_{ 1 }, X_{ 2 },..., X_{ n } \}$ --- where $X_i = [x_{i1}, x_{i2},...,x_{im} ]$ is a single data point with $m$ attributes --- and $k$ is a positive integer, the objective of partition clustering is to divide objects into $k$ disjoint clusters ${C} = \{C_1, C_2,..., C_k \}$ \cite{Huang97clusteringlarge}.
+Given a dataset $\mathcal{D} = \{X_{ 1 }, X_{ 2 },..., X_{ n } \}$ --- where $X_i = [x_{i1}, x_{i2},...,x_{im} ]$ is a single data point with $m$ attributes (features) -- and the input parameter $k$ (a positive integer), the objective of partition clustering is to divide objects into $k$ disjoint clusters ${C} = \{C_1, C_2,..., C_k \}$, where similar data points are partitioned into the same cluster \cite{Huang97clusteringlarge}.
 
-The above objective is as stated just for partition-based clustering (See \ref{sub:part})
-. For density-based clustering the objective is to separate local dense areas from noise for more details (See \ref{sub:density}) \cite{Ester1996}.
+The objective varies between clustering types, the above objective is as stated just for (hard-membership) partition-based clustering (see \cref{sub:part}), but the general idea of partitioning similar points to the same cluster is shared by all clustering methods. Another type of clustering methods is e.g. \textit{density}-based clustering where the objective is to separate local dense areas (with high similarity) from noise (see \cref{sub:density} for more details) \cite{Ester1996}.
 
-\section{Similarity/Distance Measures}
-\label{ch:sim}
-The relative closeness between two points $X_i, X_j$ is quantified numerically through a similarity measure $s(X_i, X_j)$ \cite{diday1976clustering}. A high value indicates that the points are close, while a low measure indicates that the points are dissimilar. Values of $s(X_i, X_j)$ go between 0 and 1.
+\section{Similarity and Distance Measures}
+The similarity between points has to be quantified numerically in order to be used in an algorithm. The relative closeness between two points $X_i$ and $X_j$ is quantified numerically through a \textit{similarity measurement} $s(X_i, X_j)$ \cite{diday1976clustering}. A high value indicates that the points are close, while a low measure indicates that the points are dissimilar. Values of $s(X_i, X_j)$ go between 0 and 1. Another solution is to quantify the dissimilarity of two points instead. The dissimilarity is described through a \textit{distance measurement} $d(X_i, X_j)$ --- where $d(X_i, X_j) \geq 0$.
 
-The dissimilarity between the same two points can be described through a distance measure $d(X_i, X_j)$ --- Where, $d(X_i, X_j) \geq 0$. Distance measures are often used with quantitative data i.e. numerical data. Similarity measures are frequently used when data is qualitative e.g. categorical and mixed data \cite{Wunsch2005}. Both measures are symmetric i.e. $s(X_i, X_j) = s(X_j, X_i)$ (An exception is subspace clustering methods - See \ref{ch:weighed} for more details).
+\label{ch:sim}Distance measures are often used with quantitative data, i.e. numerical data. Similarity measures are frequently used when data is qualitative, i.e. categorical and mixed data \cite{Wunsch2005}. Both measurements are symmetric, i.e. $d(X_i, X_j) = d(X_j, X_i)$. An exception is subspace clustering methods, see \cref{ch:weighed} for more details.
 
-Distances can be measured in many ways and are often explicitly created for one data type. Different algorithms use different distance measures. What distance measure an algorithm uses is based on the types of datasets the algorithm is specialized for.
+% Different algorithms use different distance measures. What distance measure an algorithm uses is based on the types of datasets the algorithm is specialized for. 
 
-A point $X_i$ can be compared with another point $X_j$ or a cluster representation $C_l$ --- frequently used in partitioning algorithms. A representation can be the mean of all points in the cluster, or a centroid --- the most central point in the cluster \cite{Guha2000, Kaufman1990}. For categorical data, the \textit{mode} can represent the cluster --- The cluster is represented by the most frequent value of each attribute in the cluster \cite{Ng1999}. $C_l$ in these representations can be handled as a point.
+% A point $X_i$ can be compared with another point $X_j$ or a cluster representation $C_l$ --- frequently used in partitioning algorithms. A representation can be the mean of all points in the cluster, or a centroid --- the most central point in the cluster \cite{Guha2000, Kaufman1990}. For categorical data, the \textit{mode} can represent the cluster --- The cluster is represented by the most frequent value of each attribute in the cluster \cite{Ng1999}. $C_l$ in these representations can be handled as a point. 
 
-The sections below introduce some popular approaches for numerical-, categorical-, and, mixed-data.
+Distances (and similarities) can be measured in many ways and are often explicitly created for a dataset with attributes of one specific data type. The sections below introduce some popular distance and similarity approaches for different data types, starting with the most common numerical data, continuing with categorical data, and ending with approaches that combine the two in \textit{mixed} data.
 
 \subsection{Numerical Similarity Measures}
 
-The Euclidean distance is a common measurement for the distance between two vectors, the measurement is shown in \ref{eq:Euclidean}. A frequent choice for distance measurement in clustering analysis is the squared Euclidean \cite{Jain1999, Huang1998, huang2005automated}, shown in \ref{eq:EuclideanSq}.
+The Euclidean distance is a common measurement for the distance between two vectors, the measurement is shown in \cref{eq:Euclidean}. A frequent choice for distance measurement in clustering analysis is the squared Euclidean \cite{Jain1999, Huang1998, huang2005automated}, shown in \cref{eq:EuclideanSq}.
 
 \begin{align}
   \label{eq:Euclidean}
@@ -33,21 +31,21 @@ The Euclidean distance is a common measurement for the distance between two vect
   d(X_i,C_l) &= \sum^{m}_{j=1}(x_{ij} - c_{lj})^2
 \end{align}
 
-The Euclidean distance is a special case of the Minkowski distance where $q=2$. The Euclidean and other Minkowski distances often involve a preprocessing step of normalizing of features \cite{Jain1999}. Features with higher variance will otherwise have a higher contribution in deciding the clusters. Similar to many other measurements, The \textit{curse of dimensionality} diminseshes the ability to diffrentiate distances between points in high-dimsional data\cite{Parsons2004}.
+The Euclidean distance is a special case of the Minkowski distance (eq. \ref{eq:mikowski}) where $q=2$. The Euclidean and other Minkowski distances often involve a preprocessing step of normalizing the dataset features \cite{Jain1999}. Features with higher variance will otherwise have a higher contribution in deciding the clusters. Similar to many other measurements, the \textit{curse of dimensionality} diminishes the ability to differentiate distances between points in high-dimensional data \cite{Parsons2004}.
 
 \begin{align}
   \label{eq:mikowski}
   d(X_i,C_l) &= {\sum^{m}_{j=1}\abs{x_{ij} - c_{lj}}^q}^{\frac{1}{q}}
 \end{align}
 
-Using a Euclidean distance it is assumed that the covariance matrix is an identity matrix, that is, in a 2-D space you can only cluster points into perfect circles. To avoid this problem Mahalanobis distance can be used, e.g allowing for elliptical shapes in a 2-D plane. It introduces a covariance matrix $S^{-1}$. The algebraic equation is shown in \ref{eq:mahalanobis}. Like the Euclidean counterpart, the square root is often discarded. 
+% A Minkowski distance assumes that the covariance matrix is an identity matrix, that is, in a 2-D space one can only cluster points into perfect circles. To avoid this problem \textit{Mahalanobis} distance can be used, it allows for elliptical shapes in a 2-D plane. It introduces a covariance matrix $S^{-1}$. The algebraic equation is shown in \cref{eq:mahalanobis}. Like the Euclidean counterpart, the square root is often discarded.
 
-\begin{align}
-  \label{eq:mahalanobis}
-  d(X_i,C_l) &= \sqrt{(X_i, C_l)^T S^{-1} (X_i, C_l)} \\
-\end{align}
+% \begin{align}
+%   \label{eq:mahalanobis}
+%   d(X_i,C_l) &= \sqrt{(X_i, C_l)^T S^{-1} (X_i, C_l)}
+% \end{align}
 
-The mentioned distances can be converted to a similarity distance --- with values between 0 and 1 --- by using the Gaussian kernel as shown in \ref{eq:simnum} \cite{Cheung2013}.
+The mentioned distances can be converted to a similarity measurement --- with values between 0 and 1 --- by using the Gaussian kernel as shown in \cref{eq:simnum} \cite{Cheung2013}.
 
 \begin{align}
   \label{eq:simnum}
@@ -56,29 +54,32 @@ The mentioned distances can be converted to a similarity distance --- with value
 
 
 \subsection{Categorical Similarity Measures}
-Categorical data is not commonly referred as a datatype. It is instead a group of datatypes consisting of nominal- and ordinal-data. Unique properties separates the types from each other.
+Categorical data is not commonly referred to as a single datatype. It is instead a group of datatypes consisting of nominal and ordinal data. Unique properties separate the types from each other.
 
 Nominal data --- e.g. chemical elements in a periodic table  --- are either identical or different. Ordinal data --- e.g. shirt sizes --- can be more or less similar. Additionally, nominal data does not have to be information balanced either --- some values are more important than others --- e.g. if two songs share the same artist it is more information than if they do not \cite{Kaufman1990}.
 
-Most clustering algorithms that cluster categorical data do not take account the differences between the data types mentioned above. There are distance measures that do (see \textit{daisy function} in \cite{Kaufman1990}) but implementing them in a clustering algorithm would increase the complexity of the algorithms. The rest of the similarity measures below considers ordinal data nominal. From this point onward, both nominal and ordinal will be referred as categorical data, and treated as nominal data.
+Most clustering algorithms that cluster categorical data do not take into account the differences between the data types mentioned above. There are distance measures that do (see \textit{daisy function} in \cite{Kaufman1990}) but implementing them in a clustering algorithm would increase the complexity of the algorithms. The rest of the similarity measures below considers ordinal data nominal. From this point onward, both nominal and ordinal will be referred to as categorical data, and treated as nominal data.
 
-In its purest form a categorical similarity is simply yes or no, as shown in \ref{eq:cat1}, i.e. Are two attribute values the same? \cite{Guha2000, Kaufman1990}
-
-To define the similarity between a point and a cluster representation, the number of mismatches can be used as shown in \ref{eq:catcent} \cite{Ng1999,Huang97clusteringlarge}. Where a cluster representation is defined by the most frequent attribute values of the points in the cluster. This method is used in \textit{K-modes} and the cluster representation is referred as a \textit{mode}.
-
-Another way is to compare the values of $X_i$ and the values of all data points $\forall X_k \in C_l$ for each attribute as shown in \ref{eq:cat2}, \ref{eq:cat3} \cite{Guha2000, Cheung2013}. In this method a cluster representation is not necessary. To allow fast computations of distances between points and clusters the frequency of each value of each cluster is stored in a frequency matrix. $w_j$ is an attribute weight defining how important each attribute is. The weight is created by calculating the entropy of the attribute. How to calculate the entropy is mentioned in section \ref{ch:weighed}.
+In its purest form a categorical similarity is simply a statement of \textit{yes} or \textit{no}, as shown in \cref{eq:cat1}, i.e. answering if two attribute values are the same or not \cite{Guha2000, Kaufman1990}.
 
 
-\begin{align}
+\begin{equation}
 \label{eq:cat1}
-\delta{(x_{ij},x_{kj})} &= 
+\delta{(x_{ij},x_{kj})} =
   \begin{cases*}
   1 & if $x_{ij} \neq x_{kj}$ \\
     0 & otherwise
-  \end{cases*} \\
+  \end{cases*}
+\end{equation}
+
+To define the similarity between a point and a cluster representation, the number of mismatches can be used as shown in \cref{eq:catcent} \cite{Ng1999,Huang97clusteringlarge}. A cluster representation in this case, is defined by the most frequent attribute values of the points in the cluster. This method is used in \textit{K-modes} and the cluster representation is referred to as a \textit{mode} \cite{Ng1999} (see \cref{sub:family}).
+
+\begin{equation}
 \label{eq:catcent}
-d(X_{i},C_l) &= \sum^{m}_{j=1}\delta(x_{ij},C_{lj})
-\end{align}
+d(X_{i},C_l) = \sum^{m}_{j=1}\delta(x_{ij},C_{lj})
+\end{equation}
+
+Another way to define the similarity is to compare the values of $X_i$ and the values of all data points $\forall X_k \in C_l$ for each attribute as shown in \cref{eq:cat2,eq:cat3} \cite{Guha2000, Cheung2013}. In this method a cluster representation is not necessary. To allow fast computations of distances between points and clusters the frequency of each value of each cluster is stored in a frequency matrix. The weight $w_j$ is an attribute weight defining how important an attribute is. The weights of each attribute is based on the Shannon entropy (for more on entropy see \cref{ch:weighed}).
 
 \begin{align}
 s(x_{ij},x_{kj}) &= 1 - \delta{(x_{ij},x_{kj})} \\
@@ -89,27 +90,29 @@ s(X_{i},C_{l}) &= \sum_{j = 1}^{m}{w_j s(x_{ij},C_{lj})}
 \end{align}
 
 \subsection{Mixed Similarity Measures} \label{sssec:mixed-sim}
-Mixed data measures are simply a combination of numerical and categorical measures. That is, measure categorical attributes with the categorical measure, and measure the numerical data with numerical measure. The bigger question is rather how to weigh the different measures to create a single similarity measure between $X_i$ and, $X_j$ or $C_l$. Weighing specifics is mentioned in section \ref{ch:weighed}.
+Mixed data measures are simply a combination of numerical and categorical measures. That is, categorical attributes are measured with a categorical measurement, and numerical features are measured with a numerical measurement. The important question is how to weigh the different measures to create a single similarity measure between $X_i$ and $X_j$ or $C_l$. Weighing specifics is mentioned in \cref{ch:weighed}.
 
-
-\citeauthor{Huang97clusteringlarge} proposes the similarity measure shown in \ref{eq:protodist} \cite{Huang97clusteringlarge}. $w_l$ determines how important categorical data is compared to its numerical counterpart for cluster $l$. In \textit{K-Protoypes} a simplification is made local $w_l$ for each cluster $l$ with a single global weight $w$. The weight $w$ is a user-defined input.
+\citeauthor{Huang97clusteringlarge} proposes the similarity measure shown in \cref{eq:protodist} \cite{Huang97clusteringlarge}, $w_l$ determines how important categorical data (denoted with $^c$) is compared to its numerical counterpart (denoted with $^r$) for cluster $l$. In a popular partition-based algorithm \textit{K-Protoypes}, a simplification is made, local weights $w_l$ for each cluster $l$ is replaced with a single global weight $w$. The weight $w$ is a user-defined input.
 %while obtaining the same time complexity of \textit{O(nkdi)}%
-
-\citeauthor{Cheung2013} \cite{Cheung2013} propose representing numerical data as an vector $X_{i}^{r}$ where numerical data is denoted by $r$, while letting each categorical attribute have a single weight . The categorical weights are automatically weighed through information gain, as such the algorithm is a \textit{feature weighting} algorithm. See section \ref{ch:weighed} for more. By defining the numerical attributes as a single numerical vector the amount of attributes is defined as the number of categorical attributes, plus 1. $X_{i}$.
-
 \begin{equation}
 \label{eq:protodist}
 d(X_i, C_l) = \sum_{j=1}^{m_r}( x_{ij}^{r} - c_{lj}^{r} )^2 +
   w_l \sum_{j=1}^{m_c}\delta( x_{ij}^c, c_{lj}^c )
 \end{equation}
 
+
+\citeauthor{Cheung2013} \cite{Cheung2013} propose representing numerical data as an vector $X_{i}^{r}$ --- where numerical data is denoted by $r$ --- while letting each categorical attribute (denoted by $^c$) have its own weight. The amount of categorical attributes is denoted by $m_c$, and the total amount of attributes is denoted by $m_f = m_c + 1$ as all numerical values share one weight. The similarity measure is seen in \cref{eq:mixJia}. Categorical weights are automatically weighed through information gain, as such the algorithm is a \textit{feature weighting} algorithm. See \cref{ch:weighed} for more details.
+
 \begin{align}
 \label{eq:mixJia}
 s(X_{i},C_{l}) &= \frac{1}{m_f}s(X_{i}^r,C_{l}^r) + \frac{m_c}{m_f}\sum_{j = 1}^{m_c}{{w_j}s(x_{ij}^c,c_{lj}^c)}
 \end{align}
-Where:\newline
-$m_c \text{ is the number of categorical attributes}$ \newline
-$m_f = m_c + 1$
+\begin{center}
+% \begin{conditions}
+%   m_{c} & Number of categorical attributes \\
+%   m_f & $m_c + 1$
+% \end{conditions}
+\end{center}
 
 % The mentioned algorithms do not allow automatic weighting. Forcing weights to be tested. 
 
@@ -117,30 +120,35 @@ $m_f = m_c + 1$
 
 
 \section{Clustering Algorithms}
-Clustering algorithms are often divided into categories. Hierarchical-, Partition- and Density-based clustering are the largest categories \cite{Xu2015}. The algorithms below are exclusively numerical if not stated otherwise.
+Clustering algorithms are often divided into categories. Hierarchical, partition and density-based clustering are the largest categories \cite{Xu2015}. Each of the given types are introduced in the sections below.
 
 \subsection{Hierarchical Clustering}
-A Hierarchical algorithm generates a set of nested clusters, also known as a dendogram \cite{Xu2015, Jain1999}. There are two approaches two hierarchical clustering. Agglomerative- and divisive-hierarchical clustering.
+A hierarchical algorithm generates a set of nested clusters, also known as a \textit{dendogram} \cite{Xu2015, Jain1999}. There are two approaches for hierarchical clustering, \textit{agglomerative} and \textit{divisive} hierarchical clustering.
 
 In agglomerative clustering, each point starts being its own cluster. In the next step it merges with the most similar cluster. This repeats until all points are in one cluster.
 
 Divisive clustering does instead the opposite: every point starts in the same cluster. In the next step the cluster gets split up into two clusters. This repeats until every point is in its own cluster.
 
-CURE\cite{Jain1999}, BIRCH\cite{zhou2012ensemble} and, ROCK (categorical) \cite{Guha2000} are popular algorithms of hierarchical clustering. The creation of a dendogram in these clustering algorithms results in a time complexity that make the algorithms less suitable for larger datasets however, with sampling techniques as used in CURE and ROCK bigger datasets can be managed \cite{Xu2015,Jain1999}. In addition to creating a dendogram a positive is the possibility to cluster with any arbitrary shape. % ADD REFERENCES
+CURE \cite{Jain1999}, BIRCH \cite{zhou2012ensemble} and ROCK (categorical) \cite{Guha2000} are popular algorithms of hierarchical clustering. The creation of a dendogram in these clustering algorithms results in a high time complexity ($O(n^2 \cdot log(n))$) that make the algorithms less suitable for larger datasets however, by running the algorithms on a sample representation of the dataset, as used in CURE and ROCK bigger datasets can be managed \cite{Xu2015,Jain1999}. In addition to creating a dendogram, the type includes methods which are able to partition clusters with an arbitrary shape. % ADD REFERENCES
 
 
 \subsection{Partition Clustering}
 \label{sub:part}
-In partition clustering a partition of clusters $U$ is found by iteratively optimizing a cost function \cite{huang2005automated, Xu2015,Jain1999}. The algorithms include two iterative steps of assigning each point to the most similar cluster center representation, and, updating a cluster center representation --- which is a mean in \textit{K-means} and the most central point in \textit{K-medoids}.
+In partition clustering a partition of clusters $U$ is found by iteratively optimizing a cost function \cite{huang2005automated, Xu2015,Jain1999}. The algorithms include two iterative steps of assigning each point to the most similar cluster center representation, and updating a cluster center representation --- which is a mean in K-means and the most central point in \textit{K-medoids} (see \cref{sub:family}).
 
-The algorithms converge when no data points switch cluster association or on a user defined convergence delta for the cost function. The time complexity is dependent on the amount of iterations. The number of iterations is not known beforehand and could vary depending on the chosen initial cluster centers --- A usual approach is to randomly choose $K$ clusters from the dataset as initial clusters centers. Partitioning algorithms handle larger datasets better than most hierarchical approaches. 
+The algorithms converge either when no data points switch cluster association or on a user-defined convergence delta for the cost function. The run time is dependent on the amount of iterations. The number of iterations is not known beforehand and could vary depending on the chosen initial cluster centers --- a usual approach is to randomly choose $K$ clusters from the dataset as initial clusters centers. Partitioning algorithms handle larger datasets better than most hierarchical approaches.
 
 
 
 
 \subsubsection{K-means Family}
-K-means is arguably the most common clustering algorithm. The cost function of which K-means is optimized on is shown in \ref{eq:cost}, \ref{eq:cost2}. Either \ref{eq:cost} is minimized or \ref{eq:cost2} is maximized \cite{huang2005automated}.
-There are many algorithms based on K-means, they are referred as the K-means family of clusters \cite{Huang1998}. The family includes \textit{K-Modes} \cite{Ng1999}, \textit{K-Prototypes} \cite{Huang97clusteringlarge}, \textit{W-K-means} \cite{huang2005automated}, \textit{E-W-K-means} \cite{Jing2007}.
+\label{sub:family}
+K-means is arguably the most common clustering algorithm. The cost function (also known as objective function) of which K-means is optimized on is shown in \cref{eq:cost,eq:cost2}, $n$ refers to the amount of objects, $m$ to the amount of attributes (features) and $k$ is the amount of clusters. The cost function is either minimized (eq. \ref{eq:cost}) or maximized (eq. \ref{eq:cost2}) \cite{huang2005automated}.
+
+
+% The family includes \textit{K-Modes} \cite{Ng1999}, \textit{K-Prototypes} \cite{Huang97clusteringlarge}, \textit{W-K-means} \cite{huang2005automated}, \textit{E-W-K-means} \cite{Jing2007}.
+
+% If weights are added to attributes 
 
 \begin{align}
   \label{eq:cost}
@@ -148,28 +156,39 @@ There are many algorithms based on K-means, they are referred as the K-means fam
   \label{eq:cost2}
   P(U,C) &= \sum^k_{l=1} \sum^n_{i=1} \sum^m_{j=1} u_{il} s(x_{ij},c_{lj})
 \end{align}
+% \begin{center}
+% \begin{conditions}
+%   k & amount of clusters \\
+%   m & amount of attributes \\
+%   n & amount of objects \\
+%   U & partition matrix \\
+%   C & cluster representation (center)
+% \end{conditions}
+% \end{center}
 
-$U$ is a partition matrix of size $N \times K$. The Partition matrix shows in which clusters point $X_i$ is in.  In hard clustering one point can only exist in a single cluster $C_l$. Thus, $u_{il} = [0,1]$ and $(\sum_{ l=1 }^{ k } u_{il}) = 1$. Otherwise, points can be members of multiple clusters with different probabilities that sum up to 1. This can be referred as \textit{Fuzzy-memberships} and often includes a fuzziness index, a variable, deciding the importance of the generated weights \cite{Gan2006}.
+$U$ is a partition matrix of size $N \times K$. The partition matrix shows in which clusters point $X_i$ is in.  In hard clustering one point can only exist in a single cluster $C_l$. Thus, $u_{il} = 0 \textit{ or } 1$ and $(\sum_{ l=1 }^{ k } u_{il}) = 1$. Otherwise, points can be members of multiple clusters with different probabilities that sum up to 1. This can be referred to as \textit{Fuzzy-memberships} and often includes a fuzziness index, a variable deciding the importance of the generated weights \cite{Gan2006}.
 
-Optimizing the cost function $P(U,C)$ is done by iteratively optimizing the function on one variable and treating the other one as a constant. Our suboptimization problems becomes:
+There are many algorithms based on K-means, they can be referred to as the K-means family of clustering \cite{Huang1998}. Different similarity functions determine what K-means family algorithm the optimization represents \cite{huang2005automated}. Euclidean distance would result in K-means. The categorical similarity shown in \cref{eq:catcent} results in \textit{K-modes} \cite{Ng1999}. If the similarity is the mixed type shown in \cref{eq:protodist} the optimization represents \textit{K-Prototypes} \cite{Huang97clusteringlarge}. Additional algorithms in the class (\textit{Weighted-K-means}, \textit{EWKM}, \textit{FSC} etc.) \cite{huang2005automated, Jing2007, Gan2016} tweak the distance function (measurement) to include some sort of weighting (see \cref{ch:weighed} for more).
+
+Optimizing the cost function $P(U,C)$ is done by iteratively optimizing the function on one variable and treating the other one as a constant. The sub-optimization problems (\textbf{P1}, \textbf{P2}) become:
 
 \begin{description}
-  \item \textbf{P1.}\quad Assign the each point to the most similar cluster. 
+  \item \textbf{P1.}\quad Assign each point to the most similar cluster.
     \begin{description}
-    	\item Fix C = $\hat{C}$, Optimize $P(U, \hat{ C })$
+    	\item Fix C = $\hat{C}$, optimize $P(U, \hat{ C })$
     \end{description}
 
   \item \textbf{P2.}\quad Update the mean for each cluster.
     \begin{description}
-		\item Fix U = $\hat{U}$ Optimize $P(\hat{ U },C)$
+		\item Fix U = $\hat{U}$ optimize $P(\hat{ U },C)$
     \end{description}
 \end{description}
 
-For \textbf{P1.} we update $U$ by equation \ref{eq:uil}.
+For \textbf{P1.} we update $U$ by \cref{eq:uil}.
 
 \begin{align}
  \label{eq:uil}
-  u_{il} &= 
+  u_{il} &=
   \begin{cases}
   1 & d(X_i,C_l) \leq d(X_i,C_t) \quad \text{for} \quad 1 \leq t \leq k \\
   0 & \text{for} \quad t \neq l
@@ -189,63 +208,60 @@ For \textbf{P2.} we update $C$ --- updating each center representation --- throu
         \label{eq:catclusters}
       c_{lj} &= a_{j}
       \end{align}
-      Where: $a_{j}$ is the most frequent value of attribute $j$ in $C_l$.
-    \item For mixed values, one option is representing the cluster as a Prototype\cite{Huang97clusteringlarge,Huang1998}. The solution is simply to use \ref{eq:numclusters} for numerical attributes and \ref{eq:catclusters} for categorical.
+      where $a_{j}$ is the most frequent value of attribute $j$ in $C_l$.
+    \item For mixed values, one option is representing the cluster as a Prototype\cite{Huang97clusteringlarge,Huang1998}. The solution is simply to use \cref{eq:numclusters} for numerical attributes and \cref{eq:catclusters} for categorical.
 \end{itemize}
 
-The steps of clustering k-means family algorithms, thus becomes:
+The steps of clustering K-means family algorithms, thus becomes:
 
 \begin{enumerate}
   \item Choose initial cluster representatives $C^0$
-  \item Fix $C^t$ = $\hat{C}$, Optimize $P(U^{t}, \hat{ C })$, Obtain $P(U^{t + 1}, \hat{ C })$
+  \item Fix $C^t$ = $\hat{C}$, optimize $P(U^{t}, \hat{ C })$, Obtain $P(U^{t + 1}, \hat{ C })$
     \begin{description}
       \item if $P(U^t, \hat{ C }) = P(U^{t+1}, \hat{ C })$
       \item \quad return $P(U^t, \hat{ C })$ (Convergence)
     \end{description}
-  \item Fix $U^{t + 1}$ = $\hat{U}$, Optimize $P(\hat{U}, C^t)$ Obtain $P(\hat{ U }, C^{t + 1})$
+  \item Fix $U^{t + 1}$ = $\hat{U}$, optimize $P(\hat{U}, C^t)$ Obtain $P(\hat{ U }, C^{t + 1})$
     \begin{description}
       \item if $P(\hat{ U }, C^t) = P(\hat{ U }, C^{t + 1})$
       \item \quad return $P(\hat{U}, C^{t})$ (Convergence)
     \end{description}
-  \item Repeat 2. and 3.
+  \item Repeat steps 2. and 3.
 \end{enumerate}
-
-
-Different similarity functions determine what K-means family algorithm the optimization represents \cite{huang2005automated}. Euclidean distance would result in \textit{K-means}. The categorical similarity shown in \ref{eq:catcent} results in \textit{K-modes} \cite{Ng1999}. If the similarity is the mixed type shown in \ref{eq:protodist} the optimization represents \textit{K-Prototypes} \cite{Huang97clusteringlarge}. % If weights are added to attributes 
 
 
 \subsubsection{K-medoid Family}
-In \textit{K-medoids} a cluster is represented by the most central object in a center --- A medoid. The cost function looks at the total deviation between points in the cluster and the medoid \cite{Ng2002, }. Compared to \ref{eq:cost} the difference is that the distance function compares a point $X_i$ with the medoids $C_l^m$ of that cluster. Using medoids instead of a mean results in a more robust clustering performance. The tradeoff is \textit{K-medioids} runtime. \textit{K-medioids} is usually implemented through the \textit{PAM} algorithm which has a time complexity of $O(k(n-k)^{2})$ per iteration, whereas the basic \textit{K-means} has an iteration complexity of $O(nk)$.
+In \textit{K-medoids} a cluster is represented by the most central object in a center --- a medoid. The cost function looks at the total deviation between points in the cluster and the medoid \cite{Ng2002}. Compared to \cref{eq:cost} the difference is that the distance function compares a point $X_i$ with the medoids $C_l^m$ of that cluster. Using medoids instead of a mean results in a more robust clustering performance. The tradeoff is \textit{K-medioids} run time. \textit{K-medioids} is usually implemented through the \textit{PAM} algorithm (an efficient implementation of \textit{K-medioids}) which has a time complexity of $O(tk(n − k)^2)$ per iteration, whereas the basic K-means (Lloyd's implementation) has an iteration complexity of $O(tnkm)$ \cite{Ng2002}.
 
-Extensions of \textit{PAM}, such as, \textit{CLARA}, and, \textit{CLARANS} are approaches to improve the scalability of the clustering type by clustering on a sample representation which improves the run time \cite{Ng2002}. \textit{CLARANS} improves the simple sampling procedure in \textit{CLARA}. It defines a sample of cluster medoids as a node in a graph which is the whole dataset. Neighbouring nodes differ by one medoid. \textit{PAM} traverses all neighbours for each node it traverses to find the node with minimum distance between points. CLARA can be seen as only finding the minimum of a sub-graph containing only the sample points. \textit{CLARANS} samples dynamically neighbours while traversing the graph not restricting the traversal to a subgraph.
+Extensions of \textit{PAM}, such as \textit{CLARA} and \textit{CLARANS} are approaches to improve the scalability and run time of PAM by clustering on a sample representation of the dataset \cite{Ng2002}. \begin{color}{modified}The sample is defined to be of size $40 + 2k$ by the authors, where $40$ is a constant, and $k$ is the wanted amount of clusters. To reduce sampling bias, CLARA is clustered on multiple sample representations. The sample resulting in the smallest cost is used to define the resulting medoids of the algorithm \end{color} CLARANS improves the simple sampling procedure in CLARA. It defines a sample of cluster medoids as a node in a graph which is the whole dataset. Neighbouring nodes differ by one medoid. PAM traverses all neighbours for each node it traverses to find the node with minimum distance between points. CLARA can be seen as only finding the minimum of a sub-graph containing only the sample points. CLARANS samples dynamically neighbours while traversing the graph not restricting the traversal to a subgraph.
 
-\subsubsection{Determining K and K-initialization}
-One aspect of using a clustering algorithm that often gets overlooked, is the inputs of the algorithm.
-In order to use a partitioning algorithm the input of K has to be determined.
+\subsubsection{Determining \textit{k} and \textit{k}-initialization}
+One aspect of using a clustering algorithm that often gets overlooked, is the parameters chosen as inputs for the algorithm.
+When using hierarchical and partition-based clustering the value of \textit{k} has to be decided.
 
-A way to determine the K is by running the algorithm with different values of K and then through an internal criterion measure (see \ref{sec:Internal}) decide the best K for the dataset \cite{Huang97clusteringlarge, Sugar2003}. Running an algorithm multiple times makes the process of clustering multiple times slower. When clustering a large dataset this is something to avoid.
+A way to determine \textit{k} is by running the algorithm with different values of \textit{k} and then through an internal or external criterion measure (see \cref{sec:Internal}) decide the best $k$ for the dataset \cite{Huang97clusteringlarge, Sugar2003}. Running an algorithm multiple times makes the process of clustering many times slower, and should be avoided for larger datasets.
 
-Sampling is used in CLARA, CLARANS \cite{Ng2002} to find medoids for the whole dataset. The idea is that a small($40 + 2k$ points) randomly uniform sample of the dataset should represent the whole dataset. The same sampling process can be used to find \textit{K} and so, finding a ${k}$ for a sample would be finding an approximation of \textit{K} for the whole dataset. The algorithm still has to be ran on the sample multiple times and evaluated against the inner criterion, but the time to compute the clusters for a sample rather than the whole dataset is significantly less.
+\begin{color}{modified}
+Sampling is used in CLARA and CLARANS \cite{Ng2002} to improve the performance of PAM. The idea in these algorithms is to find medoids for the whole dataset by clustering on a sample representation of the dataset. The same reasoning can be used to find a approximation of \textit{k} for the whole dataset. The algorithm still has to be run on the sample multiple times and evaluated against a defined criterion, but the time to compute the clusters for a sample rather than the whole dataset is significantly less.
 % A sample does only need to contain 50-100 points.
+\end{color}
 
-\citeauthor{Cheung2013} propose another approach \cite{Cheung2013, Jia2018}. Here, competitive learning is used --- giving every cluster a weight that together with the distance function determines the chance of a datapoint becoming a member of the cluster. When a datapoint is asssigned to the cluster, that cluster's weight and its neighbour's weight increase, and the rest of the clusters' weights decrease. Eventually, some clusters disappear. The positive aspect of this approach is determining the amount of clusters occurs during the clustering process removing the need to cluster the dataset multiple times. Note: A user input of maximum number of clusters $\mathbf{k^*}$ is required.
+\citeauthor{Cheung2013} propose another approach \cite{Cheung2013, Jia2018}. Here, competitive learning is used --- giving every cluster a weight that together with the distance function determines the chance of a datapoint becoming a member of the cluster. When a datapoint is assigned to a cluster, that cluster's weight is increased together with its neighbours' weights, while the rest of the clusters' weights decrease. Eventually, some clusters disappear. A benefit of competitive learning is that the amount of clusters are determined during the clustering process, removing the need to cluster the dataset multiple times. Note, however that a user input of maximum number of clusters $\mathit{k^*}$ is required.
 
-In addition to choosing $k$, picking good initial points is also a problem that should be considered. Good initial clusters allow for a faster convergence while bad can result in convergence on a suboptimal result\cite{Arthur2006, Jia2018}, forcing multiple clusterings to obtain a result of confidence. While random uniform sampling is a way to initialize $K$ centers there are more robust solutions, that can exclude picking e.g. outliers allowing the result to be less random. 
+In addition to choosing $k$, picking good initial points is also a problem that should be considered. Good initial clusters allow for a faster convergence while bad ones can result in convergence on a suboptimal result \cite{Arthur2006, Jia2018}, forcing multiple clusterings to obtain a result of confidence. While random uniform sampling is a way to initialize $k$ centers there are more robust solutions, that can exclude picking e.g. outliers allowing the result to be less random.
 
-\textit{K-means++}\cite{Arthur2006} proposes replacing uniformly at random sampling with the following steps:
+For numerical data, \textit{K-means++} \cite{Arthur2006} proposes replacing uniform random sampling with the steps seen below. It is also possible to add an initialization step for categorical and mixed data as mentioned in \cite{Jia2018}.
 
 \begin{enumerate}
-  \item Pick one center $C_l$ uniformly at randomly
-  \item Pick a new center $C_i$, choosing point $X_i \in \mathcal{D}$ with probability \\ $\frac{d(X_i,C_q)^2}{\sum_{t=1}^{k}{d(X_t,C_q)}}$, where $C_q$ is the already choosen point with the minimum distance to $X_i$,$X_t$.
+\label{eq:plusplus}
+  \item Pick one center $C_l$ uniformly at random.
+  \item Pick a new center $C_i$, choosing point $X_i \in \mathcal{D}$ with probability \\ $\frac{d(X_i,C_q)^2}{\sum_{t=1}^{k}{d(X_t,C_q)}}$, where $C_q$ is the already chosen point with the minimum distance to $X_i$,$X_t$.
   \item Repeat 1. and 2. until $K$ points have been picked.
 \end{enumerate}
 
-In \cite{Jia2018} a specific approach for mixed data is mentioned.
-
-
 \subsection{Density-Based Clustering}
 \label{sub:density}
-Density-based clustering algorithms define clusters to be higher-density areas --- a local area with a relative high number of data points i.e. higher density than noise  \cite{Ester1996, huang2005automated, Xu2015,Jain1999}. DBSCAN \cite{Ester1996} is the most well known clustering algorithm where each data point in a cluster must have a user defined \textit{MinPts} in its $\mathcal{E}$-neighborhood, where $d(X_i,X_j) < \mathcal{E}$ and $\mathcal{E}$ is user-defined. The shape of the created clusters is defined by the chosen distance measure.
+Density-based clustering algorithms define clusters to be higher-density areas --- a local area with a relative high number of data points, i.e. higher density than noise  \cite{Ester1996, huang2005automated, Xu2015,Jain1999}. DBSCAN \cite{Ester1996} is the most well known clustering algorithm where each data point in a cluster must have a user defined \textit{MinPts} in its $\mathcal{E}$-neighborhood, where $d(X_i,X_j) < \mathcal{E}$ and $\mathcal{E}$ is user-defined. The shape of the created clusters is defined by the chosen distance measure.
 
 The algorithms of this type perform well on larger low-dimensional datasets especially on spatial data \cite{Ester1996}.
 
@@ -254,126 +270,169 @@ The algorithms of this type perform well on larger low-dimensional datasets espe
 
 K-means assumes that all attributes/features are of the same importance \cite{Kaufman1990}. If one were to scale the range of one attribute by two, it would become twice as important for the clustering result. To allow attributes of naturally smaller value ranges the same importance as attributes with larger value ranges, attributes are often normalized.
 
-After normalizing the attributes, attributes can be given a weight based on the perceived importance of the attribute. Weighting attributes is necessary for good performance on most datasets. Using irrelevant attributes damages the clustering performance \cite{Kaufman1990}. It is worse than not using the attribute at all. Moreover, increasing the importance of a relevant attribute allows the clustering algorithm to perform better. % Thus, feature weighting
+After normalizing the attributes, a weighting step can be added, where attributes are given a weight based on its perceived importance in relation to other attributes. It helps to remove the importance of features that are irrelevant, which is necessary for good performance on most datasets as using irrelevant attributes damages the clustering performance \cite{Kaufman1990}. Using irrelevant features is in fact worse than not using the attribute at all. Moreover, increasing the importance of relevant attributes allows them to be regarded more in the clustering and can thus, result in better performance.
 
-Deciding on how to weight attributes is hard. A simple solution is using technical expertise to assign attribute weights. In e.g. data-mining, a dataset is often of high-dimensionality as it may be generated from a database with hundreds of tables and columns \cite{Jing2007}. The high degree of dimensions makes manually determining the weights of the attributes almost impossible.
+Deciding on how to weigh attributes is hard. A simple solution is using technical expertise to assign attribute weights. In e.g. data-mining, a dataset is often of high-dimensionality as it may be generated from a database with hundreds of tables and columns \cite{Jing2007}. The high degree of dimensions makes it almost impossible to manually determine the weights of the attributes.
 
-A fairly popular way to handle high-dimensional data is through the use dimensionality-reduction techniques e.g. PCA \cite{Jolliffe2005,van2009}. This is a possible first step in clustering analysis, occurring before the actual clustering. In short, dimensionality-reduction techniques try to find the minimum set of representative attributes that account for the properties of the dataset. It can be hard to interpret the results from PCA. PCA also assumes that all clusters care about the same features \cite{Deng2010}. An assumption that often is false in high-dimensional datasets.
+A fairly popular way to handle high-dimensional data is through the use dimensionality reduction techniques e.g. \textit{PCA} \cite{Jolliffe2005,van2009}. This is a possible first step in clustering analysis, occurring before the actual clustering. In short, dimensionality reduction techniques try to find the minimum set of representative attributes that account for the properties of the dataset. It can be hard to interpret the results from PCA. PCA also assumes that all clusters care about the same features \cite{Deng2010}. An assumption that often is false in high-dimensional datasets.
+
+Another possibility which is introduced in the next section, is to add steps to the clustering algorithm to automate the process of weighting features.
 
 \subsection{Automated Feature-Weighting}
-Feature-weighting can also be done automatically. Automatic feature-weighting is commonly referred as \textit{feature weighting} and is often achieved by extending a \textit{k-means} like algorithm. An additional \textit{attribute weight} variable is added to the cost function given in \ref{eq:cost}. How the cost function changes from \ref{eq:cost} depends on what concepts we use to automate the weighting.
+Feature-weighting can be done automatically. Automatic feature-weighting is commonly referred to as \textit{feature weighting} and is often achieved by extending a K-means like algorithm. An additional \textit{feature weight} (attribute weight) variable is added to the cost function given in \cref{eq:cost}. How the cost function changes from \cref{eq:cost} depends on what concepts we use to automate the weighting.
 
-One algorithm of this class is \textit{w-k-means} which extends \textit{k-means} by adding a weight to each attribute \cite{huang2005automated}.
-\textit{w-k-means} uses the cost function in \ref{eq:cost_w_weight} which introduces a new varaible $W$ --- the weights of each attribute --- to be optimized. $\beta$ is a hyperparamater for the importance of weights. In \textit{w-k-means} $W$ is optimized on the variance of the intra-cluster distances. \textit\textbf{P3.} is the additional problem of optimizing $W$ and is shown in \ref{eq:optimW}. An additional step in the k-means algorithm is added for the optimization:
+\begin{color}{modified}
+One algorithm of this class is \textit{weighted-K-means}, which extends K-means by adding a weight to each attribute \cite{huang2005automated}. w-k-means uses the cost function in \cref{eq:wk_c}. The cost function introduces two new variables: $W$ --- a weight vector containing the weights for each attribute --- and $\beta$ --- a hyper-parameter defining the importance of the weight vector. \textbf{P3.} is the new subproblem below of updating $W$ after $C$ and $U$ have been updated. The weight $W^t$ is updated through \cref{eq:wk_w}, and the feature distance $D_j$ is defined in \cref{eq:wk_d}.
+% A new subproblem \textbf{P3.} was added to k-means \textbf{P1.} and \textbf{P2.} in order to optimize $W$.
 
-\textbf{4.}\quad Let $\hat{U}$ = $U^{t+1}$, $\hat{C}$ = $C^{t+1}$, Optimize $P(\hat{U^{t+1}}, \hat{ C^{t + 1} }, W^{t})$ \\
-\quad  Obtain $P(\hat{U}, \hat{ C }, W^{t + 1})$
+% The a \textit{w-k-means} $W$ is optimized on the variance of the intra-cluster distances. \textbf{P3.} is the additional problem of optimizing $W$ introduced by the algorithm:
+\vspace{4mm}
 \begin{description}
-  \item if $P(\hat{U}, \hat{ C }, W^{t}) = P(\hat{U}, \hat{ C }, W^{t + 1})$.
-
-  \item \quad return $P(\hat{U^{t+1}}, \hat{ C^{t + 1} }, W^{t})$ (Convergence)
+  \label{desc:P3}
+\item \textbf{P3.} \quad Update the weights of all attributes.
+    \begin{description}
+      \item Fix $C^{t+1} = \hat{C}$ and $U^{t+1} = \hat{U}$, optimize $P(\hat{U^{t}}, \hat{ C^{t} }, W^{t})$.
+    \end{description}
 \end{description}
+\vspace{4mm}
 
 \begin{align}
-  \label{eq:cost_w_weight}
-  P(U,C,W) &= \sum^k_{l=1} \sum^n_{i=1} \sum^m_{j=1} u_{il} w_j^{\beta} d(x_{ij},c_{lj})
+  \label{eq:wk_c}
+  P(U,C,W) &= \sum^k_{l=1} \sum^n_{i=1} \sum^m_{j=1} u_{il} w_j^{\beta} d(x_{ij},c_{lj}) \\
+  \label{eq:wk_w}
+  \hat{w}_j &=
+  \begin{cases}
+    0 & D_j = 0 \\
+    \frac{1}{ \sum^m_{t=1} [\frac{ D_j }{ D_t }]^{ \frac{ 1 }{ \beta - 1 } } } & D_j \neq 0
+  \end{cases} \\
+  \label{eq:wk_d}
+  D_j &= \sum^{ k }_{ l }{\sum^n_1 {\hat{u}_{il} d(x_{ ij }, c_ { lj } )}}
 \end{align}
-\begin{align}
-D_j &= \sum^{ k }_{ l }{\sum^n_1 {\hat{u}_{il} d(x_{ ij }, c_ { lj } )}} \\
-\label{eq:optimW}
-\hat{w}_j &=
-\begin{cases}
-  0 & D_j = 0 \\
-  \frac{1}{ \sum^m_{t=1} [\frac{ D_j }{ D_t }]^{ \frac{ 1 }{ \beta - 1 } } } & D_j \neq 0 \\
-\end{cases}
-\end{align}
 
-The function can be modified to allow clustering on mixed data by using a suitable distance measurement \cite{Jia2018}.
+The algorithm can be modified to allow clustering on mixed data by using a distance measurement for mixed data \cite{Jia2018}.
 
-Instead of optimizing the weights on only intra-cluster distances --- which is tricky for categorical data --- The weights can be optimized by information gain, more specifically the entropy. Entropy can be referred as the amount of "disorder" in a system. Entropy is used in \cite{Cheung2013, Jing2007}. Using the entropy works for both numerical and categorical data. In \cite{Cheung2013} the importance of an categorical attribute is defined as the average entropy of each value of the attribute. This is shown in \ref{eq:entropy}. To allow weights in the range of $\{0,1\}$ the importance is divided by the total importance of all attributes in the dataset as shown in \ref{eq:scentropy}.
+For w-k-means and other feature weighting algorithms, K-means is extended with the additional step of updating feature weights. The steps of feature weighted algorithms are thus:
 
-\begin{align}
-  H_j^c & =  - \frac{1}{m_r} \sum^{m_r}_{t = 1}{p(a_{tj}) log(p(a_{tj}))} 
-\label{eq:entropy} \\
-  w_j & = \frac{H_j^c}{\sum_{t = 1}^{d_c}{H_t^c}}
+\begin{enumerate}
+  \item Choose initial cluster representatives $C^0$
+  \item Fix $C^t$ = $\hat{C}$, $W^t$ = $\hat{W}$, optimize $P(U^{t}, \hat{ C }, \hat{W})$. Obtain $P(U^{t + 1}, \hat{ C }, \hat{W})$
+    \begin{description}
+      \item if $P(U^t, \hat{ C }, \hat{W}) = P(U^{t+1}, \hat{ C }, \hat{W})$
+      \item \quad return $P(U^t, \hat{ C }, \hat{W})$ (Convergence)
+    \end{description}
+  \item Fix $U^{t + 1}$ = $\hat{U}$, $W^t$ = $\hat{W}$, optimize $P(\hat{U}, C^t, \hat{W})$. Obtain $P(\hat{ U }, C^{t + 1}, \hat{W})$
+    \begin{description}
+      \item if $P(\hat{ U }, C^t, \hat{W}) = P(\hat{ U }, C^{t + 1}, \hat{W})$
+      \item \quad return $P(\hat{U}, C^{t}, \hat{W})$ (Convergence)
+    \end{description}
+  \item Fix $\hat{U}$ = $U^{t+1}$, $\hat{C}$ = $C^{t+1}$, optimize $P(\hat{U^{t}}, \hat{ C^{t} }, W^{t})$. Obtain $P(\hat{U}, \hat{ C }, W^{t + 1})$
+    \begin{description}
+      \item if $P(\hat{U}, \hat{ C }, W^{t}) = P(\hat{U}, \hat{ C }, W^{t + 1})$.
+      \item \quad return $P(\hat{U}, \hat{ C }, W^{t})$ (Convergence)
+    \end{description}
+  \item Repeat steps 2., 3. and 4.
+\end{enumerate}
+
+\end{color}
+
+% \begin{description}
+%   \item Let $\hat{U}$ = $U^{t+1}$, $\hat{C}$ = $C^{t+1}$, optimize $P(\hat{U^{t}}, \hat{ C^{t} }, W^{t})$ through \cite{eq:optimW}\\
+%   \item Obtain $P(\hat{U}, \hat{ C }, W^{t + 1})$
+%     \begin{description}
+%       \item if $P(\hat{U}, \hat{ C }, W^{t}) = P(\hat{U}, \hat{ C }, W^{t + 1})$.
+%       \item \quad return $P(\hat{U}, C^{t})$ (Convergence)
+%     \end{description}
+% \end{description}
+
+Instead of using a fuzzy weighting, i.e. having a input variable deciding the importance of the weight vector ($\beta$), another option is to decide the intra-cluster distance through information gain, in other words: Shannon entropy. Entropy can be said to be the amount of \textit{disorder} in a system. Entropy is used in \cite{Cheung2013, Jing2007}. Using the entropy works for both numerical and categorical data. In \cite{Cheung2013} the importance of an categorical attribute is defined as the average entropy of each value of the attribute. This is shown in \cref{eq:entropy}, where ${m_r}$ is the number of different values of attribute $j$, and $a_{tj}$ is the t:th value of attribute j and $d_c$ is the number of categorical attributes.
+
+\begin{equation}
+  w_j^{c*} =  - \frac{1}{m_r} \sum^{m_r}_{t = 1}{p(a_{tj}) log(p(a_{tj}))}
+\label{eq:entropy}
+\end{equation}
+
+To allow weights in the range of $\{0,1\}$, the importance is divided by the total importance of all attributes in the dataset as shown in \cref{eq:scentropy}, 
+
+
+\begin{equation}
+  w_j = \frac{w_j^{c*}}{\sum_{t = 1}^{d_c}{w_t^{c*}}}
   \label{eq:scentropy}
-\end{align}
-
-Where:
-${m_r}$ is the number of different values of attribute $j$, and $a_{tj}$ is the t:th value of attribute j and $d_c$ is the number of categorical attributes.
+\end{equation}
 
 \subsection{Soft-subspace Clustering}
+  The previously mentioned methods make the assumption that the same reduced features are of interest for all clusters. This is not inherently true, clusters usually have their own unique subspaces. In an example where clusters represent medical patient groups and patients (the objects of the dataset) are represented by patient information (age, gender, traveling history etc.), the patient information (features) characteristics of each group is different, i.e. there are differences to why a patient is hospitalized between patient groups. One patient group could represent Malaria patients, and in that case \textit{traveling history} is important, i.e. it does not vary much within the cluster. However, in a patient group which represents e.g. Parkinsons' decease, the traveling history is less important as it varies throughout the cluster, instead what is important here is the age of the patient, as shown by the smaller variance for the feature. The above example shows that subspaces are often different between clusters.
 
-The previous mentioned methods make an assumption that all cluster are interested about the same features. This is not inherently true, for example, given clusters as medical deceases, and patients as data-objects, the importance of a certain feature --- Recently visited a tropical climate --- differs. For Malaria it is of high relevance, while for Acne it is not.
+\begin{color}{modified}
+Subspace-clustering allows clusters to have their own feature subspace \cite{Deng2016, Jing2007, Jia2018, Kriegler2012}, hence the name. It is a cluster analysis-specific way to deal with high-dimensionality. Irrelevant features can be discarded per cluster resulting in a reduction of dimensions while still losing less information than other techniques. There are two types of subspace-clustering techniques. The first type is \textit{hard-subspace clustering} (HSC). The second type is \textit{soft-subspace clustering}.
 
-Subspace-clustering allows clusters to have their own feature subspace \cite{Deng2016, Jing2007, Jia2018, Kriegler2012}, hence the name. It is a cluster analysis-specific way to deal with high-dimensionality. Irrelevant features can be discarded per cluster resulting in reduce of dimensionality while losing less information than other techniques.
+Hard-subspace clustering algorithms find the exact cluster subspaces of a dataset \cite{Kriegler2012, Jia2018, Jing2007,Deng2016}. CLIQUE \cite{Jing2007}, a bottom-up approach of HSC works by first splitting each dimension into equal sized parts and storing only the dense areas. Then intersections of dense areas of two dimensions are found. The process of finding dense intersections are repeated until dense areas are found for all feature dimensions of the dataset. The resulting dense areas are then picked as the clusters of the dataset, who have to property of having their own subspaces. This process of finding clusters is equivalent to what is used in the \textit{Apriori} algorithm for the frequent itemset problem (a well known problem in data mining), and is linear in terms of objects in the dataset, but quadratic in terms of \textit{k} thus, slow when a large quantity of clusters are to be found \cite{Kriegler2012, Xu2015}.  
 
-There are two types of subspace-clustering techniques. The fist type is Hard-subspace clustering. Hard-subspace clustering tries to find the exact subspaces \cite{Kriegler2012, Jia2018, Jing2007,Deng2016}. PROCLUS and CLIQUE are two algorithm's of the category. The second type is Soft-subspace clustering (SSC), SSC finds the approximate subspaces of all clusters. Each cluster is given a weight attribute vector, the vector determines the association probability of each feature for that given cluster\cite{Gan2016}. Finding exact subspaces is computationally heavy, as such soft-subspace clustering is in general faster than it's counterpart, with a often linear time complexity.
+Soft-subspace clustering algorithms find the approximate subspaces of clusters in a dataset. Each cluster is given a feature weight vector, where the vector determines the association probability (importance) of each feature for that given cluster \cite{Gan2016, Jia2018, Jing2007}. The type is seen as an extension of feature weighting algorithms such as w-k-means with the same iteration the steps, except that features have different weights in each cluster. Soft-subspace clustering is in general faster than its HSC counterpart, with an often linear time complexity. The paragraphs below introduce some notable SSC algorithms.
+\end{color}
 
-Automated-Weighting Algorithm (\textit{AWA}) \cite{Chan2004} is a soft-subspace approach similar to \textit{w-k-means}, the difference is that for the cost function of AWA: $w_j^\beta$ is replaced with $w_{ lj }^\beta$ --- a weight for an attribute in a cluster $C_l$. The algorithm does not work when the variance of an attribute in a cluster is zero as the learning rules denominator becomes zero\cite{Jing2005}. \textit{ FWKM } \cite{Jing2005} and \textit{FSC} are two alternatives to \textit{AWA} which solve the problem by adding a small value to the distance function, forcing the variance to not be zero. In \textit{FWKM} that value is based on a formula and recalculated during each iteration, in \textit{FSC} the small value is a constant $\epsilon$ determined beforehand. Otherwise the algorithms are equivalent. All three algorithms only look at the intra-cluster distance. The three algorithms are often referred as being \textit{Fuzzy}-weighting-algorithms due to features having different degrees of association in different clusters, and a fuzziness index is used to decide the importance of the weight \cite{Gan2006}. Below is the cost function of \textit{FSC}, where $\beta$ is the fuzziness index.
+\textit{Automated-weighting algorithm} (AWA) \cite{Chan2004} is a soft-subspace approach similar to w-k-means, the difference is that for the cost function $w_j^\beta$ is replaced with $w_{ lj }^\beta$ --- a weight for an attribute in a cluster $C_l$, where $\beta \geq 1$. The algorithm does not work when the variance of an attribute in a cluster is zero as the learning rules denominator becomes zero \cite{Jing2005}. \textit{FWKM} (Feature weighted K-means) \cite{Jing2005} and \textit{FSC} (Fuzzy-subspace clustering) \cite{Gan2006} are two alternatives to AWA which solve the problem by adding a small value to the distance function, forcing the variance to not be zero. In FWKM that value is based on a formula and recalculated during each iteration, in FSC the small value is a constant ($\epsilon$) determined a priori. Otherwise the algorithms are equivalent. All three algorithms only look at the intra-cluster distance. The three algorithms are often referred as being \textit{Fuzzy}-weighting algorithms due to features having different degrees of association in different clusters, and a fuzziness index ($\beta$) is used to decide the importance of the weight \cite{Gan2006}. Below is the cost function \cref{eq:cost-fsc}, and the equation for updating the feature weights \cref{eq:fsc} of FSC, where $D_{lj}$ is the total distance of feature $j$ in cluster $l$.
 
 \begin{align}
 \label{eq:cost-fsc}
   P(U,C,W) &= \sum^k_{l=1} \Bigg[ \sum^n_{i=1} \sum^m_{j=1} u_{il} w_{ lj }^{\beta} d(x_{ij},c_{lj}) + \epsilon \sum_{j=1}^{m}{ w_{lj}^{\beta} } \Bigg] \\
-\textit{where:}\quad\beta&\geq 1 \\
 \label{eq:fsc}
 w_{lj} &= \frac{1}{{\sum_{t=1}^{m}\Big[\frac{D_{lj} + \epsilon}{D_{lt} + \epsilon}}\Big]^{\frac{1}{\beta - 1}}} \\
-\textit{where:}\quad D_{ lj } &= \sum_{X_i \in C_l}{d(x_{ij},c_{ lj })}
+\quad D_{ lj } &= \sum_{X_i \in C_l}{d(x_{ij},c_{ lj })}
 \end{align}
 
 
-Entropy can also be used in soft-subspace clustering. The main idea is to weigh features in the cluster with respect to the variance of the data within the cluster\cite{Domeniconi2007}. The entropy of a weight can then be used to describe the certainty of a feature in the cluster. In Entropy Weighed K-means (\textit{EWKM}) \cite{Jing2007} the intra-cluster distance is combined with the shannon entropy to create the cost function shown in \ref{eq:ewkm}. Here, the shannon entropy cab be rergarded as a regularization term that the algorithm tries to maximize while still minimizing the intra-cluster distance. Unlike, the \textit{Fuzzy}-weighted algorithms, \textit{EWKM} does not need another variable to handle variances of zero. As in \textit{W-k-means} \textbf{P3.} and Step \textbf{4.} becomes optimizing $W$ for the function while fixing $U$ and $C$. $\gamma$ is a user-inputted variable used to control the size of the weights, For $\gamma > 0$ The smaller $D_{ lj }$ the more important attribute $A_j$ is to cluster $C_l$. A modified version of \textit{EWKM} is \textit{IEWKM} \cite{Li2008}. It specifies a cost function for both numerical and categorical data.
+Entropy can also be used in soft-subspace clustering. The main idea is to weigh features in the cluster with respect to the variance of the data within the cluster \cite{Domeniconi2007}. The entropy of a weight can then be used to describe the certainty of a feature in the cluster. In \textit{entropy weighted k-means} (EWKM) \cite{Jing2007} the intra-cluster distance is combined with the Shannon entropy to create the cost function shown in \cref{eq:ewkm}, where $\gamma (\geq 0)$ is a user-defined variable that controls the size of the weights. Here, the Shannon entropy can be regarded as a regularization term that the algorithm tries to maximize while still minimizing the intra-cluster distance. Unlike, the \textit{Fuzzy}-weighted algorithms, \textit{EWKM} does not need another variable to handle variances of zero. As with w-k-means, \textbf{P3.} becomes optimizing $W$ for the function while fixing $U$ and $C$. For EWKM the feature weight optimization occurs through \cref{eq:ewkm_w}. The smaller $D_{ lj }$ (eq. \ref{eq:ewkm_d}), the more important attribute $A_j$ is to cluster $C_l$. A modified version of \textit{EWKM} is \textit{IEWKM} \cite{Li2008}. It specifies a cost function for both numerical and categorical data.
 
 \begin{align}
-  P(U,C,W) &= \sum^k_{l=1} \Bigg[ \sum^n_{i=1} \sum^m_{j=1} u_{il} w_{ lj } d(x_{ij},c_{lj}) + \gamma \sum_{j=1}^{m}{ w_{lj} log (w_{lj}) } \Bigg] \\
-\textit{where:}\quad\gamma&\geq 0 \\
 \label{eq:ewkm}
+  P(U,C,W) &= \sum^k_{l=1} \Bigg[ \sum^n_{i=1} \sum^m_{j=1} u_{il} w_{ lj } d(x_{ij},c_{lj}) + \gamma \sum_{j=1}^{m}{ w_{lj} log (w_{lj}) } \Bigg] \\
 c_{lj} &= \frac{\sum_{X_i \in C_l}{ x_{ij} }}{\text{Count}_{X_i \in C_l}} \\
 u_{lj} &= \min_{1 \leq l \leq k}\Big( \sum_{j=1}^{d} w_{lj} d(x_{ij},c_{ lj })\Big) \\
-	w_{lj} &= \frac{\exp({\frac{-D_{lj}}{\gamma})}}{\sum_{t=1}^{m}{\exp{(\frac{-D_{lt}}{\gamma})}}} \\
-\textit{where:}\quad D_{ lj } &= \sum_{X_i \in C_l}{d(x_{ij},c_{ lj })}
+\label{eq:ewkm_w}
+w_{lj} &= \frac{\exp({\frac{-D_{lj}}{\gamma})}}{\sum_{t=1}^{m}{\exp{(\frac{-D_{lt}}{\gamma})}}} \\
+\label{eq:ewkm_d}
+D_{ lj } &= \sum_{X_i \in C_l}{d(x_{ij},c_{ lj })}
 \end{align}
 
-A recent paper introdcing the \textit{LEKM} algorithm (log-transformed entropy weighting \textit{K}-means), has modified EWKM \cite{Gan2016}. Two problems of EWKM are adressed: EWKM is very sensitive to $\gamma$, and noicy data. To solve the problems EWKM was modified to use log-transformed distances. The modification allows intra-cluster variance of different features to become smaller and more similar, decreasing the chance of one dominant feature of a cluster. Additionally, centers are set in such fashion that noicy data are less impactful. LEKM is shown below.
+A recent paper introducing the \textit{LEKM} algorithm (log-transformed entropy weighting \textit{K}-means), has modified EWKM \cite{Gan2016}. Two problems of EWKM are addressed --- the algorithm is very sensitive to $\gamma$ and noisy data. To solve the problems, EWKM was modified to use log-transformed distances. The modification allows intra-cluster variances of different features to become smaller and more similar, decreasing the chance of one dominant feature of a cluster. Additionally, centers are set in such fashion that noisy data are less impactful. LEKM is shown below, the cost function is found in \cref{eq:lekm}, where $\gamma \geq 0$.
 
+\begin{equation}
+\label{eq:lekm}
+P(U,C,W) = \sum^k_{l=1} \sum^n_{i=1} u_{il} \Bigg[ \sum^m_{j=1} w_{ lj } \ln\big[1 + d(x_{ij},c_{lj})\big] + \gamma \sum_{j=1}^{m}{ w_{lj} \ln (w_{lj}) } \Bigg]
+\end{equation}
 \begin{align}
-    P(U,C,W) &= \sum^k_{l=1} \sum^n_{i=1} u_{il} \Bigg[ \sum^m_{j=1} w_{ lj } \ln\big[1 + d(x_{ij},c_{lj})\big] + \gamma \sum_{j=1}^{m}{ w_{lj} \ln (w_{lj}) } \Bigg] \\
-  \label{eq:lekm}
-  \textit{where:}\quad\gamma&\geq 0 \\
-          c_{lj} &= \frac{\sum_{X_i \in C_l}{ {\big[1 + d(x_{ij},c_{ lj })\big]}^{-1} x_{ij} }}{\sum_{X_i \in C_l}{\big[1 + d(x_{ij},c_{ lj })\big]}^{-1}} \\
-          u_{lj} &= \min_{1 \leq l \leq k}\Bigg(\sum_{j=1}^{d} w_{lj} \ln\big[1 + d(x_{ij},c_{ lj })\big] + \gamma \sum_{j=1}^{d} w_{lj} \ln w_{lj}\Bigg) \\
-          w_{lj} &= \frac{\exp({\frac{-D_{lj}}{\gamma})}}{\sum_{t=1}^{m}{\exp{(\frac{-D_{lt}}{\gamma})}}} \\
-          \textit{where:}\quad D_{ lj } &= \frac{\sum_{X_i \in C_l}{\ln\big[1 + d(x_{ij},c_{ lj })\big]}}{\text{Count}_{X_i \in C_l}}
-  \label{eq:lekm2}
+c_{lj} &= \frac{\sum_{X_i \in C_l}{ {\big[1 + d(x_{ij},c_{ lj })\big]}^{-1} x_{ij} }}{\sum_{X_i \in C_l}{\big[1 + d(x_{ij},c_{ lj })\big]}^{-1}} \\
+u_{lj} &= \min_{1 \leq l \leq k}\Bigg(\sum_{j=1}^{d} w_{lj} \ln\big[1 + d(x_{ij},c_{ lj })\big] + \gamma \sum_{j=1}^{d} w_{lj} \ln w_{lj}\Bigg) \\
+w_{lj} &= \frac{\exp({\frac{-D_{lj}}{\gamma})}}{\sum_{t=1}^{m}{\exp{(\frac{-D_{lt}}{\gamma})}}} \\
+\label{eq:lekm2}
+D_{ lj } &= \frac{\sum_{X_i \in C_l}{\ln\big[1 + d(x_{ij},c_{ lj })\big]}}{\text{Count}_{X_i \in C_l}}
 \end{align}
 
-WOCIL \cite{Jia2018} is a Mixed-data soft-subspace \textit{k-means} type clustering algorithm.
-To determine $W$ --- which in this case is a matrix, due to the method being a subspace method --- the inner criterion is used. To determine the inter cluster similarity, the distribution of attribute $A_r \in C_l$ is compared to the distribution of $A_r$ outside of $C_l$. In this case, Hellinger distance is used the quantify the dissimilarity between the two distributions. For categorical data the distribution is assumed as 2... and for numerical attributes a Gaussian distribution is assumed. The intra-cluster similarity is then found through \ref{eq:intraJia}.
+% WOCIL \cite{Jia2018} is a Mixed-data soft-subspace \textit{k-means} type clustering algorithm.
+% To determine $W$ --- which in this case is a matrix, due to the method being a subspace method --- the inner criterion is used. To determine the inter cluster similarity, the distribution of attribute $A_r \in C_l$ is compared to the distribution of $A_r$ outside of $C_l$. In this case, Hellinger distance is used the quantify the dissimilarity between the two distributions. For categorical data the distribution is assumed as 2... and for numerical attributes a Gaussian distribution is assumed. The intra-cluster similarity is then found through \cref{eq:intraJia}.
 
-\begin{align}
-% P_1^C &= \frac{\sum_{X_k \in C_{l}}{[x_{kj} = A_r]}}{\sum_{X_k \in C_{l} }{[ x_{kj} \neq null ]}} \\
-% P_2^C &= \frac{\sum_{X_k \in \mathcal{D}{[x_{kj} = A_r]}}{\sum_{X_k \in C_{l} }{[ x_{kj} \neq null ]}} \\
-  M_{lj} &= \frac{1}{\sum_{X_i \in C_{l}}{1}} \sum_{X_i \in C_{l}}{s(x_{ ij }, C_l)} \\
-\label{eq:intraJia}
- H_{ lj } &= F_{ lj} M_{ lj } \\
-  w_{lj} & = \frac{H_{lj}}{\sum_{t = 1}^{m}{H_{lt}}}
-\label{eq:Jiaweight}
-\end{align}
+% \begin{align}
+% % P_1^C &= \frac{\sum_{X_k \in C_{l}}{[x_{kj} = A_r]}}{\sum_{X_k \in C_{l} }{[ x_{kj} \neq null ]}} \\
+% % P_2^C &= \frac{\sum_{X_k \in \mathcal{D}{[x_{kj} = A_r]}}{\sum_{X_k \in C_{l} }{[ x_{kj} \neq null ]}} \\
+%   M_{lj} &= \frac{1}{\sum_{X_i \in C_{l}}{1}} \sum_{X_i \in C_{l}}{s(x_{ ij }, C_l)} \\
+% \label{eq:intraJia}
+%  H_{ lj } &= F_{ lj} M_{ lj } \\
+%   w_{lj} & = \frac{H_{lj}}{\sum_{t = 1}^{m}{H_{lt}}}
+% \label{eq:Jiaweight}
+% \end{align}
 
 
 
 \section{Evaluation}
-There are two main ways of which clustering are evaluated: Internal- and external-criterion.\cite{manning2010introduction}. The types are sometimes referred as cluster validation indices \cite{Halkidi2002}.
-In some research the categories are extended with the relative-criterion.\cite{Halkidi2002}
+There are two main ways of which clustering are evaluated: internal and external criterion \cite{manning2010introduction}. The types are sometimes referred to as cluster validation indices \cite{Halkidi2002}.
+% In some research the categories are extended with the relative-criterion.\cite{Halkidi2002}
 
 \subsection{Inner Criteria} \label{sec:Internal}
-Internal criterion is an unsupervised validation approach and can be described as evaluating the results without respect to external information \cite{Halkidi2002}. An internal criterion tries to verify the objective of the clustering algorithm on the dataset. For example: Making sure that points assigned to the same cluster are in general more similar than points outside of the cluster.
+Internal criterion is an unsupervised validation approach and can be described as evaluating the results without respect to external information \cite{Halkidi2002}. An internal criterion tries to verify the objective of the clustering algorithm on the dataset. That is, making sure that points assigned to the same cluster are in general more similar than points outside of the cluster.
 
-\subsubsection{Average Silhouette Coefficient}
-The average silhouette coefficient upon all data points shown in \ref{eq:avg_s}, is one way to evaluate the internal criteria \cite{ROUSSEEUW198753}. A single silhouette coefficient shown in \ref{eq:sil}, looks at a data points' intra-cluster similarity --- similarity to points within the same cluster, and, inter-cluster similarity --- similarity with point outside of the cluster. $\overline{s}_{co}$ goes between -1 and 1 where a high value (close to 1) indicates a natural clustered dataset.
+One way to evaluate the internal criteria is to use the \textit{average silhouette coefficient}, and is shown in \cref{eq:avg_s} \cite{ROUSSEEUW198753}. A single silhouette coefficient shown in \cref{eq:sil}, looks at a data point's intra-cluster similarity (i.e. similarity to points within the same cluster), and inter-cluster similarity (similarity with points outside of the cluster).
 
-When $s_{co}(X_i)$ is a high value (close to 1) a point is well clustered i.e. the intra-cluster similarity is high relative to the inter-cluster similarity \cite{ROUSSEEUW198753}
-. The same reasoning is extended to $\overline{s}_{co}(\mathcal{D})$ where a high value is a well clustered dataset. The measure is common to use when tuning the parameters of traditional partitioning algorithms. There is limited information on how to implement and use the measurement or any other internal index for subspace clustering methods. Unlike, \textit{k-means} soft-subspace clustering have asymmetric distances between two points of different clusters.
+${s}_{co}(X_i)$ has a range between -1 and 1, where a high value (close to 1) indicates that a point is well clustered, i.e. the points of the same cluster are similar, and those who are in different clusters are dissimilar, far away from the point. The same reasoning is extended to $\overline{s}_{co}(\mathcal{D})$ where a high value is a well clustered dataset. The measure is common to use when tuning the parameters of traditional partitioning algorithms. There is limited information on how to implement and use the measurement or any other internal index for subspace clustering methods. Unlike K-means, soft-subspace clustering has asymmetric distances between two points of different clusters.
 
 \begin{align}
   d_{avg}(X_i,C_l) &= \frac{\sum_{X_k \in C_l}d(X_i,X_k)}{Count(X_k \in C_l)} \\
@@ -387,30 +446,24 @@ When $s_{co}(X_i)$ is a high value (close to 1) a point is well clustered i.e. t
 
 
 \subsection{External Criteria}
-External criterion is a supervised validation approach and can be described by the following sentence: Validation of the results by imposing a pre-defined structure on the dataset i.e. data not used for generating the clustering results \cite{Halkidi2002}.
+External criterion is a supervised validation approach and can be described as \textit{validation of the results by imposing a pre-defined structure on the dataset}, i.e. data not used for generating the clustering results \cite{Halkidi2002}.
 
-The external criterion requires validation data in addition to an external measurement. Validation data could be a sample of the dataset that is labeled with a class i.e. a ground truth. If the dataset is already labeled by a feature and that feature is not used for clustering, then that dataset can be easily evaluated based on that feature through a external measurement.
+The external criterion requires validation data in addition to an external measurement. Validation data could be a sample of the dataset that is labeled with a class, i.e. a ground truth. If the dataset is already labeled by a feature and that feature is not used for clustering, then that dataset can be easily evaluated based on that feature through a external measurement.
 
-In many cases, the clustered data is not labeled --- A reason why, an unsupervised approach was chosen in the first place. Even if a label exists it might not be a goal for the research to exclusively produce results that evaluate well to the validation data. There could be a hope to find \textit{new} classes. The validation data can in these cases be replaced by expertise --- a panel of judges with knowledge of the data \cite{manning2010introduction}. A sample of clusters can then be given to the judges to assess. Combining the judges with a measurement tool allows the dataset to be given a score that corresponds to the external validity of the dataset.
+In many cases, the clustered data is not labeled --- often the reason to why an unsupervised approach was used in the first place. Even if a label exists it might not be a goal for the research to exclusively produce results that evaluate well to the validation data. There could be a hope to find \textit{new} classes. The validation data can in these cases be replaced by expertise --- a panel of judges with knowledge of the data \cite{manning2010introduction}. A sample of clusters can then be given to the judges to assess. Combining the judges with a measurement tool allows the dataset to be given a score that corresponds to the external validity of the dataset.
 
-\subsubsection{External Measurements}
-Purity is one measurement for the external criterion. It measures the mean ratio of the most dominant class in each cluster. The data-points are labeled with a class beforehand \cite{manning2010introduction}. Equation \ref{eq:purity} defines the measurement. The measurement is easy to compute. A downside is that the equation does not penalize small clusters as such small clusters produces a high score.
+Purity is one measurement for the external criterion. It measures the mean ratio of the most dominant class in each cluster. The data-points are labeled with a class beforehand \cite{manning2010introduction}. \Cref{eq:purity} defines the measurement, $C = \{c_1,c_2,...,c_k\}$ is the set of clusters, and $\Psi = \{\Psi_1,\Psi_2,...,\Psi_t \}$ is the set of \textit{truth}-classes. The measurement is easy to compute. A downside is that the equation does not penalize small clusters as such small clusters produce a high score.
 
 \begin{equation}
   \label{eq:purity}
   P(C, \Psi) = \frac{1}{n}\sum^{k}_{l=1}\max_{1 \leq j \leq t}\abs{C_l \cap \Psi_j}
 \end{equation}
-Where:\newline
-$C = \{c_1,c_2,...,c_k\}$ is the set of clusters, and,
-$\Psi = \{\Psi_1,\Psi_2,...,\Psi_t \}$ is the set of \textit{truth}-classes.
 
-\textit{$F$-measure} is another measurement for the evaluation of the external criteria. The measurement is shown in \ref{eq:f-measure}\cite{manning2010introduction}. The resulting clusters of an algorithm are seen as a series of decisions on each pair of data-points in the set.
+\textit{$F$-measure} is another measurement for the evaluation of the external criteria. The measurement is shown in \cref{eq:f-measure} \cite{manning2010introduction}. The resulting clusters of an algorithm are seen as a series of decisions on each pair of data-points in the set. An ideal clustering with this reasoning would mean that all similar points are within the same cluster, i.e. only \textit{True Positives} (TP) and no \textit{False Positives} (FP). In reality, some non-similar pairs are clustered together leading to \textit{False Positives}. Similarly, \textit{True Negatives} (TN) and \textit{False Negatives} (FN) can occur.
 
-An ideal clustering in this reasoning would mean all similar points are within the same cluster i.e. only \textit{True Positives} and no \textit{False Positives}. In reality, some non-similar pairs are clustered together leading to \textit{False Positives}. Similarly, \textit{True Negatives} and \textit{False Negatives} can exist.
+The variables --- TP, FP, TN, FN --- are used to create the \textit{precision} and \textit{recall} measurements. The precision defines the ratio of \textit{True Positives} on all positives --- pairs in the same cluster. The precision is shown in \cref{eq:precision}. The recall on the other hand, measures the ratio of how many similar pairs have been clustered together given all possible similar pairs. 
 
-The terms can be combined to create the \textit{precision} and \textit{recall}. The precision defines the ratio of \textit{True Positives} on all positives --- pairs in the same cluster. The precision is shown in \ref{eq:precision}. The recall on the other hand measures the ratio of how many similar pairs have been clustered together given all possible similar pairs. 
-
-$\beta$ in \ref{eq:f-measure} determines in what ratio \textit{precision} and \textit{recall} should be taken account to. $\beta < 1$ results in precision being more important and $\beta > 1$ results in more importance to the recall. The balanced \textit{$F$-measure} is called the \textit{$F_1$-measure} and is defined in \ref{eq:f1-measure}. It weighs the impact of precision and recall the same. The \textit{$F$-measure} is common in information retrieval. It is however, more complex \textit{Purity} and requires more effort to implement.
+$\beta$ in \cref{eq:f-measure} determines whether precision or recall should be emphasized. $\beta < 1$ results in precision being more important and $\beta > 1$ results in emphasis on the recall. The balanced $F$-measure is called the \textit{$F_1$-measure} and is defined in \cref{eq:f1-measure}. It weighs the impact of precision and recall the same. The $F$-measure is common in information retrieval. It is however, more complex than purity and requires more effort to implement for clustering analysis.
 
 \begin{align}
   \label{eq:precision}
@@ -422,13 +475,24 @@ $\beta$ in \ref{eq:f-measure} determines in what ratio \textit{precision} and \t
   \label{eq:f1-measure}
   F_{\beta = 1} &= \frac{2 \cdot P \cdot R}{P + R}
 \end{align}
-Where:\newline
-$TP$ are true positives, $FP$ false positives, $FN$ false negatives, and, $\beta$ is a weight between $P$ and $R$, a $\beta > 1$ emphasizes the $R$.
 
+\section{Summary and Method Justification}
+Table \cref{tab:comp} summarizes the properties of all the mentioned algorithms in this chapter.\newline
+
+The findings of the pre-study suggest that feature-weighted clustering can be used to attack the challenging problem of clustering high-dimensional data by reducing the weight of irrelevant features. Algorithms such as \textit{Weighted K-means}, \textit{FSC}, \textit{EWKM} and \textit{LEKM} have all been introduced.  The mentioned algorithms manage high-dimensional data clustering in different ways. The last three are examples of soft subspace clustering --- an extension of \textit{feature weighting}, which allows each cluster an individual subspace. The soft-subspace methods have been shown to deal with high-dimensional data better than traditional algorithms while still allowing a time complexity (linear) similar to traditional partitioning algorithms.\newline
+
+Due to the previous mentioned benefits of SSC algorithms, three types of SSC methods will be tested for this thesis. They are \textit{EWKM}, \textit{FSC} and \textit{LEKM}. \textit{EWKM} is chosen as it takes into account the information gain in the cost function. FSC is chosen for the purpose of having an algorithm with different properties, i.e. being a \textit{Fuzzy} SSC algorithm that does not take into account information gain. \textit{LEKM} is added for its use of logarithmic distances that could possibly help resolve problems with noisy data. To evaluate the performance, the algorithms will be compared to the traditional \textit{K-means} algorithm.\newline
+
+The evaluation will consist of a supervised external index due to the difficulty of implementing a correct internal validation for \textit{SSC} algorithms. Results were to be tested against a ground truth label through the measurement of purity --- due to the simplicity of the measurement --- and a panel of judges --- to evaluate the general quality and novelty --- respectively.\newline
+
+The chosen methods are possible to implement for mixed data, but are not originally implemented for the purpose. From a thesis standpoint, tackling the high-dimensionality of a dataset is the main priority. Therefore, only numerical features of the dataset are used --- See \textit{Dataset} in \cref{sec:dataset} for more details. \newline
+% The following
+% A summary of the mentioned algorithms is shown in Table. \cref{tab:comp}
+% . It states the type of the algorithm, complexity, data type, and if it is a weighed algorithm.
 \newpage
 \begin{table}[h]
-\caption{Properties of algorithms discussed in this chapter \cite{Wunsch2005,Deng2016,Jia2018,Jing2007,Gan2016}}\label{tab:comp}
-\hspace*{-1cm}
+\caption{Properties of algorithms discussed in this chapter \cite{Wunsch2005, Xu2015, Deng2016,Jia2018,Jing2007,Gan2016}}\label{tab:comp}
+\makebox[\linewidth][c]{%
 \begin{tabular}{l@{\hspace{0.2in}}l@{\hspace{0.5in}}rrc}
   \hline\noalign{\smallskip}
   \tbtitle{Type} & \tbtitle{Algorithm} & \tbtitle{Properties}\\
@@ -442,7 +506,8 @@ $TP$ are true positives, $FP$ false positives, $FN$ false negatives, and, $\beta
   & BIRCH & $O(n)^*$  & Numerical \\
   & ROCK  & $O(n^2 \cdot log(n))^*$ & Categorical \\
   \\
-  \tbtitle{Density} & DBSCAN & $O(n^2)^*$ & Numeric\\
+  \tbtitle{Density} & DBSCAN & $O(n^2)^*$ & Numerical\\
+  & CLIQUE (HSC) & $O(n+k^2)^*$ & Numerical & Yes$^a$\\
   \\
   \tbtitle{Partition} & K-means (Lloyd) & $O(tnkm)$ & Numerical \\
                       & PAM & $O(tk(n-k)^2)^*$ & Numerical \\
@@ -450,40 +515,28 @@ $TP$ are true positives, $FP$ false positives, $FN$ false negatives, and, $\beta
   & CLARANS & $O(n^2)^*$ & Numerical \\
 \noalign{\smallskip}
   & K-modes & $O(tnkm)$ & Categorical \\
-  & K-Prototypes & $O(tnkm)$ & Mixed & Yes$^a$\\
-  & OCIL & $O(tnkm)$ & Mixed & Yes$^a$\\
-  & WKM & $O(tnk+tkm+tm)$ & Numerical$^{ b }$ & Yes$^c$ \\
-  & FSC$$ & $O(tnk+tk+tkm)$ & Numerical$^b$ & Yes$^d$ \\
-  & EWKM & $O(tnk+2tkd)$ & Numerical$^b$ & Yes$^e$\\
-  & LEKM & $\approx O(tnkm)$** & Numerical$^b$ & Yes$^e$\\
+  & K-Prototypes & $O(tnkm)$ & Mixed & Yes$^b$\\
+  & OCIL & $O(tnkm)$ & Mixed & Yes$^b$\\
+  & W-K-Means & $O(tnk+tkm+tm)$ & Numerical$^{ c }$ & Yes$^d$ \\
+  & FSC$$ & $O(tnk+tk+tkm)$ & Numerical$^c$ & Yes$^e$ \\
+  & EWKM & $O(tnk+2tkd)$ & Numerical$^c$ & Yes$^f$\\
+  & LEKM & $\approx O(tnkm)$** & Numerical$^c$ & Yes$^f$\\
   & WOCIL & $\approx O(tnkm)$ & Mixed & Yes \\
   \noalign{\smallskip}\hline
 \end{tabular}
+}
 \end{table}
 \captionof*{table}{
-\\$^a$ Not all features have independent weights.
-\\$^b$ Has been modified to allow mixed data.
-\\$^c$ Only Feature weighting.
-\\$^d$ Fuzzy-Weighting, Within-distance
-\\$^e$ Entropy-Weighting, Within-distance
+\\$^a$ Exact Subspaces.
+\\$^b$ Not all features have independent weights.
+\\$^c$ Has been modified to allow mixed data.
+\\$^d$ Only Feature weighting.
+\\$^e$ Fuzzy-Weighting, Within-distance
+\\$^f$ Entropy-Weighting, Within-distance
 \\$^*$ Dimensionality disregarded in complexity notation
 \\$^{**}$ Exact complexity is not given, but mentioned to be slower than EWKM due to how cluster centers are updated.
 }
 \newpage
 
-\section{Summary and Method Justification}
-
-Figure \ref{tab:comp} summarizes the properties of all the mentioned algorithms in this chapter.\newline
-
-The findings of the pre-study suggests that feature-weighted clustering can be used to attack the challenging problem of clustering high-dimensional data by reducing the weight of irrelevant features. Algorithms such as \textit{Weighted K-means}, \textit{FSC}, \textit{Entropy Weighted K-means} and \textit{LEKM} have all been introduced.  The mentioned algorithms manage high-dimensional data clustering in different ways. The last three, are examples of soft subspace clustering --- an extension of \textit{feature weighting}, which allows each cluster an individual subspace. The soft-subspace methods have been shown to deal with high-dimensional data better than traditional algorithms while still allowing a time complexity (linear) similar to traditional partitioning algorithms.\newline
-
-Due to the previous mentioned benefits of SSC algorithms, three types of SSC methods will be tested for this thesis. They are \textit{EWKM}, \textit{FSC} and \textit{LEKM}. \textit{EWKM} is chosen as it takes into account the information gain in the cost function. FSC is chosen for the purpose of having an algorithm with different properties i.e. being a \textit{Fuzzy} SSC algorithm that does not take into account information gain. \textit{LEKM} is added for its use of logarithmic distances that could possibly help resolve problems with noisy data. To evaluate the performance, the algorithms will be compared to the traditional \textit{K-means} algorithm.\newline
-
-The evaluation will consist of a supervised external index due to the difficulty of implementing a correct internal validation for \textit{SSC} algorithms. Data was to be tested against a ground truth label through the measurement of Purity and a panel of judges.\newline
-
-The chosen methods, are possible to implement for mixed data, but are not originally implemented for the purpose. From a thesis standpoint, tackling the high-dimensionality of a dataset was the main priority. As such, only numerical features of the dataset can be used --- See Dataset in Chapter 3. For more details. \newline
-% The following
-% A summary of the mentioned algorithms is shown in Table. \ref{tab:comp}
-% . It states the type of the algorithm, complexity, data type, and if it is a weighed algorithm.
 \end{document}
 
