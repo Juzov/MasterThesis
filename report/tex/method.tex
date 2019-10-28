@@ -1,15 +1,15 @@
 \documentclass[../report.tex]{subfiles}
-\begin{document} \chapter{Method} This method chapter subjects the reader to the framework used to qualitatively compare the different algorithms on the given dataset.
+\begin{document}
+\chapter{Method}
+% \section{Method Design Overview}
+In order to generate results and compare the three different SSC algorithms with k-means, a method design was planned and executed. The method was divided into the step of \textit{Preprocessing}, \textit{Implementation}, \textit{Parameter Selection} and \textit{External Evaluation}.
 
-\section{Method Design Overview}
-In order to generate results and compare the three different SSC algorithms with k-means, a method design was planned and executed. The overall design is shown in \cref{fig:method}, it includes the step of \textit{Preprocessing}, \textit{Implementation}, \textit{Parameter Selection} and \textit{External Evaluation}.
-
-\begin{figure}[h]
-  \begin{center}
-    \includegraphics[width=0.4\textwidth]{Design}
-  \end{center}
-  \caption{Method Design}\label{fig:method}
-\end{figure}
+% \begin{figure}[h!]
+%   \begin{center}
+%     \includegraphics[width=0.4\textwidth]{Design}
+%   \end{center}
+%   \caption{Method Design}\label{fig:method}
+% \end{figure}
 \section{Dataset}
 \label{sec:dataset}
 % Clustering analysis will be made on a real-world-, high-dimensional- and, mixed-dataset.
@@ -67,9 +67,9 @@ As a next step in preprocessing, features were normalized to the same variance -
 \section{Implementation}
 
 \subsection{EWKM}
-An implementation of the EWKM algorithm is available in \textit{R} and \textit{CSRAN} through the \textit{wskm} package \cite{wskm2014hz}. The code is written in $C$ and wrapped for $R$. All of the source code is obtainable from Github\footnote{https://github.com/SimonYansenZhao/wskm/}.
+An implementation of the EWKM algorithm is available in \textit{R} and \textit{CSRAN} through the \textit{wskm} package \cite{wskm2014hz}. The code is written in $C$ and wrapped for $R$. All of the source code is obtainable from an online repository\footnote{https://github.com/SimonYansenZhao/wskm/}. The code has been extended by the author to work with \textit{Python} and Numpy\cite{numpy-c} --- by re-wrapping the code.
 
-There are modifications made in the implementation that differ from the original research paper \cite{Jing2007}. Additional normalization steps have been added when calculating $w_{lj}$. \Cref{eq:newlambda} shows how $w_{lj}$, the feature weight, is updated in the given implementation. Occurrences of empty clusters during partitioning are managed by re-sampling cluster centers, i.e. restarting the algorithm; in the original algorithm empty clusters were not treated. Finally, a convergence delta can be set by the user which decides the percentage of change needed between two iterations for convergence.
+There are modifications made in the implementation that differ from the original research paper \cite{Jing2007}. Additional normalization steps have been added when calculating $w_{lj}$. \Cref{eq:newlambda} shows how $w_{lj}$, the feature weight, is updated in the given implementation. Occurrences of empty clusters during partitioning are managed by re-sampling cluster centers, i.e. restarting the algorithm; in the original algorithm empty clusters were not treated. Finally, \begin{color}{modified}convergence is defined to occur if the value difference between cost functions of two iterations is within a user-defined percentage\end{color}. If the difference is greater than the assigned percentage another iteration will occur.
 
 \begin{align}
   \lambda_{lj} &= \exp\bigg({\Big(\frac{-D_{lj}}{\gamma}\Big) - \max_{\forall{t} \in C_l}\Big({\frac{-D_{lt}}{\gamma}}\Big)}\bigg) \\
@@ -78,39 +78,77 @@ There are modifications made in the implementation that differ from the original
   w_{lj} &= \frac{\lambda_{lj}}{\sum^{m}_{t=1}{\lambda_{ lt }}}
 \end{align}
 
-Per request of the stakeholder along with the author's familiarity with Python and Pandas DataFrame, the code was re-wrapped for Python using numpy-C-API \cite{numpy-c} --- allowing for the dataset to be sent in to the algorithm as a numpy array. The C-code was tweaked to not be dependent on R's \textit{unif\_rand() function}.
+% Per request of the stakeholder along with the author's familiarity with Python and Pandas DataFrame, the code was re-wrapped for Python using numpy-C-API \cite{numpy-c} --- allowing for the dataset to be sent in to the algorithm as a numpy array. The C-code was tweaked to not be dependent on R's \textit{unif\_rand() function}.
 
 \subsection{FSC}
 The FSC implementation was created by the thesis author and is based on the C-code of EWKM. The methods of calculating cost, updating weights and updating cluster memberships were modified to correspond to the FSC algorithm as shown in \cref{eq:cost-fsc}, and \cref{eq:fsc}. $\gamma$ is replaced by $\beta$, and the small value of $\epsilon$ was set to $0.001$ as proposed in \cite{Gan2006}.
 
 \subsection{LEKM}
-LEKM like \textit{FSC} was created by the author and based on the source code of EWKM \cite{wskm2014hz}. The same steps are necessary for this algorithm as EWKM, since both are based on the negative entropy. The difference is the addition of logarithmic distances in when updating the centers, partitions, and feature weights. How they were updated correspond to the equations of LEKM shown in \crefrange{eq:lekm}{eq:lekm2}.
+LEKM like FSC was created by the author and based on the source code of EWKM \cite{wskm2014hz}. The same steps are necessary for this algorithm as EWKM, since both are based on the negative entropy. The difference is the addition of logarithmic distances when updating the centers, partitions, and feature weights. How they were updated correspond to the equations of LEKM shown in \crefrange{eq:lekm}{eq:lekm2}.
 
-A slight difference is that the right-hand side, i.e. the negative entropy is dropped from when updating partitions. The modification is based on a discussion with one of the authors of the original \textit{LEKM} paper. The gist of the discussion was that the entropy should not be used for updating clusters, and could result in negative distances.
+A slight difference is that the right-hand side, i.e. the negative entropy was dropped when updating partitions. The modification is based on a discussion with one of the authors of the original \textit{LEKM} paper. The gist of the discussion was that the entropy should not be used for updating clusters, and could result in negative distances.
 
-\subsection{K-means}
-EWKM is equivalent to K-means when $\lim_{\gamma \to 0}$ although simply setting $\gamma = 0$ forces division by zero. For this reason K-means needs its own implementation.
+\subsection{k-means}
+EWKM is equivalent to k-means when $\lim_{\gamma \to 0}$ although simply setting $\gamma = 0$ forces division by zero. For this reason k-means needs its own implementation.
 
-K-means is available for Python thorough various packages such as PyClustering \cite{Novikov2019}. However, to allow a fair comparison between algorithms, K-means was re-implemented by the author in \textit{C} based on the EWKM source code.
+k-means is available for Python thorough various packages such as PyClustering \cite{Novikov2019}. However, to allow a fair comparison between algorithms, k-means was re-implemented by the author in \textit{C} based on the EWKM source code.
 
 % All algorithm specific parameters were ran with all $k$ candidates. The best performing combination of parameters are deemed the best candidates for the algorithm.
 \section{Parameter Selection}
 % The sections below describe how the parameters of the different algorithms were chosen.
-Algorithms were tested with multiple candidate parameters on the dataset in order to find the most suitable parameters. The impact of the different parameters was compared through an external validation index, a \textit{purity} score. The best parameters in accordance to the index were deemed the most suitable, and chosen as the parameters for the algorithm for further tests.
+Algorithms were tested with multiple candidate parameters on the \begin{color}{modified}{same complete sample of $5 \cdot 10^{4}$ songs}\end{color}, in order to find the most suitable parameters. The impact of the different parameters was compared through an external validation index, a \textit{purity} score that measured the genre purity of clusters. The best parameters in accordance to the index were deemed the most suitable, and chosen as the parameters for the algorithm for further tests. 
 
-For generating results, convergence was set to occur if the cost delta between previous iteration and current was less than $0.5\%$.
+\begin{color}{modified}
+\Cref{table:hyperparameters} summarizes the hyperparameters of the different algorithms. Two parameters $\phi$ --- the cost ratio between two iterations needed for convergence --- and $\epsilon$ --- the small constant to avoid division by zero for FSC --- were not tuned. Convergence was set to occur if the cost ratio was less than $0.5\%$ i.e. $\phi = 0.5$. Algorithm specific parameter selection is described in the sections below.
+\begin{table}[H]
+\makebox[\linewidth][c]{
+\begin{color}{modified}
+\begin{tabular}{cll}
+  \hline\noalign{\smallskip}
+  \multicolumn{1}{l}{\tbtitle{Hyperparameter}} & \multicolumn{1}{c}{\tbtitle{Description}} & \tbtitle{Algorithm}\\
+\noalign{\smallskip}
+  \hline
+  \noalign{\smallskip}
+  $k$ & Number of clusters & All \\
+  \noalign{\smallskip}
+  \hline
+  \noalign{\smallskip}
+  $\phi^*$ & Ratio for convergence (constant)  & All \\
+  $\epsilon^*$ & Small constant to avoid division by zero  & FSC \\
+  \noalign{\smallskip}
+  \hline
+  \noalign{\smallskip}
+  $\beta$ & Weighing factor for fuzzy-weighting algorithms  & FSC \\
+  $\gamma$ & Entropy regularization factor & EWKM, LEKM \\
+\end{tabular}
+\end{color}
+}
+\caption{Hyperparameters of the given algorithms ($\phi$, $\epsilon$ were set as constants a priori)}
+\label{table:hyperparameters}
+\end{table}
+\end{color}
+
 
 \subsection{Purity}
-An external validation index was created using the \textit{genre} feature as a ground truth in combination with the measurement of purity. To create the purity score, the most dominant genre of each cluster was aggregated and divided by the total amount of songs in the dataset.
+\begin{color}{modified}
+An external validation index was created using the \textit{genre} feature as a ground truth in combination with the measurement of purity. To create the purity score as shown in \cref{eq:purity}, the most dominant genre of each cluster --- found through \cref{eq:purity_truth}, where $G = \{g_1,g_2,...,g_p\}$ is the set of possible genres in the dataset, was aggregated and divided by the total amount of songs in the dataset.
+\end{color}
+
+\begin{equation}
+  \Psi_{l} = \argmax_{1 \leq o \leq p} \sum_{X_i \in C_l}{\big[X_i (genre) = g_o\big]}
+  \label{eq:purity_truth}
+\end{equation}
+
+
 
 \subsection{Amount of Clusters}
-The problem of deciding the amount of clusters ($k$) is global as all the clustering algorithms chosen are partition based. This section describes how $k$ was chosen for all of the chosen algorithms.
+The problem of deciding the amount of clusters ($k$) is central for all the chosen clustering algorithms. This section describes how $k$ was chosen for all of the chosen algorithms.
 
-For the choice of $k$, it was decided to not use a competitive learning strategy. The strategy would add another layer of complexity on the algorithms and a possible point of error. $k$ was instead based on the \textit{purity} results of the whole sample.
+The choice of $k$ was chosen to be based on the purity results of the clustered dataset. A sampling approach was declined as the dataset was already a manageable size. Competitive learning was also declined as the strategy would add another layer of complexity on the algorithms and a possible point of error.
 
 % The amount of clusters i.e. $k$, could have been decided on a smaller sample of the dataset, or through the use of a competitive learning strategy as discussed in the background. Due to the already relative small sample of the whole dataset and an algorithm that is linear in time, $k$ was based on the results of the whole sample dataset with respect to the best $\gamma$ in regards to the cost function.
 
-Candidate values of $k$ were restricted to $50$, $100$, and $500$ in order to reduce the time needed to generate results. The values were chosen to give an approximation on how large \textit{k} should be. The minimum of $50$ clusters was based on that the number of genres in the dataset was $33$, and generated clusters should at least be as specific as a genre label. $500$ was decided as the maximum amount for $k$ to keep the average cluster size to be above $100$.
+Candidate values of $k$ were restricted to $50$, $100$, and $500$ in order to reduce the time needed to generate results. The values were chosen to give an approximation on how large \textit{k} should be. The minimum amount of clusters ($50$) was chosen to be larger than the $33$ genres in the dataset. $500$ was decided as the maximum amount for $k$ to keep the average cluster size to be above $100$.
 
 % For the later external evaluation stage with composers, $k$ was picked based on the overall best purity score of the algorithms.
 
@@ -118,7 +156,7 @@ Candidate values of $k$ were restricted to $50$, $100$, and $500$ in order to re
 
 % The decision was still made to use purity for parameter tuning. While it does have its' downsides, the belief is that a higher purity score should in general indicate higher average cluster quality.
 
-% To not disregard the problems with purity another external evaluation was made with the best performing SSC algorithm and K-means through the usage of judges. The evaluation is described in the next subchapter.
+% To not disregard the problems with purity another external evaluation was made with the best performing SSC algorithm and k-means through the usage of judges. The evaluation is described in the next subchapter.
 
 \subsection{EWKM}
 EWKM introduces the $\gamma$ parameter. The recommended range of $\gamma \approx (0.5, 3)$ which was mentioned in \citeauthor{Jing2007} \cite{Jing2007} and \citeauthor{wskm2014hz} \cite{wskm2014hz}, was extended with smaller values $(0.0005,$ $0.001,$ $0.005,$ $0.01,$ $0.05,$ $0.1)$ as candidate values. The smaller values were added to avoid possible problems with the objective function being negative due to a large negative entropy.
@@ -137,40 +175,81 @@ In \citeauthor{Gan2016} \cite{Gan2016} values of $\beta$ were varied between $1$
 
 % $\gamma$ was chosen by iteratively testing different values of the parameter as an input for the algorithms, from small ($1 * 10^{-3}$) to large ($\gamma = 3$). The best $\gamma$ was chosen based on purity and, if values showed similar results the smallest value was chosen.
 
-\subsection{K-means}
-K-means does not have any cluster specific hyper-parameter that needs to be tweaked. The only thing that was necessary for the result generation was to run K-means on all values of $k$.
+\subsection{k-means}
+k-means does not have any algorithm specific hyper-parameter that needs to be tweaked. The only thing that was necessary for the result generation was to run k-means on all values of $k$.
 
-\subsection{Ranking songs and clusters}
-Songs were sorted in ascending order based on their distance to their respective cluster center. The distance is equivalent to the distance used for assigning a partition to an object. For K-means that was the regular euclidean distance. For SSC algorithms the distance included the feature weights of the cluster, making the distances between points asymmetrical.
+\section{Ranking songs and clusters}
+Songs were sorted in ascending order based on their distance to their \begin{color}{modified}respective cluster center. The distance is equivalent to the distance used for assigning a partition to an object as shown in \cref{ch:back}. For k-means that was the regular Euclidean distance. For SSC algorithms the distance included the feature weights of the cluster. \end{color}
 
-Clusters were similarly sorted in ascending order. The distance for a cluster was set as the average distance of songs with a membership in the cluster.
+Clusters were similarly sorted in ascending order. The distance for a cluster was set as the average distance of songs with a membership in the cluster i.e. the average distance to the cluster center for songs partitioned in the cluster.
+\begin{color}{modified}
+The sorting was used as a ranking, based on the idea that "better" clusters would have smaller intra-cluster distances than "worse" clusters. Genre accuracy was not used for the ranking in order to allow clusters that have novel themes --- that are not genre-specific --- a chance to be ranked high. From an application perspective it is more valuable to find non-genre specific themes, as genre specific themes are easily found through genre filtering. Another option would be inter-cluster distances, but deciding on a inter-cluster distance is non-trivial and algorithm dependent.
+\end{color}
 
-The sorting was used as a ranking, based on the idea that "better" clusters would have smaller distances than "worse" clusters. The reason for not using a genre accuracy for the ranking was to allow clusters that have novel themes that are not genre-specific a chance to be ranked high.
-
-The ranking allowed for a cutoff in songs and clusters, i.e. the top five clusters could be chosen. To not have the same genre type of clusters again and again in the top 5, each genre could only appear as dominant in one cluster (except for pop and rock, as they were regarded as larger genres with more diversity). As such after sorting, the top five clusters were picked from small to large distance with the condition stated above.
+The ranking allowed for a cutoff in songs and clusters, i.e. the top five clusters could be chosen. To hinder the possibility of the same genre occurring in multiple clusters, each genre could only appear as dominant in one cluster (except for pop and rock, as they were regarded as larger genres with more diversity). As such after sorting, the top five clusters were picked from small to large distance with the condition stated above.
 
 \section{Expert Evaluation}
-To answer how performance varied between traditional and SSC algorithms in terms of novelty and cohesion (similarity), a test was created. In this test professional composers were used as evaluation judges.
+To answer how performance in terms of novelty and cohesion (similarity) varied between traditional and SSC algorithms, a blind test was created \begin{color}{modified} where professional composers were used as evaluation judges.
 
-The platform of the evaluation was a webpage created by the author. In here, different clusters could be browsed. Each cluster was represented by 10 30-second song previews. The chosen songs were sampled based on a half-normal distribution, i.e. songs with a relative small distance had a higher chance to be picked than those with a high distance. A picture of the webpage is shown in \cref{fig:website}. Django \footnote{https://www.djangoproject.com/} and Bootstrap 4\footnote{https://getbootstrap.com/} were used to build the page.
+Initially, the idea was that composers would rate a cluster on \textit{similarity} and \textit{novelty} (from a scale of 1-10). After showing a mock test and discussing it with the head of product experience, head of machine learning, and a number of composers at the stakeholder, it was conducted that the parameters had to be modified. There were two reasons: the terms were unclear for the composers, and a general quality was hard to transcribe from the scores.
 
-The top five ranked clusters of each algorithm were chosen for the test. In addition to the 10 clusters sourced from the algorithms, five more clusters were added that were sourced from existing playlists on the stakeholder platform.
+To adhere to the problems, \textit{similarity} was divided into \textit{audio similarity} and \textit{cultural similarity}. \textit{Novelty} was changed to a term more familiar to the composers --- \textit{playlist uniqueness}, i.e. how unique the cluster would be as a playlist compared to already existing playlists on the platform. Additionally, a \textit{general quality} criteria was added to solve the second problem of scores not translating to a general quality. Evaluators were also allowed to add any additional description they thought summarized the cluster. The final criteria are shown in \cref{table:external_desc}.
 
-The test was conducted as a blind test to remove any bias playlist clusters might have. The composers did not know that the clusters had different sources. In their minds they were all from the same machine learning algorithm.
+\medskip
+\begin{table}[H]
+\begin{color}{modified}
+\makebox[\linewidth][c]{
+\begin{tabular}{ll}
+  \hline\noalign{\smallskip}
+  \multicolumn{1}{l}{\tbtitle{Criteria}} & \multicolumn{1}{c}{\tbtitle{Description}} \\
+\noalign{\smallskip}
+  \hline
+  \noalign{\smallskip}
+  Audio Similarity & How well do songs in the cluster share audio patterns? \\
+  Cultural Similarity & How well do songs in the cluster share an audience? \\
+  \noalign{\smallskip}
+  \hline
+  \noalign{\smallskip}
+  Playlist Uniqueness & How easy would it be for a composer come up with a similar playlist? \\
+  \noalign{\smallskip}
+  General Quality & How useful is the cluster for playlist creation?  \\
+  \noalign{\smallskip}
+  \hline
+\end{tabular}
+}
+\caption{Description of criteria for external evaluation, each criteria was rated by the composers with an integer scale of 1 to 10}
+\label{table:external_desc}
+\end{color}
+\end{table}
 
-Initially, the idea was that composers would rate a cluster on \textit{similarity} and \textit{novelty} (from a scale of 1-10). After showing a mock test and discussing it with the head of product experience, head of machine learning, and a number of composers at the stakeholder, it was conducted that the parameters had to be modified. There were two reasons: the terms were unclear for the composers, and, a general quality was hard to transcribe from the scores.
+\begin{color}{modified}
+The platform of the evaluation was a webpage created by the author. In here, 15 different clusters could be browsed --- 5 of each source (k-means, SSC-algorithm and existing playlists). Each cluster was represented by 10 30-second song previews. The chosen songs were sampled based on a half-normal distribution, i.e. \begin{color}{modified}songs with a relative small distance to the cluster center \end{color} had a higher chance to be picked than those with a high distance. A picture of the webpage is shown in \cref{fig:website}. Django \footnote{https://www.djangoproject.com/} and Bootstrap 4\footnote{https://getbootstrap.com/} were used to build the page.
 
-To adhere to the problems, \textit{similarity} was divided into \textit{audio similarity}, and \textit{cultural similarity}. \textit{Novelty} was changed to a term more familiar to the composers --- \textit{playlist uniqueness}, i.e. how unique the cluster would be as a playlist compared to already existing playlists on the platform. Additionally, a \textit{general quality} field was added to solve the second problem of scores not translating to a general quality. A text box was also added where the composers could add any description they thought summarized the cluster.
+The group of evaluators consisted of six composers. The chosen composers work professionally to create playlists that fit the needs of different retailers. They were deemed suitable as judges due to their experience in playlist creation. The composers would also be the beneficiaries of a clustering solution.\end{color}
 
-The composers and author were situated in the same room. All composers evaluated the clusters together, as they had mentioned in earlier discussions that they believed they can give a more accurate score together if they were allowed to discuss the clusters in as a team. Discussions the composers had during the evaluation were recorded. The author also answered questions the composers had on how to navigate the webpage.
+The test was conducted as a blind test to remove any bias composers might have. The composers were not told that clusters had different sources. Instead they were told that all clusters were from the same machine learning algorithm. \begin{color}{modified}To avoid possible suspicion, the presentation order of clusters were randomized. Information shown of clusters were also consistent between sources.\end{color}
+
+At the time of the evaluation, the created website was displayed onto a TV in a conference room. All 6 composers were situated in the room together with the conductor of the blind test. The test started by composers filling out their name, after which a random cluster was displayed on the screen. When a cluster was displayed, composers started their evaluation by listening to all the 10 songs shown, with varying durations --- some songs did not require 30 seconds to understand how the song affected the cluster in regards to the chosen criteria. The next step involved a pre-criteria grading discussion with all composers, this discussion was used to conclude the groups general thoughts of the cluster. Finally, the cluster was discussed on each specific criteria and then graded from 1 to 10 through a slider. After the submission of a graded cluster, a new cluster was displayed. Throughout the test, discussions composers had were recorded by the conductor. Additionally, questions composers had on webpage navigation and general criteria considerations were answered by the conductor. In total the time for the evaluation took 2 hours and involved 5 clusters of each cluster source.
+
+
+To evaluate the scores given by the composers on the three different cluster sources, a null hypothesis and an alternate hypothesis were created as shown in \cref{eq:null} and \cref{eq:alternate}.
+A single-factor ANOVA test ($\alpha = 0.05$) was used to test the null hypothesis. Each criteria were subjected to the test in order to understand if there was any significant difference between the means of the given sources.
+
+\begin{align}
+  \label{eq:null}
+  H_0 &= \bigg[ \mu_{\textit{pl}} = \mu_{\textit{SSC}} = \mu_{\textit{k-means}} \bigg] \\
+  \label{eq:alternate}
+  H_a &= \bigg[ \mu_{\textit{pl}} \neq \mu_{\textit{SSC}} \neq \mu_{\textit{k-means}} \bigg]
+\end{align}
+
+\end{color}
 
 \begin{figure}[h!]
-\begin{center}
-  \includegraphics[height=10cm, keepaspectratio]{Website}
+  \centering
+\centerline{\includegraphics[trim={10pt 10pt 20pt, 10pt},clip, scale=1.0, keepaspectratio]{Website}}
     \caption{Screenshot of the evaluation website. \newline
-      From the left-hand-side song samples are shown and played. In the middle of the picture, statistics about genres and common artists are shown. On the right-hand-side of the picture, the evaluation form is situated with a general description text area, and sliders for the rest of the evaluation categories.
+      From the left-hand-side song samples are shown and played. In the middle, statistics about genres and common artists are shown. On the right-hand-side, the evaluation form is situated with a general description text area, and sliders for the rest of the evaluation categories.
   }\label{fig:website}
-\end{center}
 \end{figure}
 
 

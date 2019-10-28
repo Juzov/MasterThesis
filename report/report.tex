@@ -1,11 +1,11 @@
 \documentclass[master]{kththesis}
 
 \usepackage[hyphens]{url}
-\usepackage{hyperref}  
+\usepackage{hyperref}
 \graphicspath{{img/}}
 
 \usepackage{csquotes} % Recommended by biblatex
-\usepackage[style=numeric,sortcites=true,sorting=none,backend=biber,url=false,doi=false,isbn=false]{biblatex}
+\usepackage[style=numeric,sortcites=true,maxbibnames=7,sorting=none,backend=biber,url=false,doi=false,isbn=false]{biblatex}
 
 \usepackage{subfiles}
 \usepackage{amsmath}
@@ -17,6 +17,7 @@
 \usepackage{float}
 \usepackage{parskip} % Newline for new paragraph
 \usepackage{footnote}
+\usepackage{xcolor}
 \usepackage{caption}
 % \usepackage{subfigure}
 \usepackage{multirow}
@@ -32,6 +33,7 @@
 \addbibresource{../refs/SYB Exploratory Clustering.bib} % The file containing our references, in BibTeX format
 \definecolor{black}{rgb}{0.0, 0.0, 0.0}
 \definecolor{modified}{rgb}{0.0, 0.0, 0.0}
+\DeclareMathOperator*{\argmax}{argmax} % no space, limits underneath in displays
 
 % \newenvironment{conditions}
 %   {\par\vspace{\abovedisplayskip}\noindent
@@ -54,7 +56,7 @@
 \date{\today}
 
 % Uncomment the next line to include cover generated at https://intra.kth.se/kth-cover?l=en
-% \kthcover{kth-cover.pdf}
+\kthcover{kth-cover.pdf}
 
 
 \begin{document}
@@ -65,13 +67,13 @@
 \titlepage
 
 \begin{abstract}
-Clustering analysis techniques can be used to solve various tasks. In this thesis, we look at the possibility of using clustering techniques to help generate novel music playlists by clustering a high dimensional dataset of songs. We compare how a newer category of clustering methods called \textit{Soft-subspace} clustering (SSC), which weights features independently for each cluster, performs compared to the popular \textit{K-means} algorithm. \begin{color}{black}{The SSC algorithms of \textit{EWKM} (Entropy Weighted K-means), \textit{FSC} (Fuzzy Subspace-Clustering), and \textit{LEKM} (Log- Transformed Entropy Weighting K-means)}\end{color}, were tested on a $5 \cdot 10^4$ sample of the dataset. Parameters were tuned based on an external validation index. The best performing SSC algorithm, which ended up being LEKM, was then compared to the results of K-means through a committee of judges. The results show that both LEKM and K-means are capable to cluster the dataset and generate novel clusters. Both algorithms create clusters of high general quality, but there is no shown benefit of using LEKM over K-means on the given dataset. For a more conclusive result, a larger sample dataset would be needed.
+Clustering Analysis can be used to solve various tasks. In this thesis, we look at the possibility of using clustering techniques to help generate novel music playlists by clustering a high dimensional dataset of songs. We compare how a newer category of clustering methods called \textit{Soft-subspace} clustering (SSC), which weighs features independently for each cluster, performs compared to the traditional \textit{k-means} algorithm. \begin{color}{black}{The SSC algorithms of \textit{EWKM} (Entropy Weighted k-means), \textit{FSC} (Fuzzy Subspace-Clustering), and \textit{LEKM} (Log- Transformed Entropy Weighting k-means)}\end{color} were tested on a $5 \cdot 10^4$ sample of the dataset. Parameters were tuned based on an external validation index. The best performing SSC algorithm, which ended up being LEKM, was then compared to the results of k-means through a committee of judges with professional music composing experience. The results show that both LEKM and k-means are capable to cluster the dataset and generate novel clusters. Both algorithms create clusters of high general quality, but there is no shown benefit of using LEKM over k-means on the given dataset. For a more conclusive result, a larger sample dataset would be needed.
 \end{abstract}
 
 
 \begin{otherlanguage}{swedish}
   \begin{abstract}
-  Klusteranalys kan användas för att lösa varierade problem. I denna avhandling granskar vi specifikt möjligheten att använda klusteranalys för att skapa spellistor (playlists) med nya musikaliska teman. Detta görs genom att klustra ett högdimensionellt dataset bestående av låtar. Vi jämför hur en ny sorts klustringsmetod, \textit{Soft-subspace Clusering} (SSC), som viktar attributen separat för respektive kluster, presterar jämfört den mer välkända \textit{K-means}-algoritmen. Tre olika SSC-algoritmer testades på en datamängd av $5 \cdot 10^4$ låtar: \textit{EWKM} (Entropy Weighted K-means), \textit{FSC} (Fuzzy Subspace-Clustering), och \textit{LEKM} (Log- Transformed Entropy Weighting K-means). Dessa algortimers parametrar justerades systematiskt utifrån ett externt valideringsindex varefter den bäst presterande SSC-algoritmens förmåga att klustra sånger bedömdes av sakkunniga experter och jämfördes mot K-means. Resultaten visar att både LEKM och K-means klustrar datamängden likvärdigt, och lyckas generera kluster med helt nya musikteman. Båda algoritmerna skapar kluster av allmänt hög kvalitet, men det går inte att fastslå att LEKM är bättre än K-means på den givna datamängden.
+  Klusteranalys kan användas för att lösa varierade problem. I denna avhandling granskar vi specifikt möjligheten att använda klusteranalys för att skapa spellistor (playlists) med nya musikaliska teman. Detta görs genom att klustra ett högdimensionellt dataset bestående av låtar. Vi jämför hur en ny sorts klustringsmetod, \textit{Soft-subspace Clusering} (SSC), som viktar attributen separat för respektive kluster, presterar jämfört den mer traditionella \textit{k-means}-algoritmen. Tre olika SSC-algoritmer testades på en datamängd av $5 \cdot 10^4$ låtar: \textit{EWKM} (Entropy Weighted k-means), \textit{FSC} (Fuzzy Subspace-Clustering), och \textit{LEKM} (Log- Transformed Entropy Weighting k-means). Dessa algortimers parametrar justerades systematiskt utifrån ett externt valideringsindex varefter den bäst presterande SSC-algoritmens förmåga att klustra sånger bedömdes av sakkunniga experter med kompositionserfarenhet och jämfördes mot k-means. Resultaten visar att både LEKM och k-means klustrar datamängden likvärdigt, och lyckas generera kluster med helt nya musikteman. Båda algoritmerna skapar kluster av allmänt hög kvalitet, men det går inte att fastslå att LEKM är bättre än k-means på den givna datamängden.
   \end{abstract}
 \end{otherlanguage}
 

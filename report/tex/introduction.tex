@@ -7,7 +7,44 @@
 % Music are used in retail- and food-locations.
 % Substantial effort and employee hours (money) are being spent by companies, to create (and navigate) fitting playlists (compositions).
 
-Clustering analysis is the exploratory art of finding \textit{clusters} (groups) in a dataset \cite{Kaufman1990}. Data objects are grouped by their similarity, with the most similar objects being categorized into the same group, a cluster. There are many applications for clustering. Two examples are: deciding what items to put in the same aisle in a shop --- in order to increase revenue --- and, categorizing insurance holders into risk groups --- to provide the best price to each customer.
+%%maybe talk about music and profit
+
+\begin{color}{modified}
+  Retail industries use music in stores as a branding mechanism \cite{gustafsson}. Substantial effort and employee hours (money) are needed for the creation (and navigation) of musical playlists that fit a company brand. To provide a cheaper and faster alternative, pre-curated playlists composed to work in various retail industries have been made available by a business-targeted music streaming platform. The work of composing playlists is time-intensive. A large amount of time is spent on the search of candidate songs, which currently requires expert knowledge --- professional playlist composers. In order to lessen the burden on composers, we look at the option of using \textit{Clustering Analysis} to automate the process of candidate song generation.
+
+
+
+% An approach to lessen the burden on composers creating the playlists is to automate a part of the candidate search. By comparing features of different songs, songs can be grouped together by feature similarity. The approach of grouping data by feature properties is called Clustering Analysis \cite{Kaufman1990}. In Clustering Analysis, data objects are grouped by their similarity, with the most similar objects being categorized into the same group, a cluster. There are many applications for clustering. Two examples are: deciding what items to put in the same aisle in a shop --- in order to increase revenue --- and, categorizing insurance holders into risk groups --- to provide the best price to each customer. Musical data can similarly to the examples be clustered on features to find musical themes. These themed clusters can then be used to pick out songs for a playlist.
+
+Clustering Analysis --- the exploratory art of finding \textit{clusters} (groups) in a dataset \cite{Kaufman1990} --- have been used to solve problems such as: Determining the life quality of cancer survivors based on cancer treatment and demographics \cite{medical}, and classifying businesses by transaction tendencies \cite{Jing2007}. Clustering analysis can similarly be used to algorithmically (without human interaction) find musical themes (clusters) within a musical dataset. Themes generated can then be used as candidate songs for the creation of playlists.
+
+% The task of finding candidate songs can similarly be structured to involve clustering anlusys for the purpose of finding musical grouping in the data, which in turn can bused as candidate songs. 
+
+% by allowing created  The mentioned examples can seem different than the task of finding candidate songs however, if we see the task of finding candidate songs as the assignment of finding themes (groups) in a musical dataset then all involve the process of finding groups in data based on feature similarity. Thus, similar clustering methods can be used to solve the problems algorithmically and automatic.
+
+
+% Feature data of songs can similarly be used to find clusters that represent musical themes. The created clusters can then function as canidate songs for a playlist of a musical theme.
+% For example it has been used in the medical field to categorize cancers .... by looking at attributes of .... By looking at the task of ... to find candidate songs, we can use clustering analysis to find themes that can be used as ...
+
+% An approach to lessen the burden on composers creating the playlists is to automate a part of the candidate search. By comparing features of different songs, songs can be grouped together by feature similarity. The approach of grouping data by feature properties is called Clustering Analysis \cite{Kaufman1990}. 
+
+% By compareing songs
+
+% Attributes of a song can be used to algorithmically group items together, these groups can then be used to create a cluster
+
+% An approach to lessen the burden on composers creating the playlists is to automate a part of the candidate search. By exploring the attributes of songs, patterns can be used to group similar items together, this approach is called Clustering Analysis.
+
+% It is more formally defined as the exploratory art of finding \textit{clusters} (groups) in a dataset \cite{Kaufman1990}. Data objects are grouped by their similarity, with the most similar objects being categorized into the same group, a cluster. There are many applications for clustering. Two examples are: deciding what items to put in the same aisle in a shop --- in order to increase revenue --- and, categorizing insurance holders into risk groups --- to provide the best price to each customer. Musical data can similarly to the examples be clustered on features to find musical themes. These themed clusters can then be used to pick out songs for a playlist.
+\end{color}
+% In this thesis we explore the possibility of ....
+
+% The topic of data mining involves information gathering in order to automate tasks that are otherwise tedious and labour intensive. As such the task of finding an automated approach to song finding can be seen as a data mining problem.
+
+
+% Given a library of \textit{Songs} with various features, clustering analysis can be used to create groupings of the data that in turn can be used to find candidate songs for a playlist.
+
+
+% The playlists fit many types of businesses and occasions, and are curated by professional music composers. All the retail customer has to do is choose a playlist based on recommendations given by the platform.
 
 % A data object consists of features (also referred as attributes) e.g. \textit{cost}, \textit{brand}, and \textit{origin} that decribe the object through numerical (or categorical) values. 
 
@@ -15,18 +52,28 @@ Clustering analysis is the exploratory art of finding \textit{clusters} (groups)
 
 % In clustering analysis, groups are instead detected autormatically by expressing the similarity of objects as a numerical value.
 
-Various types of clustering methods exist, they differ in how the similarity between points are measured, and how a cluster is defined.
-The properties of the dataset to be clustered is what decides the suitability of a method. The data-types (categorical, numerical or mixed), the size (the number of data objects), and the feature-dimensionality (the number of attributes describing an object) of a dataset are all critical factors when choosing a method. Picking the right method can be the difference between inadequate and stellar  clustering performance.
+Various types of clustering methods exist, they vary in how the similarity between points are measured, and how clusters are defined.
+The properties of the dataset to be clustered is what decides the suitability of a method. The data-types (categorical, numerical or mixed), the size (the number of data objects), and the feature-dimensionality (the number of attributes describing an object) of a dataset are all critical factors when choosing a method. Choosing the right method can help find the relevant patterns in data that are otherwise undetectable.
+
+Clustering high-dimensional data suffers from the \textit{Curse of dimensionality} \cite{Jain1999, Parsons2004, Deng2010}, i.e. any two points with the same cluster membership are bound to have features in which there are large distances between the points \cite{Domeniconi2007}. As such, it is hard to assess which points are actually similar as the distance is dominated by dissimilar features which are often irrelevant.
+
+A traditional choice for clustering is \textit{k-means}. k-means is a numerical partition-based algorithm that iteratively partitions data points into clusters \cite{huang2005automated}. The algorithm does not manage feature weighting. Instead, features have to be weighed by the user beforehand. In the case of high-dimensional data, it becomes time-consuming and often impossible to manually determine feature weights. This forces the option of weighing features uniformly, which leads to the curse of dimensionality.
+% The algorithm suffers from the mentioned dimensionality problems. The importance of a feature for determining a points cluster, is based on its variance. It is seen as a preprocessing step to determine the importance. With low-dimensional data, domain knowledge can be used to weight features, however with high-dimensional data (tens to hundreds of features) it is time-consuming or sometimes impossible to manually determine the importance. 
+
+To avoid clustering on a high-dimensional dataset feature reduction techniques have been used. Reduction techniques try to find  the smallest set of features that can represent a dataset. The drawback of using such techniques is that they lead to a loss of information \cite{Gan2016}, and disregard the fact that different clusters can depend on different features.
+% Features are weighed by their variance, and so a common preprocessing step for k-means is to normalize all features, to . With a high-dimensional dataset we are bound to give weight to irrelevant features, resulting in the complications mentioned above. 
+
+
+\textit{Soft-subspace} clustering (SSC) \cite{Gan2006, Jing2007, Gan2016} is a newer clustering method type designed specifically to tackle the problems of high-dimensionality. SSC algorithms are unique for the usage of cluster-specific feature-weights --- determined automatically during the process of clustering. This enables the reduction in the dimensionality of feature-weights to a subset of features deemed relevant by the algorithm, independently for all clusters.
+% Picking the right method can help find otherwise undetectable patterns that in turn helps to provide more relevant clusters.
 
 % \section{Background}
-\section{Problem Description}
+% \section{Problem Description}
 % The stakeholder provides playlists, pre-curated by professional playlist composers, that fit many types of businesses and occasions. All the retail customer have to do is chose the right playlist --- based on provided recommendations --- and press "play" to gain music for the store for the whole day.
 
-The stakeholder of this thesis is a music streaming platform tailored to the retail industry. It tries to solve the unique needs the retail industry has in regard to music. For example, songs with special retail licenses are provided on the platform. Beyond licensing, the platform works on providing the right company, the right music, often in the form of a \textit{playlist} (composition of songs).
+% The stakeholder of this thesis is a music streaming platform tailored to the retail industry. It tries to solve the unique needs the retail industry has in regard to music. For example, songs with special retail licenses are provided on the platform. Beyond licensing, the platform works on providing the right company, the right music, often in the form of a \textit{playlist} (composition of songs).
 
-\begin{color}{modified}
-Substantial effort and employee hours (money) are spent by the retail industry on the creation (and navigation) of musical playlists that fit the company. To provide a cheaper and faster alternative, pre-curated playlists have been made available on the streaming platform. The playlists fit many types of businesses and occasions, and are curated by professional music composers. All the retail customer has to do is choose a playlist based on recommendations given by the platform.
-\end{color}
+% Substantial effort and employee hours (money) are spent by the retail industry on the creation (and navigation) of musical playlists that fit the company. To provide a cheaper and faster alternative, pre-curated playlists have been made available on the streaming platform. The playlists fit many types of businesses and occasions, and are curated by professional music composers. All the retail customer has to do is choose a playlist based on recommendations given by the platform.
 
 
 % The retail industry has special demands on the music that is being played: It has to be licensed for retail use, and, music has to fit the company brand. The latter is discussed below.
@@ -38,15 +85,12 @@ Substantial effort and employee hours (money) are spent by the retail industry o
 
 
 
-The process of creating distinct playlists with high quality is extensive for professional composers. A time-consuming part of the process is to search for candidate songs, which currently requires expert knowledge.
+% The process of creating distinct playlists with high quality is extensive for professional composers. A time-consuming part of the process is to search for candidate songs, which currently requires expert knowledge.
 
-Here, we explore the possibility of generating candidate songs for novel playlists, by grouping songs through clustering analysis, in order to simplify the process for playlist composers.
+% Here, we explore the possibility of generating candidate songs for novel playlists, by grouping songs through clustering analysis, in order to simplify the process for playlist composers.
 
 % \section{Dataset}
 % Clustering analysis will be made on a real-world-, high-dimensional- and, mixed-dataset.
-The given dataset is a real-world, high-dimensional and mixed dataset. It is a set of \textit{song objects} extracted from an internal music database. Each song is a vector of features --- where different features describe the song through different song properties. The vector consists of two types of features, general metadata --- such as \textit{Duration} and \textit{Artists} --- and audio-based features --- that describe songs through an extraction of audio features of the song.
-
-In this thesis, we focus on clustering the audio-based features, which include 160 features (high-dimensional) that are numerical by nature.
 
 % The general metadata includes attributes that predominantly identify the song without resulting to audio analysis. Features of the type includes \textit{Album} (string), \textit{Artist} (string), \textit{Title} (string) and \textit{Year of Origin} (ordinal). The type also includes \textit{BPM} (numerical, zero to around 200) and \textit{Energy-feel} (ordinal, one to ten). These features include both numerical and categorical features --- features stored as strings can be converted to categorical data.
 
@@ -85,49 +129,39 @@ In this thesis, we focus on clustering the audio-based features, which include 1
 
 \section{Problem Statement}
 
-Clustering high-dimensional data suffers from the \textit{Curse of dimensionality} \cite{Jain1999, Parsons2004, Deng2010}, i.e. any two points with the same cluster membership are bound to have features in which there are large distances between the points \cite{Domeniconi2007}. As such, it is hard to assess which points are actually similar as the distance is dominated by dissimilar features which are often irrelevant features.
+In this thesis, we study how soft-subspace clustering algorithms compare to traditional approaches --- represented through the k-means algorithm --- on the given musical dataset. In order to answer how SSC algorithms compare to k-means, the following problem statement has been created:
 
-A popular choice for clustering \textit{K-means}, does not take into account the dimensionality of a dataset, which can result in the complications mentioned above. Feature reduction techniques that try to reduce the amount of features needed in a dataset, can be used in order to avoid dimensionality problems. The drawback is that common methods such as \textit{PCA} (Principal Component Analysis), lead to a loss of information \cite{Gan2016}, and disregard the fact that different clusters can depend on different features.
-
-\textit{Soft-subspace} clustering (SSC) \cite{Gan2006, Jing2007, Gan2016} is a newer clustering method type which is still expanding. It is designed specifically to tackle the problems of high-dimensionality, by embedding cluster-specific weights to features.
-
-In this thesis we study how soft-subspace clustering algorithms compare to the traditional K-means algorithm on the given musical dataset. There are two problem statements of the thesis:
-
-In order to answer how SSC algorithms compare to K-means, an SSC algorithm has to be chosen. Thus, the first problem statement is:
-
-\textit{With an expanding set of soft-subspace algorithms, what is a suitable soft-subspace algorithm for the given high-dimensional dataset, based on genre purity?}
-
-Given the chosen SSC algorithm, the second and main problem statement becomes:
-% Second, the main problem statement can be answered, in order to answer how K-means compares to SSC algorithms, an SSC algorithm has to be chosen. Thus, the first problem statement is:
+% Second, the main problem statement can be answered, in order to answer how k-means compares to SSC algorithms, an SSC algorithm has to be chosen. Thus, the first problem statement is:
 % With the first statement answered the second and the main problem statement can be answered:
 
-\textit{How does the performance of the chosen soft-subspace clustering algorithm compare to K-means on the given high-dimensional dataset, from the perspective of novelty and general quality, when validated by a committee of judges?}
+\textit{How does the performance of soft-subspace clustering algorithms compare to traditional methods on the given high-dimensional dataset, from the perspective of novelty and general quality, when validated by a committee of judges consisting of playlist composers?}
 
-\section{Objective}
-% The Objective is to determine whether \textit{K-means} and \textit{soft-subspace clustering methods} can be used to generate clusters that can be used to create high quality, novel playlist themes.
+\section{Objectives and Scope}
+% The Objective is to determine whether \textit{k-means} and \textit{soft-subspace clustering methods} can be used to generate clusters that can be used to create high quality, novel playlist themes.
+\begin{color}{modified}
+  The objective is to determine how k-means (a traditional algorithm) and \textit{SSC}-algorithms compare in regard to the generation of thematic musical clusters. More specifically, clusters of the different sources are compared on the musical \textit{novelty}, and the musical quality generated. In addition to the comparison between algorithms, it is also of interest to compare algorithmic cluster sources with existing playlists based on the same criteria.
+\end{color}
 
-The objective is to determine whether clustering algorithms (\textit{K-means} or \textit{SSC}-algorithms) can be used for the generation of thematically playlists. More specifically, there should exist clusters generated by the algorithms that have a \textit{novel} musical theme and a high musical quality in accordance to professional playlist composers.
+\begin{color}{modified}
+  Only three SSC-algorithms will be tested. They are \textit{EWKM} (Entropy Weighted k-means), \textit{LEKM} (Log- Transformed Entropy Weighting k-means), and \textit{FSC} (Fuzzy Subspace-Clustering) --- which are all introduced in the background. They will be parameter tuned based on genre purity. Each candidate parameter will only be tested once. The best performing tuned algorithm in terms of genre purity will then be compared to k-means.
+\end{color}
 
 % Convergence Rate and
 
 % \section{Goal}
-% To adhere to the purpose a traditional clustering algorithm \textit{K-means} is evaluated against more sophisticated, soft-subspace algorithms.
+% To adhere to the purpose a traditional clustering algorithm \textit{k-means} is evaluated against more sophisticated, soft-subspace algorithms.
 % Convergence speeds are compared, The accuracy and novelty of the generated clusters are evaluated by judges --- playlist composers.
 
-\section{Ethics, Sustainability and \newline Societal Aspects}
-Ethical concerns are commonplace in automatic categorization. In the context of the song dataset, songs from a specific cluster could be used to generate a playlist for a popular streaming platform. That cluster might have it pivotal that an artist's country of origin is a specific country. Artists outside of that country that otherwise fit the cluster, are disregarded due to a seemingly, artificial wall. As such, artists from less established markets can become invincible for that playlist resulting in loss of revenue. Ethically, it is questionable whether country of origin should have merit or not. From a cluster quality standpoint excluding some songs, for a better precision is a worthy trade-off. \begin{color}{black}In this thesis only audio data is processed for clustering, which forces the algorithm to only compare songs based on audio.
+The given dataset is a real-world, high-dimensional and mixed dataset. It is a set of \textit{song objects} extracted from an internal music database. Each song consists of features --- where different features describe the song through different song properties. There are two main features, general metadata --- such as \textit{Duration} and \textit{Artists} --- and audio-based features --- describing songs through an extraction of audio features of the song.
 
-% Clustering music does not have a large societal aspect, apart from the musical industry. From this standpoint, companies with a music library as those can be interested in the work. 
-High-dimensional datasets are frequent in the real-world. The comparison between the lesser known SSC-algorithms and K-means on the given dataset are beneficial for researchers and data-scientists looking for the possibility to cluster high-dimensional data. This thesis provides results on a new real-world dataset, without any bias towards a self-published algorithm. Additionally, problems of using the given algorithms on the dataset are discussed, which helps highlight possible problems on similar datasets.
-\end{color}
+% The focus of this thesis is on clustering the audio-based features, which include 160 features (high-dimensional) that are numerical by nature.
 
-\section{Scope}
-This thesis focuses on the problem of clustering high-dimensional data. Other properties such as \textit{mixed data} are mentioned, but not addressed. Algorithms chosen for evaluation were numerical in nature, and the features of the dataset were preprocessed to only include numerical data.
+This thesis focuses on the problem of clustering the audio-based features, which are made out of numerical features. The audio feature-set includes 160 features that make the data high-dimensional. Other properties such as \textit{mixed data} are mentioned, but not addressed. For this thesis, algorithms are compared on a $5 \cdot 10^4$ sized sample of the original $5 \cdot 10^7$ sized dataset. Algorithms chosen were numerical in nature and restricted from using the categorical features of the dataset.
 
 The dataset is given as is, the only feature manipulation done to the dataset are preprocessing techniques common for cluster analysis such as sampling a subset of the dataset and normalizing features. The process of picking and sampling audio features before the preprocessing is not within the scope of the project.
+
 
 % Clustering on both the categorical and numerical features of the dataset is out of the scope of this project.
 
 % Tackling mixed data through soft-subspace clustering is out of the scope of the project as the core features of the dataset are numerical.
 \end{document}
-
